@@ -10,7 +10,9 @@ Open [AgentOS](http://127.0.0.1:8080). For background mode, append `-d`. Use `do
 
 ## Startup and storage
 
-On first boot the credentials job generates random passwords in two Compose volumes. PostgreSQL initializes a restricted API login. The migration job uses the administrative credential to establish the Alembic baseline. The API runs as an unprivileged OS user and reads the current schema revision with its read-only database login. New domain tables and migrations ship with the features that own them.
+On first boot the credentials job generates random passwords in two Compose volumes. PostgreSQL initializes a restricted API login. The migration job uses the administrative credential to upgrade the schema to its current head. The API runs as an unprivileged OS user and has read access to the schema revision. New domain tables and migrations ship with the features that own them.
+
+Phase 2 grants that API login scoped registry and run privileges, forces row-level security on the tenant tables and commits dispatch intent with each enqueue. The optional operator profile manages membership and local identity keys. [Identity settings and first run](first-run.md)
 
 The API opens long-lived async client pools and closes them at shutdown. A readiness request checks PostgreSQL's revision and Redis PING concurrently with per-probe timeouts. Broker health is independent so a broker outage can be identified while the control plane remains ready. The dashboard polls every ten seconds while visible and supports pausing or manually refreshing checks.
 
@@ -37,7 +39,7 @@ The last five rows describe service settings wired in `compose.yaml`. For standa
 
 - Backend tests use Python 3.12. From `backend` run `uv run --locked pytest -q`.
 - From `dashboard` run `npm ci` and `npm run build` using Node 22.12+ or Node 24. To work on the UI, start Compose on its default port and run `npm run dev` here. Vite forwards probe requests to the gateway.
-- From the root, `python scripts/check_foundation.py` creates a disposable project on a random loopback port. It verifies clean startup, migration replay and downgrade/upgrade, service outages, liveness and restoration, then recreates containers and checks retained PostgreSQL data. It removes only the temporary project's resources.
+- From the root, `python scripts/check_foundation.py` creates a disposable project on a random loopback port. It verifies clean startup, migration replay and downgrade/upgrade, tenant permissions, version grants, concurrent run admission and transaction rollback. It then exercises dependency outages, recreates the containers and retrieves a persisted run. It removes the temporary project's resources.
 - For the same browser check as CI, install dashboard dependencies, run `npx playwright install chromium` from `dashboard`, then run `python scripts/check_foundation.py --browser` from the root. To use an installed Chrome instead, set `AGENTOS_BROWSER_CHANNEL=chrome` for the test. The browser opens the real dashboard, pauses polling, simulates a failed health request, refreshes after recovery and checks mobile overflow.
 
 ## Troubleshooting

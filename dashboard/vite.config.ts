@@ -6,7 +6,7 @@ export default defineConfig({
   plugins: [react(), tailwindcss()],
   server: {
     proxy: Object.fromEntries(
-      ["/health", "/docs", "/openapi.json"].map((path) => [path, "http://127.0.0.1:8080"]),
+      ["/health", "/docs", "/openapi.json", "/v1"].map((path) => [path, "http://127.0.0.1:8080"]),
     ),
   },
 });

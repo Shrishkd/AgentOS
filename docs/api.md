@@ -18,7 +18,9 @@ All product routes below are relative to `/v1/tenants/{tenant_id}`. Accept a bea
 | POST /approvals/{id}/decision | Approver sends decision, action_digest and optional reason | 200 decision receipt. Identical replay returns original receipt. Changed digest or conflicting decision returns 409. |
 | GET /workers, GET /usage | Viewer, scoped to tenant | 200 tenant-visible worker activity or usage aggregates. Cross-tenant capacity and workload details are operator-only. |
 
-Phase 1 implements unscoped `GET /health/live` (200, `{"status":"alive"}`) and `GET /health/ready` (200 ready or 503 unavailable). Readiness includes a `checks` object with `postgresql` and `redis` set to `up` or `down`. PostgreSQL must match the application's Alembic head. The gateway also exposes `GET /health/jetstream` as a separate broker probe. API requests receive an `X-Request-ID` UUID. The current API specification is served at `/openapi.json`. Tenant routes in this document describe later phases.
+Phase 1 implements unscoped `GET /health/live` (200, `{"status":"alive"}`) and `GET /health/ready` (200 ready or 503 unavailable). Readiness includes a `checks` object with `postgresql` and `redis` set to `up` or `down`. PostgreSQL must match the application's Alembic head. The gateway also exposes `GET /health/jetstream` as a separate broker probe. API requests receive an `X-Request-ID` UUID. The current API specification is served at `/openapi.json`.
+
+Phase 2 ships agent and version creation, reads, cursor lists, publication and deactivation, run submission, reads, filters and cancellation. Run detail includes the pinned version, input, status, revision, priority, timestamps, deadline, output and failure reason. Run history currently returns an ordered JSON array with `after` (exclusive sequence) and `limit` parameters. Worker fields, streaming, approvals and usage projections arrive in later phases. A queued cancellation completes immediately and returns 200. [PowerShell walkthrough](operations/first-run.md)
 
 ## Publish and submit
 

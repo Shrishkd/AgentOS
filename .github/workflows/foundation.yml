@@ -1,4 +1,4 @@
-name: Foundation
+name: Control plane verification
 on: [push, pull_request]
 permissions:
   contents: read

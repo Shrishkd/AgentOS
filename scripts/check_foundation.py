@@ -11,6 +11,8 @@ from urllib.error import HTTPError, URLError
 from urllib.request import urlopen
 from uuid import uuid4
 
+from check_registry import check_registry, request_json
+
 ROOT = Path(__file__).resolve().parents[1]
 
 
@@ -63,13 +65,15 @@ def main(browser: bool) -> None:
         if browser:
             subprocess.run([shutil.which("npm.cmd" if os.name == "nt" else "npm"), "run", "test:browser"],
                            cwd=ROOT / "dashboard", env={**env, "AGENTOS_TEST_URL": base}, check=True)
-        assert sql("SELECT version_num FROM alembic_version") == "0001_foundation"
+        assert sql("SELECT version_num FROM alembic_version") == "0002_registry_runs"
         sql("CREATE TABLE persistence_probe AS SELECT 42 AS value")
         compose("run", "--rm", "--no-deps", "migrate")
         compose("run", "--rm", "--no-deps", "migrate", "alembic", "downgrade", "base")
         await_json(base, "/health/ready", 503, {"checks": {"postgresql": "down", "redis": "up"}})
         compose("run", "--rm", "--no-deps", "migrate")
         await_json(base, "/health/ready", 200, {"status": "ready"})
+        compose("build", "operator")
+        run_path, token, run_id = check_registry(base, compose, sql)
         for service in ("redis", "postgres"):
             compose("stop", service)
             await_json(base, "/health/live", 200, {"status": "alive"})
@@ -87,8 +91,9 @@ def main(browser: bool) -> None:
         except HTTPError as error:
             assert error.code in {502, 503, 504}
         compose("down")
-        start()
+        base = start()
         assert sql("SELECT value FROM persistence_probe") == "42"
+        assert request_json(base + run_path, token=token)[1]["id"] == run_id
         print("Foundation checks passed, including migration replay, dependency outages and volume reuse.")
     except Exception:
         compose("ps", "-a")
@@ -96,7 +101,7 @@ def main(browser: bool) -> None:
         raise
     finally:
         # The random project owns these volumes. Never use the developer's project name.
-        compose("down", "--volumes", "--remove-orphans", "--rmi", "local")
+        compose("--profile", "tools", "down", "--volumes", "--remove-orphans", "--rmi", "local")
 
 
 if __name__ == "__main__":

@@ -26,6 +26,9 @@ class DatabaseSettings(BaseSettings):
 
 
 class Settings(DatabaseSettings):
+    token_issuer: str = "urn:agentos:local"
+    token_audience: str = "agentos-api"
+    token_public_key_file: Path = Path("/keys/public/issuer.pem")
     redis_url: SecretStr
     health_timeout_seconds: float = Field(default=2, gt=0, le=10)
     log_level: Literal["DEBUG", "INFO", "WARNING", "ERROR"] = "INFO"
