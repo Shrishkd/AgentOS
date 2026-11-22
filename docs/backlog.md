@@ -2,6 +2,8 @@
 
 Each row is a reviewable increment. Phase numbers identify handoff points. Acceptance criteria describe evidence to collect as implementation lands.
 
+Phase 0 and the Phase 1 foundation are implemented. The local Compose and browser checks exercise startup, health reporting, migration replay, dependency outages and data retention. Phase 2 begins with tenant identity and the agent registry. [Run the foundation checks](operations/local-development.md)
+
 | Phase / increment | Depends on | Work and acceptance criteria |
 | --- | --- | --- |
 | 0 · Architecture | Empty repository and brief | Review the technical specification, six diagrams, schema, state machine, threat model, HTTP contract and five ADRs. Check cross-document links and example payloads. |
