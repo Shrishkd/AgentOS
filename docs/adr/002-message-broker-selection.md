@@ -1,0 +1,7 @@
+# ADR 002 · NATS JetStream for worker wakeups
+
+**Decision.** Use a file-backed JetStream stream and one shared durable pull consumer with explicit acknowledgements. Each worker asks for work when it has a free slot. The database owns ordering, retry timing, fairness and lease recovery. The message contains the outbox ID and schema version. Broker credentials restrict publish and consume subjects by process. [NATS pull consumers](https://docs.nats.io/learn/jetstream/pull-consumers)
+
+RabbitMQ quorum queues also support replicated durable work delivery. Their queue priorities, dead lettering and routing are attractive when the broker owns dispatch policy. AgentOS must coordinate priorities with tenant quotas and fenced leases in a database transaction. A small wakeup stream and capacity-driven pulls fit that constraint. This choice trades broker-managed task policy for a scheduler and repair scan that we must implement and test. [RabbitMQ quorum queues](https://www.rabbitmq.com/docs/quorum-queues)
+
+**Consequence.** Mark an outbox event published only after the server acknowledges it. A crash in between may produce a duplicate. Configure bounded retention, acknowledgement timeouts and a replicated production stream, then test lost messages and duplicate wakeups. Revisit the choice if the product needs complex broker-managed routing or measurements show this dispatch model misses its latency target.
