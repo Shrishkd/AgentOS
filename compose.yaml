@@ -1,0 +1,108 @@
+x-probe: &probe
+  interval: 5s
+  timeout: 4s
+  retries: 12
+  start_period: 5s
+
+x-backend: &backend
+  build: ./backend
+
+x-db: &db
+  AGENTOS_DB_HOST: postgres
+  AGENTOS_DB_NAME: agentos
+
+services:
+  credentials:
+    image: alpine:3.22
+    volumes:
+      - admin-secret:/admin
+      - api-secret:/api
+    command:
+      - /bin/sh
+      - -ec
+      - |
+        umask 077
+        for dir in /admin /api; do
+          if [ ! -s "$$dir/password" ]; then
+            head -c 36 /dev/urandom | base64 > "$$dir/new-password"
+            chmod 0444 "$$dir/new-password"
+            mv "$$dir/new-password" "$$dir/password"
+          fi
+        done
+
+  postgres:
+    image: postgres:17-alpine
+    depends_on:
+      credentials: {condition: service_completed_successfully}
+    environment:
+      POSTGRES_DB: agentos
+      POSTGRES_PASSWORD_FILE: /secrets/admin/password
+    volumes:
+      - pg-data:/var/lib/postgresql/data
+      - admin-secret:/secrets/admin:ro
+      - api-secret:/secrets/api:ro
+      - ./infra/postgres/01-api-role.sh:/docker-entrypoint-initdb.d/01-api-role.sh:ro
+    healthcheck:
+      <<: *probe
+      test: ["CMD", "pg_isready", "-h", "127.0.0.1", "-U", "postgres", "-d", "agentos"]
+
+  redis:
+    image: redis:7.4-alpine
+    command: ["redis-server", "--save", "", "--appendonly", "no"]
+    healthcheck:
+      <<: *probe
+      test: ["CMD-SHELL", "redis-cli ping | grep -qx PONG"]
+
+  nats:
+    image: nats:2.11-alpine
+    command: ["-js", "-sd", "/data", "-m", "8222"]
+    volumes:
+      - js-data:/data
+    healthcheck:
+      <<: *probe
+      test: ["CMD", "wget", "-q", "-O", "/dev/null", "http://127.0.0.1:8222/healthz?js-enabled-only=true"]
+
+  migrate:
+    <<: *backend
+    depends_on:
+      postgres: {condition: service_healthy}
+    command: ["alembic", "upgrade", "head"]
+    environment:
+      <<: *db
+      AGENTOS_DB_USER: postgres
+      AGENTOS_DB_PASSWORD_FILE: /secrets/admin/password
+    volumes:
+      - admin-secret:/secrets/admin:ro
+
+  api:
+    <<: *backend
+    depends_on:
+      migrate: {condition: service_completed_successfully}
+      redis: {condition: service_healthy}
+    environment:
+      <<: *db
+      AGENTOS_DB_USER: agentos_api
+      AGENTOS_DB_PASSWORD_FILE: /secrets/api/password
+      AGENTOS_REDIS_URL: redis://redis:6379/0
+      AGENTOS_LOG_LEVEL: ${AGENTOS_LOG_LEVEL:-INFO}
+      AGENTOS_HEALTH_TIMEOUT_SECONDS: ${AGENTOS_HEALTH_TIMEOUT_SECONDS:-2}
+    volumes:
+      - api-secret:/secrets/api:ro
+    healthcheck:
+      <<: *probe
+      timeout: 14s
+      test: ["CMD", "python", "-c", "import urllib.request; urllib.request.urlopen('http://127.0.0.1:8000/health/ready',timeout=12).close()"]
+
+  dashboard:
+    build: ./dashboard
+    ports:
+      - "127.0.0.1:${AGENTOS_PORT:-8080}:8080"
+    healthcheck:
+      <<: *probe
+      test: ["CMD", "wget", "-q", "-O", "/dev/null", "http://127.0.0.1:8080/"]
+
+volumes:
+  pg-data:
+  js-data:
+  admin-secret:
+  api-secret:

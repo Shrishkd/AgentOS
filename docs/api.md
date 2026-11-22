@@ -18,7 +18,7 @@ All product routes below are relative to `/v1/tenants/{tenant_id}`. Accept a bea
 | POST /approvals/{id}/decision | Approver sends decision, action_digest and optional reason | 200 decision receipt. Identical replay returns original receipt. Changed digest or conflicting decision returns 409. |
 | GET /workers, GET /usage | Viewer, scoped to tenant | 200 tenant-visible worker activity or usage aggregates. Cross-tenant capacity and workload details are operator-only. |
 
-Unscoped `GET /health/live` and `GET /health/ready` expose a minimal status and use 503 on failure. The eventual FastAPI OpenAPI document and contract tests will enforce these wire shapes as each endpoint ships.
+Phase 1 implements unscoped `GET /health/live` (200, `{"status":"alive"}`) and `GET /health/ready` (200 ready or 503 unavailable). Readiness includes a `checks` object with `postgresql` and `redis` set to `up` or `down`. PostgreSQL must match the application's Alembic head. The gateway also exposes `GET /health/jetstream` as a separate broker probe. API requests receive an `X-Request-ID` UUID. The current API specification is served at `/openapi.json`. Tenant routes in this document describe later phases.
 
 ## Publish and submit
 

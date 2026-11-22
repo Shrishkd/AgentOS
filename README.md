@@ -1,8 +1,14 @@
 # AgentOS
 
-AgentOS is a proposed runtime for long-running AI agents. A developer publishes an agent version and submits a task. A worker executes it in steps, records progress in PostgreSQL, and hands control back to a human when an action needs approval.
+AgentOS is a runtime under development for long-running AI agents. Its design pins each task to an agent version, records worker progress in PostgreSQL and pauses protected actions for human approval.
 
-**Project status.** Phase 0 defines the engineering design. Phase 1 will introduce the first runnable services and local startup command.
+**Phase 1 · Project foundation.** From this directory, start the local stack with Docker Compose:
+
+```sh
+docker compose up --build
+```
+
+Open the [system health dashboard](http://127.0.0.1:8080) or [API reference](http://127.0.0.1:8080/docs). Compose generates local database credentials, starts PostgreSQL, Redis and NATS JetStream, applies the Alembic baseline, and serves the FastAPI and React applications through one loopback port. Agent registration and run submission are scheduled for Phase 2. [Local setup, configuration and troubleshooting](docs/operations/local-development.md)
 
 | Start here | What to review |
 | --- | --- |
