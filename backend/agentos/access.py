@@ -1,4 +1,5 @@
 from collections.abc import AsyncIterator
+from contextlib import asynccontextmanager
 from dataclasses import dataclass
 from typing import Annotated
 from uuid import UUID
@@ -38,9 +39,11 @@ class TenantAccess(RunContext):
              "object": object_id, "request": self.request_id})
 
 
-async def tenant_access(request: Request, tenant_id: UUID,
-                        credentials: Annotated[HTTPAuthorizationCredentials | None, Depends(bearer)]
-                        ) -> AsyncIterator[TenantAccess]:
+Credentials = Annotated[HTTPAuthorizationCredentials | None, Depends(bearer)]
+
+
+@asynccontextmanager
+async def scoped_access(request: Request, tenant_id: UUID, credentials: Credentials) -> AsyncIterator[TenantAccess]:
     settings = request.app.state.settings
     unauthorized = DomainError(401, "unauthorized", "A valid access token is required.",
                                {"WWW-Authenticate": "Bearer"})
@@ -62,6 +65,11 @@ async def tenant_access(request: Request, tenant_id: UUID,
         if member is None:
             raise missing()
         yield TenantAccess(db, tenant_id, member["id"], member["role"], request.state.request_id)
+
+
+async def tenant_access(request: Request, tenant_id: UUID, credentials: Credentials) -> AsyncIterator[TenantAccess]:
+    async with scoped_access(request, tenant_id, credentials) as access:
+        yield access
 
 
 Access = Annotated[TenantAccess, Depends(tenant_access, scope="function")]

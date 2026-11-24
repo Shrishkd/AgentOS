@@ -12,6 +12,8 @@ from redis.asyncio import Redis
 from sqlalchemy.ext.asyncio import create_async_engine
 
 from .config import Settings
+from .telemetry import tracing
+from .observability import router as observability
 from .health import Readiness, check_readiness, dependency_checks
 from .logging import logging_config
 from .domain import DomainError
@@ -33,7 +35,8 @@ def create_app(settings: Settings) -> FastAPI:
             app.state.probes = dependency_checks(engine, redis)
             app.state.engine = engine
             app.state.redis = redis
-            yield
+            with tracing("agentos-api"):
+                yield
         finally:
             await redis.aclose()
             await engine.dispose()
@@ -45,6 +48,7 @@ def create_app(settings: Settings) -> FastAPI:
     app.include_router(workers)
     app.include_router(model_execution)
     app.include_router(tools)
+    app.include_router(observability)
 
     @app.exception_handler(DomainError)
     async def domain_error(request: Request, exc: DomainError):

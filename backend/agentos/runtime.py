@@ -78,7 +78,9 @@ async def serve(service):
                                 inbox_prefix=f"_INBOX.{cfg.db_user}".encode(),
                                 password=cfg.broker_password_file.read_text().strip(), error_cb=broker_error,
                                 connect_timeout=2, reconnect_time_wait=1, max_reconnect_attempts=5)
-        await service(cfg, engine, nc, stop)
+        from .telemetry import tracing
+        with tracing(cfg.db_user.replace("_", "-")):
+            await service(cfg, engine, nc, stop)
     finally:
         if nc:
             await nc.close()

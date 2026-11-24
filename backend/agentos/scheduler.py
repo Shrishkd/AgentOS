@@ -35,6 +35,7 @@ class Claim:
     generation: int
     input: dict
     spec: RunSpec | None = None
+    traceparent: str | None = None
 
 
 class LeaseLost(Exception):
@@ -91,7 +92,7 @@ class Scheduler:
                 WHERE tenant_id=:tenant AND expires_at>clock_timestamp()) FROM tenants WHERE id=:tenant"""), params)
             if not available:
                 return None
-            row = (await db.execute(text(f"""SELECT r.id,r.revision,r.input,r.deadline_at,v.id AS version,
+            row = (await db.execute(text(f"""SELECT r.id,r.revision,r.input,r.deadline_at,r.traceparent,v.id AS version,
                 v.provider,v.model,v.instructions,v.limits FROM runs r JOIN execution_queue q ON q.id=r.id
                 JOIN agent_versions v ON v.id=r.agent_version_id WHERE q.tenant_id=:tenant AND r.status='QUEUED'
                 AND {SUPPORTED} ORDER BY q.priority DESC,q.enqueued_at,q.id
@@ -118,7 +119,7 @@ class Scheduler:
                 VALUES (:tenant,:run,:worker,:generation)"""), {**params, "generation": generation})
             await db.execute(text("UPDATE tenants SET last_admitted_at=clock_timestamp() WHERE id=:tenant"), params)
             spec = RunSpec(row["version"], row["provider"], row["model"], row["instructions"], row["limits"], row["deadline_at"])
-            return Claim(tenant, run_id, worker, generation, row["input"], spec)
+            return Claim(tenant, run_id, worker, generation, row["input"], spec, row["traceparent"])
 
     async def _locked(self, db: AsyncConnection, claim: Claim):
         params = {"run": claim.run, "worker": claim.worker, "generation": claim.generation}

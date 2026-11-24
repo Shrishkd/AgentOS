@@ -1,19 +1,23 @@
+import asyncio
 import hashlib
 import json
 from datetime import UTC, datetime, timedelta
+from time import monotonic
 from typing import Annotated
-from uuid import UUID
+from uuid import UUID, uuid4
 
 from fastapi import APIRouter, Header, Query, Request, Response
+from fastapi.responses import StreamingResponse
 from pydantic import BaseModel
 from redis.exceptions import RedisError
 from sqlalchemy import text
 
-from .access import Access
+from .access import Access, Credentials, scoped_access
 from .contracts import Page, Run, RunInput
-from .domain import DomainError, State
+from .domain import DomainError, State, TERMINAL
 from .lifecycle import RUNS, record_event, transition
 from .queries import Cursor, Limit, one, page
+from .telemetry import execution_span, traceparent
 
 router = APIRouter(prefix="/v1/tenants/{tenant_id}/runs", tags=["Runs"])
 
@@ -75,13 +79,16 @@ async def submit(body: RunInput, request: Request, response: Response, access: A
         if quota["pending"] >= quota["pending_limit"]:
             raise DomainError(429, "quota_exceeded", "Tenant pending run quota reached.", {"Retry-After": "1"})
         await check_rate(request, access.tenant, quota["submissions_per_minute"])
-        run_id = await db.scalar(text("""INSERT INTO runs (tenant_id,agent_version_id,submitter_id,
-            submission_key,request_hash,input,priority,deadline_at) VALUES
-            (:tenant,:version,:user,:key,:digest,CAST(:input AS jsonb),:priority,:deadline) RETURNING id"""),
-            {"tenant": access.tenant, "version": body.agent_version_id, "user": access.user, "key": key,
-             "digest": digest, "input": json.dumps(body.input), "priority": body.priority, "deadline": deadline})
-        await record_event(access, run_id, 1, State.CREATED)
-        row = await transition(access, run_id, State.CREATED, State.QUEUED, 1)
+        run_id = uuid4()
+        with execution_span("run.submit", root=True, run_id=str(run_id), request_id=access.request_id):
+            await db.execute(text("""INSERT INTO runs (id,tenant_id,agent_version_id,submitter_id,
+                submission_key,request_hash,input,priority,deadline_at,traceparent) VALUES
+                (:run,:tenant,:version,:user,:key,:digest,CAST(:input AS jsonb),:priority,:deadline,:parent)"""),
+                {"run": run_id, "tenant": access.tenant, "version": body.agent_version_id, "user": access.user,
+                 "key": key, "digest": digest, "input": json.dumps(body.input), "priority": body.priority,
+                 "deadline": deadline, "parent": traceparent()})
+            await record_event(access, run_id, 1, State.CREATED)
+            row = await transition(access, run_id, State.CREATED, State.QUEUED, 1)
     response.headers["Location"] = f"/v1/tenants/{access.tenant}/runs/{row['id']}"
     return row
 
@@ -133,9 +140,56 @@ class Event(BaseModel):
     payload: dict[str, str]
 
 
-@router.get("/{run_id}/events", response_model=list[Event])
-async def history(run_id: UUID, access: Access, after: Annotated[int, Query(ge=0)] = 0, limit: Limit = 50):
-    await one(access, "SELECT id FROM runs WHERE tenant_id=:tenant AND id=:id", id=run_id)
+async def event_page(access, run_id, after, limit):
     return (await access.db.execute(text("""SELECT seq,kind,created_at,payload FROM run_events
         WHERE tenant_id=:tenant AND run_id=:run AND seq>:after ORDER BY seq LIMIT :limit"""),
         {"tenant": access.tenant, "run": run_id, "after": after, "limit": limit})).mappings().all()
+
+
+@router.get("/{run_id}/events", response_model=list[Event],
+            responses={200: {"content": {"text/event-stream": {}}}})
+async def history(run_id: UUID, request: Request, access: Access, credentials: Credentials,
+                  after: Annotated[int, Query(ge=0, le=2147483647)] = 0, limit: Limit = 50,
+                  last_event_id: Annotated[str | None, Header(alias="Last-Event-ID")] = None):
+    state_query = "SELECT status,revision FROM runs WHERE tenant_id=:tenant AND id=:id"
+    state = await one(access, state_query, id=run_id)
+    if "text/event-stream" not in request.headers.get("accept", ""):
+        return await event_page(access, run_id, after, limit)
+    cursor = after
+    if last_event_id is not None:
+        if not (last_event_id.isascii() and last_event_id.isdecimal() and len(last_event_id) <= 10):
+            raise DomainError(422, "invalid_cursor", "Expected a nonnegative event ID.")
+        cursor = int(last_event_id)
+    if cursor > state["revision"]:
+        raise DomainError(422, "invalid_cursor", "Event ID exceeds the latest revision.")
+    first = await access.db.scalar(text("SELECT min(seq) FROM run_events WHERE tenant_id=:tenant AND run_id=:run"),
+                                   {"tenant": access.tenant, "run": run_id})
+    if first is not None and cursor < first - 1:
+        raise DomainError(410, "history_expired", "The requested event history has expired.")
+    tenant = access.tenant
+
+    async def stream():
+        position = cursor
+        heartbeat = monotonic()
+        while not await request.is_disconnected():
+            try:
+                async with scoped_access(request, tenant, credentials) as current:
+                    state = await one(current, state_query, id=run_id)
+                    rows = await event_page(current, run_id, position, limit)
+            except DomainError:
+                return  # Reconnect goes through normal HTTP authentication again.
+            for row in rows:
+                event = Event.model_validate(dict(row))
+                yield f"id: {event.seq}\nevent: {event.kind}\ndata: {event.model_dump_json()}\n\n"
+                position = event.seq
+                heartbeat = monotonic()
+            if state["status"] in TERMINAL and position >= state["revision"]:
+                return
+            if len(rows) < limit:
+                if monotonic() - heartbeat >= 15:
+                    yield ": heartbeat\n\n"
+                    heartbeat = monotonic()
+                await asyncio.sleep(1)
+
+    return StreamingResponse(stream(), media_type="text/event-stream",
+                             headers={"Cache-Control": "no-store", "X-Accel-Buffering": "no"})

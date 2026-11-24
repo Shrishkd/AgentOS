@@ -7,6 +7,8 @@ from sqlalchemy import text
 
 from . import checkpoints, tool_gateway
 from .tool_catalog import CATALOG, granted
+from .telemetry import execution_span, failed
+from opentelemetry import trace
 from .providers import (
     ACTION, Adapter, Final, ModelFailure, Prices,
     ToolCall, Usage, compact,
@@ -67,10 +69,12 @@ class ModelEngine:
             cursor = await checkpoints.restore(db, claim)
         while not isinstance(cursor.action, Final):
             if cursor.action is None:
-                cursor.action = await self.model_step(claim, cursor.ordinal, cursor.messages)
+                with execution_span("step.model", ordinal=cursor.ordinal, provider=claim.spec.provider, run_id=str(claim.run)):
+                    cursor.action = await self.model_step(claim, cursor.ordinal, cursor.messages)
             else:
                 try:
-                    result = await self.tool_step(claim, cursor.ordinal, cursor.action)
+                    with execution_span("step.tool", ordinal=cursor.ordinal, run_id=str(claim.run)):
+                        result = await self.tool_step(claim, cursor.ordinal, cursor.action)
                 except TimeoutError:
                     # Record the failure after the interrupted transaction has rolled back.
                     raise ModelFailure("tool_timeout") from None
@@ -180,6 +184,13 @@ class ModelEngine:
             error = ModelFailure("deadline_elapsed")
         except ModelFailure as exc:
             error = exc
+        span = trace.get_current_span()
+        span.set_attribute("invocation", number)
+        if error:
+            failed(span, error.code)
+        if usage:
+            span.set_attribute("input_tokens", usage.prompt_tokens)
+            span.set_attribute("output_tokens", usage.completion_tokens)
         latency = round(1000 * (monotonic() - start))
         delay = None
         if error and error.retryable and number < MAX_INVOCATIONS:
