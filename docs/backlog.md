@@ -2,7 +2,7 @@
 
 Each row is a reviewable increment. Phase numbers identify handoff points. Acceptance criteria describe evidence to collect as implementation lands.
 
-Phases 0–3 cover the engineering design, runnable foundation, registry, durable admission and distributed receipt execution. The Compose suite exercises two worker processes, tenant quotas, priority, fencing, wakeup repair and broker recovery. Phase 4 adds model adapters and multi-step execution. [Run a receipt](operations/first-run.md) · [Operate the workers](operations/worker-failure-runbook.md)
+Phases 0–4 cover design, foundation, registry, distributed workers and model execution. The Compose suite exercises a model–tool–model loop, scoped tool grants, invocation budgets, HTTP retries, uncertain usage and worker fencing. Phase 5 adds versioned checkpoints and recovery under fault injection. [Run a model-backed agent](operations/model-runtime.md) · [Operate the workers](operations/worker-failure-runbook.md)
 
 | Phase / increment | Depends on | Work and acceptance criteria |
 | --- | --- | --- |

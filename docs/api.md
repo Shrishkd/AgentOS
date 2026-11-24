@@ -26,6 +26,8 @@ Phase 3 implements `GET /workers` as a cursor list of tenant-visible sessions. `
 
 ## Publish and submit
 
+Model-backed runs expose two tenant-scoped reads. `GET /runs/{id}/steps?after=0&limit=50` returns logical steps in ordinal order, with typed results or a failure code. `GET /runs/{id}/usage` returns a cursor page of invocations in reverse chronological order. Each entry includes the provider/model, reservation, reported usage when available, estimated USD cost, latency and provider request ID. [Execution examples and accounting rules](operations/model-runtime.md)
+
 After creating the agent, post a version configuration and publish the returned version ID. Example configuration for the deterministic provider:
 
 ```json

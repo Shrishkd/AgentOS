@@ -4,12 +4,15 @@ import json
 from pathlib import Path
 from uuid import UUID, uuid4
 
+import httpx
 from nats.errors import TimeoutError as FetchTimeout
 from sqlalchemy import text
 from sqlalchemy.ext.asyncio import create_async_engine
 
 from .runtime import CONSUMER, STREAM, RuntimeSettings, log_error, pause, serve
-from .scheduler import Claim, LeaseLost, Scheduler
+from .scheduler import Claim, LeaseLost, RunInterrupted, Scheduler
+from .model_engine import ModelEngine
+from .providers import ChatAdapter, MockAdapter, ModelFailure, Prices
 
 SESSION_FILE = Path("/tmp/agentos-worker-id")
 
@@ -20,20 +23,30 @@ def receipt(claim: Claim) -> dict:
             "worker_id": str(claim.worker), "attempt": claim.generation}
 
 
-async def execute(scheduler: Scheduler, claim: Claim):
-    work = asyncio.create_task(asyncio.to_thread(receipt, claim))
+async def execute(scheduler: Scheduler, claim: Claim, models: ModelEngine | None = None):
+    if claim.spec is None or claim.spec.provider == "builtin":
+        work = asyncio.create_task(asyncio.to_thread(receipt, claim))
+    else:
+        work = asyncio.create_task(models.run(claim))
     try:
         while not work.done():
             done, _ = await asyncio.wait({work}, timeout=scheduler.seconds / 4)
             if not done and not await scheduler.renew(claim):
                 return
-        await scheduler.finish(claim, work.result())
+        try:
+            output = work.result()
+        except ModelFailure as exc:
+            await scheduler.fail(claim, exc.code)
+        except RunInterrupted:
+            await scheduler.renew(claim)  # Finalize cancellation or expiry under the current fence.
+        else:
+            await scheduler.finish(claim, output)
     finally:
         work.cancel()
         await asyncio.gather(work, return_exceptions=True)
 
 
-async def slot(js, scheduler, worker, stop):
+async def slot(js, scheduler, worker, stop, models):
     sub = await js.pull_subscribe_bind(stream=STREAM, consumer=CONSUMER)
     try:
         while not stop.is_set():
@@ -50,7 +63,7 @@ async def slot(js, scheduler, worker, stop):
                 # A failed database transaction leaves this delivery unacknowledged.
                 await msg.ack()
                 if claim:
-                    await execute(scheduler, claim)
+                    await execute(scheduler, claim, models)
             except LeaseLost as exc:
                 log_error("worker_fenced", exc)
             except Exception as exc:
@@ -61,11 +74,31 @@ async def slot(js, scheduler, worker, stop):
 
 
 async def worker_loop(cfg, engine, nc, stop):
-    scheduler = Scheduler(engine, cfg.lease_seconds)
+    scheduler = Scheduler(engine, cfg.lease_seconds, cfg.remote_model or None)
+    headers = {}
+    if cfg.remote_model and cfg.model_api_key_file:
+        key = cfg.model_api_key_file.read_text().strip()
+        if not key:
+            raise ValueError("Empty model API key file")
+        headers["Authorization"] = "Bearer " + key
+    async with httpx.AsyncClient(headers=headers, timeout=cfg.model_timeout_seconds, trust_env=False,
+                                 follow_redirects=False) as client:
+        adapters = {"mock": MockAdapter()}
+        prices = None
+        if cfg.remote_model:
+            adapters["openai-compatible"] = ChatAdapter(client, cfg.model_base_url.rstrip("/") + "/chat/completions",
+                                                        cfg.model_timeout_seconds)
+            if cfg.model_input_usd_per_million is not None:
+                prices = Prices(cfg.model_input_usd_per_million, cfg.model_output_usd_per_million)
+        models = ModelEngine(scheduler, adapters, prices, cfg.model_output_cap)
+        await run_slots(cfg, nc, stop, scheduler, models)
+
+
+async def run_slots(cfg, nc, stop, scheduler, models):
     worker = uuid4()
     await scheduler.register(worker, cfg.worker_capacity)
     SESSION_FILE.write_text(str(worker))
-    tasks = [asyncio.create_task(slot(nc.jetstream(), scheduler, worker, stop)) for _ in range(cfg.worker_capacity)]
+    tasks = [asyncio.create_task(slot(nc.jetstream(), scheduler, worker, stop, models)) for _ in range(cfg.worker_capacity)]
     try:
         while not stop.is_set():
             if nc.is_closed or any(task.done() for task in tasks):

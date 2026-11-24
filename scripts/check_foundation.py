@@ -13,6 +13,7 @@ from uuid import uuid4
 
 from check_registry import check_registry, request_json
 from check_workers import check_workers
+from check_models import check_models
 
 ROOT = Path(__file__).resolve().parents[1]
 
@@ -42,7 +43,8 @@ def main(browser: bool) -> None:
 
     def compose(*args: str, capture: bool = False, stdin: str | None = None) -> str:
         result = subprocess.run(
-            ["docker", "compose", "-p", project, "-f", str(ROOT / "compose.yaml"), *args],
+            ["docker", "compose", "-p", project, "-f", str(ROOT / "compose.yaml"),
+             "-f", str(ROOT / "scripts/fixtures/model-compose.yaml"), *args],
             cwd=ROOT, env=env, check=True, input=stdin, stdout=subprocess.PIPE if capture else None, text=True,
         )
         return (result.stdout or "").strip()
@@ -67,7 +69,7 @@ def main(browser: bool) -> None:
         if browser:
             subprocess.run([shutil.which("npm.cmd" if os.name == "nt" else "npm"), "run", "test:browser"],
                            cwd=ROOT / "dashboard", env={**env, "AGENTOS_TEST_URL": base}, check=True)
-        assert sql("SELECT version_num FROM alembic_version") == "0003_workers"
+        assert sql("SELECT version_num FROM alembic_version") == "0004_model_runtime"
         sql("CREATE TABLE persistence_probe AS SELECT 42 AS value")
         compose("run", "--rm", "--no-deps", "migrate")
         compose("run", "--rm", "--no-deps", "migrate", "alembic", "downgrade", "base")
@@ -76,6 +78,8 @@ def main(browser: bool) -> None:
         await_json(base, "/health/ready", 200, {"status": "ready"})
         compose("build", "operator")
         run_path, token, run_id = check_registry(base, compose, sql)
+        # Previous phases left two model runs queued. Exercise that backlog before lease-order fixtures.
+        check_models(base, run_path, token, compose, sql)
         check_workers(base, run_path, token, compose, sql)
         for service in ("redis", "postgres"):
             compose("stop", service)

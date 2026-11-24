@@ -1,7 +1,9 @@
 """PostgreSQL transactions for session capacity, ownership and recovery."""
 
 import json
+from contextlib import asynccontextmanager
 from dataclasses import dataclass
+from datetime import datetime
 from uuid import UUID
 
 from sqlalchemy import text
@@ -12,6 +14,17 @@ from .domain import State, TERMINAL
 from .lifecycle import transition
 
 EXPIRY = "clock_timestamp()+make_interval(secs => :seconds)"
+SUPPORTED = "(q.provider IN ('builtin','mock') OR (q.provider='openai-compatible' AND q.model=:remote))"
+
+
+@dataclass(frozen=True)
+class RunSpec:
+    version: UUID
+    provider: str
+    model: str
+    instructions: str
+    limits: dict
+    deadline: datetime
 
 
 @dataclass(frozen=True)
@@ -21,21 +34,28 @@ class Claim:
     worker: UUID
     generation: int
     input: dict
+    spec: RunSpec | None = None
 
 
 class LeaseLost(Exception):
     """This attempt can no longer write progress."""
 
 
+class RunInterrupted(Exception):
+    """Cancellation or the database deadline has stopped model work."""
+
+
 class Scheduler:
-    def __init__(self, engine: AsyncEngine, lease_seconds: int):
+    def __init__(self, engine: AsyncEngine, lease_seconds: int, remote_model: str | None = None):
         self.engine = engine
         self.seconds = lease_seconds
+        self.remote_model = remote_model
 
     async def register(self, worker: UUID, capacity: int) -> None:
         async with self.engine.begin() as db:
-            await db.execute(text(f"""INSERT INTO workers (id,capacity,healthy_until)
-                VALUES (:id,:capacity,{EXPIRY})"""), {"id": worker, "capacity": capacity, "seconds": self.seconds})
+            await db.execute(text(f"""INSERT INTO workers (id,capacity,healthy_until,remote_model)
+                VALUES (:id,:capacity,{EXPIRY},:remote)"""), {"id": worker, "capacity": capacity,
+                "seconds": self.seconds, "remote": self.remote_model})
 
     async def heartbeat(self, worker: UUID) -> None:
         async with self.engine.begin() as db:
@@ -50,21 +70,23 @@ class Scheduler:
 
     async def claim(self, worker: UUID) -> Claim | None:
         async with self.engine.begin() as db:
-            tenant = await db.scalar(text("""SELECT t.id FROM tenants t
-                WHERE EXISTS (SELECT FROM receipt_queue q WHERE q.tenant_id=t.id)
+            tenant = await db.scalar(text(f"""SELECT t.id FROM tenants t
+                WHERE EXISTS (SELECT FROM execution_queue q WHERE q.tenant_id=t.id AND {SUPPORTED})
                 AND (SELECT count(*) FROM worker_leases l WHERE l.tenant_id=t.id
                      AND l.expires_at>clock_timestamp()) < t.concurrency_limit
-                ORDER BY t.last_admitted_at NULLS FIRST,t.id LIMIT 1 FOR UPDATE SKIP LOCKED"""))
+                ORDER BY t.last_admitted_at NULLS FIRST,t.id LIMIT 1 FOR UPDATE SKIP LOCKED"""), {"remote": self.remote_model})
             if tenant is None:
                 return None
             # Recheck capacity in a fresh READ COMMITTED snapshot after obtaining the tenant lock.
-            params = {"tenant": tenant, "worker": worker, "seconds": self.seconds}
+            params = {"tenant": tenant, "worker": worker, "seconds": self.seconds, "remote": self.remote_model}
             available = await db.scalar(text("""SELECT concurrency_limit > (SELECT count(*) FROM worker_leases
                 WHERE tenant_id=:tenant AND expires_at>clock_timestamp()) FROM tenants WHERE id=:tenant"""), params)
             if not available:
                 return None
-            row = (await db.execute(text("""SELECT r.id,r.revision,r.input FROM runs r JOIN receipt_queue q ON q.id=r.id
-                WHERE q.tenant_id=:tenant AND r.status='QUEUED' ORDER BY q.priority DESC,q.enqueued_at,q.id
+            row = (await db.execute(text(f"""SELECT r.id,r.revision,r.input,r.deadline_at,v.id AS version,
+                v.provider,v.model,v.instructions,v.limits FROM runs r JOIN execution_queue q ON q.id=r.id
+                JOIN agent_versions v ON v.id=r.agent_version_id WHERE q.tenant_id=:tenant AND r.status='QUEUED'
+                AND {SUPPORTED} ORDER BY q.priority DESC,q.enqueued_at,q.id
                 LIMIT 1 FOR UPDATE OF r SKIP LOCKED"""), params)).mappings().one_or_none()
             if row is None:
                 return None
@@ -87,7 +109,8 @@ class Scheduler:
             await db.execute(text("""INSERT INTO attempts (tenant_id,run_id,worker_id,number)
                 VALUES (:tenant,:run,:worker,:generation)"""), {**params, "generation": generation})
             await db.execute(text("UPDATE tenants SET last_admitted_at=clock_timestamp() WHERE id=:tenant"), params)
-            return Claim(tenant, run_id, worker, generation, row["input"])
+            spec = RunSpec(row["version"], row["provider"], row["model"], row["instructions"], row["limits"], row["deadline_at"])
+            return Claim(tenant, run_id, worker, generation, row["input"], spec)
 
     async def _locked(self, db: AsyncConnection, claim: Claim):
         params = {"run": claim.run, "worker": claim.worker, "generation": claim.generation}
@@ -116,17 +139,41 @@ class Scheduler:
             row, params = await self._locked(db, claim)
             await self._finish(db, claim, row, params, output)
 
-    async def _finish(self, db, claim, row, params, output):
+    async def fail(self, claim: Claim, code: str) -> None:
+        async with self.engine.begin() as db:
+            row, params = await self._locked(db, claim)
+            await self._finish(db, claim, row, params, None, code)
+
+    @asynccontextmanager
+    async def progress(self, claim: Claim):
+        """A short fenced transaction. No provider I/O is allowed while it is open."""
+        async with self.engine.begin() as db:
+            row, params = await self._locked(db, claim)
+            if row["status"] != State.RUNNING or row["due"]:
+                raise RunInterrupted()
+            yield db
+            valid = await db.scalar(text("""SELECT expires_at>clock_timestamp() FROM worker_leases
+                WHERE run_id=:run AND owner_id=:worker AND generation=:generation"""), params)
+            if not valid:
+                raise LeaseLost()
+
+    async def _finish(self, db, claim, row, params, output, failure=None):
         current = State(row["status"])
         if current in TERMINAL:
             outcome = current
         else:
-            target = State.CANCELLED if current == State.CANCEL_REQUESTED else State.SUCCEEDED
+            target = State.FAILED if failure else State.SUCCEEDED
+            if current == State.CANCEL_REQUESTED:
+                target = State.CANCELLED
             result = await transition(RunContext(db, claim.tenant), claim.run, current, target, row["revision"])
             outcome = result["status"]
             if outcome == State.SUCCEEDED:
                 await db.execute(text("UPDATE runs SET output=CAST(:payload AS jsonb) WHERE id=:run"),
                                  {**params, "payload": json.dumps(output)})
+            elif outcome == State.FAILED:
+                await db.execute(text("UPDATE runs SET failure_reason=:code WHERE id=:run"), {**params, "code": failure})
+        if outcome != State.SUCCEEDED:
+            await self._abandon(db, params, failure or str(outcome))
         await self._close_attempt(db, params, outcome)
         # Final fence in the same transaction as output, history and release.
         released = await db.scalar(text("""UPDATE worker_leases SET owner_id=NULL,expires_at=NULL
@@ -134,6 +181,13 @@ class Scheduler:
             RETURNING id"""), params)
         if released is None:
             raise LeaseLost()
+
+    @staticmethod
+    async def _abandon(db, params, code):
+        await db.execute(text("""UPDATE usage_records SET status='unknown',error_code=:code
+            WHERE run_id=:run AND status='reserved'"""), {**params, "code": code})
+        await db.execute(text("""UPDATE steps SET status='failed',ended_at=clock_timestamp(),error_code=:code
+            WHERE run_id=:run AND status='pending'"""), {**params, "code": code})
 
     @staticmethod
     async def _close_attempt(db, params, outcome):
@@ -155,6 +209,7 @@ class Scheduler:
             await self._close_attempt(db, params, "lease_expired")
             current = State(row["status"])
             if current in TERMINAL:
+                await self._abandon(db, params, str(current))
                 return True
             ctx = RunContext(db, row["tenant_id"])
             if current == State.CANCEL_REQUESTED:
@@ -168,4 +223,6 @@ class Scheduler:
                 await transition(ctx, row["id"], State.RETRY_WAIT, State.QUEUED, result["revision"])
             elif result["status"] == State.FAILED:
                 await db.execute(text("UPDATE runs SET failure_reason='lease_attempts_exhausted' WHERE id=:run"), params)
+            if result["status"] in TERMINAL:
+                await self._abandon(db, params, str(result["status"]))
             return True

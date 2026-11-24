@@ -1,0 +1,61 @@
+from datetime import datetime
+from decimal import Decimal
+from typing import Annotated, Literal
+from uuid import UUID
+
+from fastapi import APIRouter, Query
+from pydantic import BaseModel, JsonValue
+from sqlalchemy import text
+
+from .access import Access
+from .contracts import Page
+from .queries import Cursor, Limit, one, page
+
+router = APIRouter(prefix="/v1/tenants/{tenant_id}/runs/{run_id}", tags=["Model execution"])
+
+
+class Step(BaseModel):
+    id: UUID
+    ordinal: int
+    kind: Literal["model", "tool"]
+    status: str
+    result: JsonValue
+    error_code: str | None
+    tool_version_id: UUID | None
+    created_at: datetime
+    ended_at: datetime | None
+
+
+class Invocation(BaseModel):
+    id: UUID
+    step_id: UUID
+    invocation: int
+    provider: str
+    model: str
+    status: str
+    reserved_input: int
+    reserved_output: int
+    reserved_cost: Decimal | None
+    input_tokens: int | None
+    output_tokens: int | None
+    estimated_cost: Decimal | None
+    latency_ms: int | None
+    provider_request_id: str | None
+    error_code: str | None
+    created_at: datetime
+
+
+@router.get("/steps", response_model=list[Step])
+async def steps(run_id: UUID, access: Access, after: Annotated[int, Query(ge=0)] = 0, limit: Limit = 50):
+    await one(access, "SELECT id FROM runs WHERE tenant_id=:tenant AND id=:id", id=run_id)
+    return (await access.db.execute(text("""SELECT id,ordinal,kind,status,result,error_code,tool_version_id,
+        created_at,ended_at FROM steps WHERE tenant_id=:tenant AND run_id=:run AND ordinal>:after
+        ORDER BY ordinal LIMIT :limit"""), {"tenant": access.tenant, "run": run_id, "after": after,
+                                           "limit": limit})).mappings().all()
+
+
+@router.get("/usage", response_model=Page[Invocation])
+async def usage(run_id: UUID, access: Access, limit: Limit = 50, cursor: Cursor = None):
+    await one(access, "SELECT id FROM runs WHERE tenant_id=:tenant AND id=:id", id=run_id)
+    return await page(access, """SELECT t.* FROM usage_records t WHERE t.tenant_id=:tenant AND t.run_id=:run""",
+                      "run_usage", limit, cursor, run=run_id)

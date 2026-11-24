@@ -15,6 +15,7 @@ from sqlalchemy import text
 from sqlalchemy.ext.asyncio import create_async_engine
 
 from .config import DatabaseSettings
+from .providers import TOOL_DEFINITION, compact
 
 LOCAL_ISSUER = "urn:agentos:local"
 
@@ -60,6 +61,26 @@ async def grant(args: argparse.Namespace) -> None:
         await engine.dispose()
 
 
+async def install_tool(slug: str) -> None:
+    engine = create_async_engine(DatabaseSettings().database_url())
+    try:
+        async with engine.begin() as db:
+            tenant = await db.scalar(text("SELECT id FROM tenants WHERE slug=:slug FOR UPDATE"), {"slug": slug})
+            if tenant is None:
+                raise SystemExit("Unknown tenant")
+            params = {"tenant": tenant, "definition": compact(TOOL_DEFINITION)}
+            await db.execute(text("""INSERT INTO tool_registry(tenant_id,name,version,definition)
+                VALUES (:tenant,'text_length',1,CAST(:definition AS jsonb))
+                ON CONFLICT(tenant_id,name,version) DO NOTHING"""), params)
+            tool = await db.scalar(text("""SELECT id FROM tool_registry WHERE tenant_id=:tenant AND name='text_length'
+                AND version=1 AND enabled AND definition=CAST(:definition AS jsonb)"""), params)
+            if tool is None:
+                raise SystemExit("Existing tool version is disabled or has a conflicting definition")
+        print(tool)
+    finally:
+        await engine.dispose()
+
+
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description=__doc__)
     commands = parser.add_subparsers(dest="command", required=True)
@@ -70,8 +91,12 @@ if __name__ == "__main__":
     member.add_argument("--subject", required=True)
     token = commands.add_parser("token")
     token.add_argument("--subject", required=True)
+    fixture = commands.add_parser("install-text-length")
+    fixture.add_argument("--tenant", required=True)
     args = parser.parse_args()
     if args.command == "grant":
         asyncio.run(grant(args))
+    elif args.command == "install-text-length":
+        asyncio.run(install_tool(args.tenant))
     else:
         print(issue_token(args.subject))

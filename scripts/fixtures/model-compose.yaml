@@ -1,0 +1,13 @@
+services:
+  model-fixture:
+    image: python:3.12-slim
+    command: ["python", "/fixture.py"]
+    volumes:
+      - ./scripts/fixtures/model_server.py:/fixture.py:ro
+  worker:
+    environment:
+      AGENTOS_MODEL_BASE_URL: http://model-fixture:9000/v1
+      AGENTOS_REMOTE_MODEL: fixture-model
+      AGENTOS_MODEL_TIMEOUT_SECONDS: "1"
+      AGENTOS_MODEL_INPUT_USD_PER_MILLION: "1"
+      AGENTOS_MODEL_OUTPUT_USD_PER_MILLION: "2"
