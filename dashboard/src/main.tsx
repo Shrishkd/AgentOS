@@ -1,8 +1,9 @@
+import Approvals from "./Approvals";
 import { useState } from "react";
 import { createRoot } from "react-dom/client";
 import { QueryClient, QueryClientProvider, useQuery } from "@tanstack/react-query";
 import * as Toggle from "@radix-ui/react-toggle";
-import { Activity, AudioLines, BookOpen, Boxes, Cable, Check, CircleHelp, Database, Layers3, Pause, Play, RefreshCw, Server, TriangleAlert } from "lucide-react";
+import { Activity, AudioLines, BookOpen, Boxes, ClipboardCheck, Cable, Check, CircleHelp, Database, Layers3, Pause, Play, RefreshCw, Server, TriangleAlert } from "lucide-react";
 import { loadHealth, type Service, type Status } from "./health";
 import "@fontsource-variable/inter/wght.css";
 import "./style.css";
@@ -29,15 +30,7 @@ function HealthDashboard() {
   const labels: Record<Status, string> = { up: "Healthy", down: "Unavailable", unknown: "Unknown" };
   function statusOf(key: Service) { return data?.[key]; }
 
-  return <div className="shell">
-    <aside>
-      <a className="brand" href="/" aria-label="AgentOS home"><Boxes size={27} /> AgentOS</a>
-      <nav aria-label="Workspace"><a className="selected" href="/" aria-current="page"><Activity /> System health</a></nav>
-      <a className="api-link" href="/docs"><BookOpen /> API reference</a>
-    </aside>
-    <main>
-      <header><span>Workspace</span><span aria-hidden="true">/</span> System health</header>
-      <section className="content">
+  return <>
         <div className="heading flex flex-wrap items-center justify-between gap-4">
           <h1>System health</h1>
           <button className="refresh" disabled={isFetching} onClick={() => void refetch()}>
@@ -69,6 +62,21 @@ function HealthDashboard() {
           })}</ul>
         </section>
         <footer><AudioLines size={16} /> {dataUpdatedAt ? `Last checked at ${new Date(dataUpdatedAt).toLocaleTimeString()}` : "Checking now"}<span>·</span>{automatic ? "Every 10 seconds" : "Automatic checks paused"}</footer>
+  </>;
+}
+
+function Workspace() {
+  const approvals = window.location.pathname.replace(/\/$/, "") === "/approvals";
+  return <div className="shell">
+    <aside>
+      <a className="brand" href="/" aria-label="AgentOS home"><Boxes size={27} /> AgentOS</a>
+      <nav aria-label="Workspace"><a className={approvals ? "" : "selected"} href="/" aria-current={approvals ? undefined : "page"}><Activity /> System health</a><a className={approvals ? "selected" : ""} href="/approvals" aria-current={approvals ? "page" : undefined}><ClipboardCheck /> Approvals</a></nav>
+      <a className="api-link" href="/docs"><BookOpen /> API reference</a>
+    </aside>
+    <main>
+      <header><span>Workspace</span><span aria-hidden="true">/</span> {approvals ? "Approvals" : "System health"}</header>
+      <section className="content">
+        {approvals ? <Approvals /> : <HealthDashboard />}
       </section>
     </main>
   </div>;
@@ -76,5 +84,5 @@ function HealthDashboard() {
 
 const client = new QueryClient();
 createRoot(document.getElementById("root")!).render(
-  <QueryClientProvider client={client}><HealthDashboard /></QueryClientProvider>,
+  <QueryClientProvider client={client}><Workspace /></QueryClientProvider>,
 );

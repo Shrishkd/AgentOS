@@ -97,7 +97,7 @@ async def interrupt_worker(mode):
                 crash()
             assert reply["requests"] == 2
             return reply["result"]
-        model_engine.text_length = keyed_length
+        model_engine.tool_gateway.text_length = keyed_length
         if mode == "recover_tool_effect":
             execute = worker.execute
 

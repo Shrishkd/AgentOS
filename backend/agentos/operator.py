@@ -16,6 +16,7 @@ from sqlalchemy.ext.asyncio import create_async_engine
 
 from .config import DatabaseSettings
 from .providers import TOOL_DEFINITION, compact
+from .tool_catalog import CATALOG
 
 LOCAL_ISSUER = "urn:agentos:local"
 
@@ -72,11 +73,11 @@ async def install_tool(slug: str) -> None:
             await db.execute(text("""INSERT INTO tool_registry(tenant_id,name,version,definition)
                 VALUES (:tenant,'text_length',1,CAST(:definition AS jsonb))
                 ON CONFLICT(tenant_id,name,version) DO NOTHING"""), params)
-            tool = await db.scalar(text("""SELECT id FROM tool_registry WHERE tenant_id=:tenant AND name='text_length'
-                AND version=1 AND enabled AND definition=CAST(:definition AS jsonb)"""), params)
-            if tool is None:
+            row = (await db.execute(text("""SELECT id,definition FROM tool_registry WHERE tenant_id=:tenant
+                AND name='text_length' AND version=1 AND enabled"""), params)).mappings().one_or_none()
+            if row is None or not CATALOG["text_length"].matches(row["definition"]):
                 raise SystemExit("Existing tool version is disabled or has a conflicting definition")
-        print(tool)
+        print(row["id"])
     finally:
         await engine.dispose()
 

@@ -104,12 +104,17 @@ class MockAdapter:
     async def complete(self, model, messages, tools, cap):
         last = messages[-1]
         data = json.loads(last["content"])
-        if last["role"] == "user" and "count_text" in data:
+        if last["role"] == "user" and isinstance(data.get("tool_call"), dict):
+            proposal = data["tool_call"]
+            call = {"id": "mock_1", "type": "function", "function": {"name": proposal.get("name"),
+                    "arguments": compact(proposal.get("arguments"))}}
+            message, reason = {"tool_calls": [call]}, "tool_calls"
+        elif last["role"] == "user" and "count_text" in data:
             call = {"id": "count_1", "type": "function", "function": {"name": "text_length",
                     "arguments": compact({"text": data["count_text"]})}}
             message, reason = {"tool_calls": [call]}, "tool_calls"
         else:
-            answer = str(data["length"]) if last["role"] == "tool" else compact(data)
+            answer = str(data["length"]) if last["role"] == "tool" and "length" in data else compact(data)
             message, reason = {"content": answer}, "stop"
         # The mock's reproducible token unit is one UTF-8 byte.
         output = len(compact(message).encode())

@@ -15,6 +15,7 @@ from check_registry import check_registry, request_json
 from check_workers import check_workers
 from check_models import check_models
 from check_recovery import check_recovery
+from check_approvals import check_approvals
 
 ROOT = Path(__file__).resolve().parents[1]
 
@@ -70,7 +71,7 @@ def main(browser: bool) -> None:
         if browser:
             subprocess.run([shutil.which("npm.cmd" if os.name == "nt" else "npm"), "run", "test:browser"],
                            cwd=ROOT / "dashboard", env={**env, "AGENTOS_TEST_URL": base}, check=True)
-        assert sql("SELECT version_num FROM alembic_version") == "0005_recovery"
+        assert sql("SELECT version_num FROM alembic_version") == "0006_tool_approvals"
         sql("CREATE TABLE persistence_probe AS SELECT 42 AS value")
         compose("run", "--rm", "--no-deps", "migrate")
         compose("run", "--rm", "--no-deps", "migrate", "alembic", "downgrade", "base")
@@ -81,6 +82,7 @@ def main(browser: bool) -> None:
         run_path, token, run_id = check_registry(base, compose, sql)
         # Previous phases left two model runs queued. Exercise that backlog before lease-order fixtures.
         remote = check_models(base, run_path, token, compose, sql)
+        check_approvals(base, run_path, token, compose, sql, browser)
         check_workers(base, run_path, token, compose, sql)
         check_recovery(base, run_path, token, remote, compose, sql)
         for service in ("redis", "postgres"):

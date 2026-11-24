@@ -49,6 +49,10 @@ class RetryScheduled(Exception):
     """This claim released its slot and committed a retry time."""
 
 
+class ApprovalNeeded(Exception):
+    """Commit the proposal, park the run and release this attempt."""
+
+
 class Scheduler:
     def __init__(self, engine: AsyncEngine, lease_seconds: int, remote_model: str | None = None):
         self.engine = engine
@@ -155,16 +159,28 @@ class Scheduler:
             row, params = await self._locked(db, claim)
             if row["status"] != State.RUNNING or row["due"]:
                 raise RunInterrupted()
-            yield db
-            if retry_delay is not None:
-                outcome = await self._wait(db, claim.tenant, claim.run, row["revision"], retry_delay)
-                await self._close_attempt(db, params, "provider_retry" if outcome == State.RETRY_WAIT else outcome)
+            try:
+                yield db
+            except ApprovalNeeded:
+                state = await transition(RunContext(db, claim.tenant), claim.run, State.RUNNING,
+                                         State.WAITING_FOR_APPROVAL, row["revision"])
+                await self._close_attempt(db, params, state["status"])
                 await self._release(db, params)
+            else:
+                await self._end_progress(db, claim, row, params, retry_delay)
                 return
-            valid = await db.scalar(text("""SELECT expires_at>clock_timestamp() FROM worker_leases
-                WHERE run_id=:run AND owner_id=:worker AND generation=:generation"""), params)
-            if not valid:
-                raise LeaseLost()
+        raise RetryScheduled()  # The waiting state is durable before the execution loop exits.
+
+    async def _end_progress(self, db, claim, row, params, retry_delay):
+        if retry_delay is not None:
+            outcome = await self._wait(db, claim.tenant, claim.run, row["revision"], retry_delay)
+            await self._close_attempt(db, params, "provider_retry" if outcome == State.RETRY_WAIT else outcome)
+            await self._release(db, params)
+            return
+        valid = await db.scalar(text("""SELECT expires_at>clock_timestamp() FROM worker_leases
+            WHERE run_id=:run AND owner_id=:worker AND generation=:generation"""), params)
+        if not valid:
+            raise LeaseLost()
 
     async def _finish(self, db, claim, row, params, output, failure=None):
         current = State(row["status"])
@@ -221,11 +237,16 @@ class Scheduler:
             row = (await db.execute(text("""SELECT id,tenant_id,status,revision,
                 deadline_at<=clock_timestamp() AS due FROM runs
                 WHERE (status='RETRY_WAIT' AND retry_at<=clock_timestamp()) OR
-                (status IN ('QUEUED','RETRY_WAIT','WAITING_FOR_APPROVAL') AND deadline_at<=clock_timestamp())
+                (status IN ('QUEUED','RETRY_WAIT','WAITING_FOR_APPROVAL') AND deadline_at<=clock_timestamp()) OR
+                (status='WAITING_FOR_APPROVAL' AND EXISTS (SELECT FROM approvals a WHERE a.run_id=runs.id
+                    AND a.status='pending' AND a.expires_at<=clock_timestamp()))
                 ORDER BY least(retry_at,deadline_at),id LIMIT 1 FOR UPDATE SKIP LOCKED"""))).mappings().one_or_none()
             if row is None:
                 return False
             target = State.TIMED_OUT if row["due"] else State.QUEUED
+            if row["status"] == State.WAITING_FOR_APPROVAL and not row["due"]:
+                target = State.FAILED
+                await db.execute(text("UPDATE runs SET failure_reason='approval_expired' WHERE id=:id"), {"id": row["id"]})
             await transition(RunContext(db, row["tenant_id"]), row["id"], State(row["status"]), target, row["revision"])
             return True
 

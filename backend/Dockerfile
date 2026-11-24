@@ -9,6 +9,7 @@ WORKDIR /app
 ENV PATH="/app/.venv/bin:$PATH" PYTHONUNBUFFERED=1 PYTHONDONTWRITEBYTECODE=1
 COPY --from=dependencies /app/.venv /app/.venv
 COPY agentos agentos
+RUN python -m agentos.sample_database
 COPY migrations migrations
 COPY alembic.ini .
 USER 65532:65532

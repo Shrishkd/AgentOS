@@ -3,22 +3,17 @@ import random
 from decimal import Decimal
 from time import monotonic
 
-from pydantic import ValidationError
 from sqlalchemy import text
 
-from . import checkpoints
+from . import checkpoints, tool_gateway
+from .tool_catalog import CATALOG, granted
 from .providers import (
-    ACTION, TEXT_TOOL, TOOL_DEFINITION, Adapter, Final, ModelFailure, Prices,
-    TextArgs, ToolCall, Usage, compact,
+    ACTION, Adapter, Final, ModelFailure, Prices,
+    ToolCall, Usage, compact,
 )
 from .scheduler import Claim, RetryScheduled, Scheduler
 
 MAX_INVOCATIONS = 3
-
-
-async def text_length(operation_id, args: TextArgs):
-    """The step UUID is stable on replay. This built-in has no external side effects."""
-    return {"length": len(args.text)}
 
 
 def allocation(limits, prompt, used_tokens, spent, prices, cap):
@@ -37,14 +32,6 @@ def allocation(limits, prompt, used_tokens, spent, prices, cap):
             if output < 1:
                 raise ModelFailure("cost_budget_exhausted")
     return output
-
-
-async def granted_tool(db, claim):
-    return await db.scalar(text("""SELECT t.id FROM version_tools g JOIN tool_registry t
-        ON t.tenant_id=g.tenant_id AND t.id=g.tool_version_id WHERE g.tenant_id=:tenant
-        AND g.agent_version_id=:version AND t.enabled AND t.name='text_length' AND t.version=1
-        AND t.definition=CAST(:definition AS jsonb)"""),
-        {"tenant": claim.tenant, "version": claim.spec.version, "definition": compact(TOOL_DEFINITION)})
 
 
 async def step(db, claim, ordinal, kind, request, tool=None):
@@ -90,24 +77,43 @@ class ModelEngine:
     async def tool_step(self, claim, ordinal, action: ToolCall):
         error = None
         async with self.scheduler.progress(claim) as db:
-            tool = await granted_tool(db, claim) if action.name == "text_length" else None
-            row = await step(db, claim, ordinal, "tool", action.model_dump(), tool)
+            versions = await granted(db, claim, action.name)
+            version = versions.get(action.name)
+            row = await step(db, claim, ordinal, "tool", action.model_dump(), version)
             if row["status"] == "completed":
                 return row["result"]
-            if tool is None:
-                error = "tool_not_permitted"
-            elif row["request"] != action.model_dump() or row["tool_version_id"] != tool:
-                error = "inconsistent_step_history"
-            else:
-                try:
-                    args = TextArgs.model_validate(action.arguments)
-                except ValidationError:
-                    error = "invalid_tool_arguments"
-            if error:
-                await close_step(db, row["id"], error=error)
+            try:
+                if version is None or row["tool_version_id"] != version:
+                    raise ModelFailure("tool_not_permitted")
+                tool = CATALOG[action.name]
+                args = await tool_gateway.authorize(db, claim, row, tool, action)
+                dispatch = await db.scalar(text("""UPDATE steps SET dispatch_count=dispatch_count+1
+                    WHERE id=:id RETURNING dispatch_count"""), {"id": row["id"]})
+                if tool.name == "save_report":
+                    # The protected write, result and checkpoint commit under one run and registry lock.
+                    async with asyncio.timeout(tool.timeout):
+                        result = await tool_gateway.save_report(db, claim, row["id"], args)
+                    await close_step(db, row["id"], result)
+                    await checkpoints.save(db, claim, row, "model")
+                    return result
+            except ModelFailure as exc:
+                error = exc
+                await close_step(db, row["id"], error=exc.code)
         if error:
-            raise ModelFailure(error)
-        result = await text_length(row["id"], args)
+            raise error
+        try:
+            result = await tool_gateway.read_tool(tool, row["id"], args)
+        except ModelFailure as exc:
+            retry = tool.name in {"web_search", "http_get"} and dispatch < 2 and exc.code in {
+                "tool_timeout", "tool_http_unavailable", "tool_http_busy"}
+            async with self.scheduler.progress(claim, retry_delay=1 if retry else None) as db:
+                await db.execute(text("UPDATE steps SET last_dispatch_error=:code WHERE id=:id"),
+                                 {"code": exc.code, "id": row["id"]})
+                if not retry:
+                    await close_step(db, row["id"], error=exc.code)
+            if retry:
+                raise RetryScheduled() from None
+            raise
         async with self.scheduler.progress(claim) as db:
             await close_step(db, row["id"], result)
             await checkpoints.save(db, claim, row, "model")
@@ -141,7 +147,7 @@ class ModelEngine:
         spec = claim.spec
         prices = Prices(Decimal(0), Decimal(0)) if spec.provider == "mock" else self.remote_prices
         async with self.scheduler.progress(claim) as db:
-            tools = [TEXT_TOOL] if await granted_tool(db, claim) else []
+            tools = [CATALOG[name].function() for name in sorted(await granted(db, claim))]
             row = await step(db, claim, ordinal, "model", {"messages": messages, "tools": tools})
             if row["status"] == "completed":
                 return ACTION.validate_python(row["result"])

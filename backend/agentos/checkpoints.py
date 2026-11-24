@@ -54,7 +54,8 @@ def apply_result(cursor, row):
     else:
         result = row["result"]
         if (row["proposal"] != cursor.action.model_dump() or not isinstance(result, dict)
-                or set(result) != {"length"} or type(result["length"]) is not int or result["length"] < 0):
+                or (cursor.action.name == "text_length" and (set(result) != {"length"}
+                    or type(result["length"]) is not int or result["length"] < 0))):
             raise ValueError("Inconsistent tool result")
         cursor.applied_tool(row["result"])
     cursor.ordinal += 1

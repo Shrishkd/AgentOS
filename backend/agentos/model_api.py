@@ -22,6 +22,8 @@ class Step(BaseModel):
     result: JsonValue
     error_code: str | None
     tool_version_id: UUID | None
+    dispatch_count: int
+    last_dispatch_error: str | None
     created_at: datetime
     ended_at: datetime | None
 
@@ -58,18 +60,27 @@ class Checkpoint(BaseModel):
 
 
 @router.get("/checkpoints", response_model=list[Checkpoint])
-async def checkpoints(run_id: UUID, access: Access, after: Annotated[int, Query(ge=0)] = 0, limit: Limit = 50):
+async def checkpoints(run_id: UUID, access: Access, after: Annotated[int, Query(ge=0)] = 0,
+                      after_event: Annotated[int, Query(ge=0)] = 0, limit: Limit = 50):
     await one(access, "SELECT id FROM runs WHERE tenant_id=:tenant AND id=:id", id=run_id)
-    return (await access.db.execute(text("""SELECT id,agent_version_id,step_id,ordinal,schema_version,
-        next_action,next_ordinal,event_seq,created_at FROM checkpoints WHERE tenant_id=:tenant AND run_id=:run
-        AND ordinal>:after ORDER BY ordinal LIMIT :limit"""), {"tenant": access.tenant, "run": run_id,
-                                                            "after": after, "limit": limit})).mappings().all()
+    return (await access.db.execute(text("""SELECT * FROM (
+        SELECT id,agent_version_id,step_id,ordinal,schema_version,next_action,next_ordinal,event_seq,created_at
+        FROM checkpoints WHERE tenant_id=:tenant AND run_id=:run UNION ALL
+        SELECT e.id,r.agent_version_id,a.step_id,s.ordinal,2,
+            CASE WHEN e.seq=a.wait_seq THEN 'await_decision' WHEN a.status='approved' THEN 'authorize_tool'
+                 ELSE 'stop' END,s.ordinal,e.seq,e.created_at
+        FROM approvals a JOIN runs r ON r.id=a.run_id JOIN steps s ON s.id=a.step_id
+        JOIN run_events e ON e.run_id=a.run_id AND e.seq IN (a.wait_seq,a.resolution_seq)
+        WHERE a.tenant_id=:tenant AND a.run_id=:run) AS boundaries
+        WHERE ordinal>:after AND event_seq>:after_event ORDER BY event_seq LIMIT :limit"""),
+        {"tenant": access.tenant, "run": run_id, "after": after, "after_event": after_event,
+         "limit": limit})).mappings().all()
 
 
 @router.get("/steps", response_model=list[Step])
 async def steps(run_id: UUID, access: Access, after: Annotated[int, Query(ge=0)] = 0, limit: Limit = 50):
     await one(access, "SELECT id FROM runs WHERE tenant_id=:tenant AND id=:id", id=run_id)
-    return (await access.db.execute(text("""SELECT id,ordinal,kind,status,result,error_code,tool_version_id,
+    return (await access.db.execute(text("""SELECT id,ordinal,kind,status,result,error_code,tool_version_id,dispatch_count,last_dispatch_error,
         created_at,ended_at FROM steps WHERE tenant_id=:tenant AND run_id=:run AND ordinal>:after
         ORDER BY ordinal LIMIT :limit"""), {"tenant": access.tenant, "run": run_id, "after": after,
                                            "limit": limit})).mappings().all()
