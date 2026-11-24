@@ -24,9 +24,11 @@ The registry supports version creation, publication and deactivation. Runs suppo
 
 Phase 3 implements `GET /workers` as a cursor list of tenant-visible sessions. `GET /runs/{id}/attempts` returns attempts in generation order with worker ID, start/end time and outcome. Both routes require verified membership. A published version with provider `builtin` and model `receipt` executes on the worker pool. [Worker operations](operations/worker-failure-runbook.md)
 
+Phase 5 adds `GET /runs/{id}/checkpoints?after=0&limit=50`. It returns committed boundaries in ascending ordinal order. Each row links the step, pinned version, event sequence and next instruction (`model`, `tool` or `finish`). The run exposes `retry_at` during `RETRY_WAIT`. A `run.checkpoint` history event carries the step ID and next instruction. [Recovery walkthrough](operations/worker-failure-runbook.md#verify-checkpoint-recovery)
+
 ## Publish and submit
 
-Model-backed runs expose two tenant-scoped reads. `GET /runs/{id}/steps?after=0&limit=50` returns logical steps in ordinal order, with typed results or a failure code. `GET /runs/{id}/usage` returns a cursor page of invocations in reverse chronological order. Each entry includes the provider/model, reservation, reported usage when available, estimated USD cost, latency and provider request ID. [Execution examples and accounting rules](operations/model-runtime.md)
+Model-backed runs expose step and usage history. `GET /runs/{id}/steps?after=0&limit=50` returns logical steps in ordinal order, with typed results or a failure code. `GET /runs/{id}/usage` returns a cursor page of invocations in reverse chronological order. Each entry includes the provider/model, reservation, reported usage when available, estimated USD cost, latency and provider request ID. [Execution examples and accounting rules](operations/model-runtime.md)
 
 After creating the agent, post a version configuration and publish the returned version ID. Example configuration for the deterministic provider:
 

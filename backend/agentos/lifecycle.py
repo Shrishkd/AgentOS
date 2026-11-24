@@ -8,7 +8,8 @@ from .domain import DomainError, State, TERMINAL, validate_transition
 from .queries import one
 
 RUNS = """SELECT t.id,t.agent_version_id,t.submitter_id,t.status,t.revision,t.priority,t.deadline_at,
-    t.enqueued_at,t.created_at,t.updated_at,t.input,t.output,t.failure_reason FROM runs t WHERE t.tenant_id=:tenant"""
+    t.enqueued_at,t.created_at,t.updated_at,t.input,t.output,t.failure_reason,
+    CASE WHEN t.status='RETRY_WAIT' THEN t.retry_at END AS retry_at FROM runs t WHERE t.tenant_id=:tenant"""
 
 
 async def record_event(access: RunContext, run_id: UUID, seq: int, state: State) -> None:

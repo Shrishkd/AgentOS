@@ -6,13 +6,19 @@ from time import monotonic
 from pydantic import ValidationError
 from sqlalchemy import text
 
+from . import checkpoints
 from .providers import (
     ACTION, TEXT_TOOL, TOOL_DEFINITION, Adapter, Final, ModelFailure, Prices,
     TextArgs, ToolCall, Usage, compact,
 )
-from .scheduler import Claim, Scheduler
+from .scheduler import Claim, RetryScheduled, Scheduler
 
 MAX_INVOCATIONS = 3
+
+
+async def text_length(operation_id, args: TextArgs):
+    """The step UUID is stable on replay. This built-in has no external side effects."""
+    return {"length": len(args.text)}
 
 
 def allocation(limits, prompt, used_tokens, spent, prices, cap):
@@ -70,20 +76,16 @@ class ModelEngine:
         self.remote_prices, self.output_cap = remote_prices, output_cap
 
     async def run(self, claim: Claim) -> dict:
-        messages = [{"role": "system", "content": claim.spec.instructions},
-                    {"role": "user", "content": compact(claim.input)}]
-        ordinal = 1
-        while True:
-            action = await self.model_step(claim, ordinal, messages)
-            if isinstance(action, Final):
-                return {"answer": action.answer}
-            ordinal += 1
-            result = await self.tool_step(claim, ordinal, action)
-            messages.extend([{"role": "assistant", "content": None, "tool_calls": [
-                {"id": action.call_id, "type": "function", "function": {
-                    "name": action.name, "arguments": compact(action.arguments)}}]},
-                {"role": "tool", "tool_call_id": action.call_id, "content": compact(result)}])
-            ordinal += 1
+        async with self.scheduler.progress(claim) as db:
+            cursor = await checkpoints.restore(db, claim)
+        while not isinstance(cursor.action, Final):
+            if cursor.action is None:
+                cursor.action = await self.model_step(claim, cursor.ordinal, cursor.messages)
+            else:
+                result = await self.tool_step(claim, cursor.ordinal, cursor.action)
+                cursor.applied_tool(result)
+            cursor.ordinal += 1
+        return {"answer": cursor.action.answer}
 
     async def tool_step(self, claim, ordinal, action: ToolCall):
         error = None
@@ -92,18 +94,23 @@ class ModelEngine:
             row = await step(db, claim, ordinal, "tool", action.model_dump(), tool)
             if row["status"] == "completed":
                 return row["result"]
-            result = None
             if tool is None:
                 error = "tool_not_permitted"
+            elif row["request"] != action.model_dump() or row["tool_version_id"] != tool:
+                error = "inconsistent_step_history"
             else:
                 try:
                     args = TextArgs.model_validate(action.arguments)
-                    result = {"length": len(args.text)}
                 except ValidationError:
                     error = "invalid_tool_arguments"
-            await close_step(db, row["id"], result, error)
+            if error:
+                await close_step(db, row["id"], error=error)
         if error:
             raise ModelFailure(error)
+        result = await text_length(row["id"], args)
+        async with self.scheduler.progress(claim) as db:
+            await close_step(db, row["id"], result)
+            await checkpoints.save(db, claim, row, "model")
         return result
 
     async def reserve(self, db, claim, step_id, prompt, prices):
@@ -133,52 +140,53 @@ class ModelEngine:
     async def model_step(self, claim, ordinal, messages):
         spec = claim.spec
         prices = Prices(Decimal(0), Decimal(0)) if spec.provider == "mock" else self.remote_prices
-        while True:
-            async with self.scheduler.progress(claim) as db:
-                tools = [TEXT_TOOL] if await granted_tool(db, claim) else []
-                row = await step(db, claim, ordinal, "model", {"messages": messages, "tools": tools})
-                if row["status"] == "completed":
-                    return ACTION.validate_python(row["result"])
-                # A retry uses the persisted prompt. Tool permissions are checked again at dispatch.
-                messages, tools = row["request"]["messages"], row["request"]["tools"]
-                # UTF-8 bytes plus framing allowance conservatively estimate the prompt.
-                prompt = len(compact([messages, tools]).encode()) + 128
-                invocation, number, cap = await self.reserve(db, claim, row["id"], prompt, prices)
-                remaining = await db.scalar(text("""SELECT extract(epoch FROM
-                    (CAST(:deadline AS timestamptz)-clock_timestamp()))"""), {"deadline": spec.deadline})
-                deadline = monotonic() + float(remaining)
+        async with self.scheduler.progress(claim) as db:
+            tools = [TEXT_TOOL] if await granted_tool(db, claim) else []
+            row = await step(db, claim, ordinal, "model", {"messages": messages, "tools": tools})
+            if row["status"] == "completed":
+                return ACTION.validate_python(row["result"])
+            # A retry uses the persisted prompt. Tool permissions are checked again at dispatch.
+            messages, tools = row["request"]["messages"], row["request"]["tools"]
+            # UTF-8 bytes plus framing allowance conservatively estimate the prompt.
+            prompt = len(compact([messages, tools]).encode()) + 128
+            invocation, number, cap = await self.reserve(db, claim, row["id"], prompt, prices)
+            remaining = await db.scalar(text("""SELECT extract(epoch FROM
+                (CAST(:deadline AS timestamptz)-clock_timestamp()))"""), {"deadline": spec.deadline})
+            deadline = monotonic() + float(remaining)
 
-            action = usage = error = request_id = None
-            start = monotonic()
-            try:
-                if deadline <= monotonic():
-                    raise ModelFailure("deadline_elapsed", rejected=True)
-                async with asyncio.timeout(deadline - monotonic()):
-                    reply = await self.adapters[spec.provider].complete(spec.model, messages, tools, cap)
-                request_id = reply.request_id
-                usage = reply.usage()
-                action = reply.action()
-                if usage.prompt_tokens > prompt or usage.completion_tokens > cap:
-                    raise ModelFailure("provider_usage_overrun")
-            except TimeoutError:
-                error = ModelFailure("deadline_elapsed")
-            except ModelFailure as exc:
-                error = exc
-            latency = round(1000 * (monotonic() - start))
-            retry = error and error.retryable and number < MAX_INVOCATIONS
-            async with self.scheduler.progress(claim) as db:
-                await self.settle(db, invocation, usage, prices, request_id, latency, error)
-                if not retry:
-                    await close_step(db, row["id"], action.model_dump() if action and not error else None,
-                                     error.code if error else None)
-            if not error:
-                return action
-            if not retry:
-                raise error
-            delay = max(error.retry_after, random.uniform(0.1, 0.25) * 2 ** (number-1))
-            if delay >= deadline - monotonic():
-                raise error
-            await asyncio.sleep(delay)
+        action = usage = error = request_id = None
+        start = monotonic()
+        try:
+            if deadline <= monotonic():
+                raise ModelFailure("deadline_elapsed", rejected=True)
+            async with asyncio.timeout(deadline - monotonic()):
+                reply = await self.adapters[spec.provider].complete(spec.model, messages, tools, cap)
+            request_id = reply.request_id
+            usage = reply.usage()
+            action = reply.action()
+            if usage.prompt_tokens > prompt or usage.completion_tokens > cap:
+                raise ModelFailure("provider_usage_overrun")
+        except TimeoutError:
+            error = ModelFailure("deadline_elapsed")
+        except ModelFailure as exc:
+            error = exc
+        latency = round(1000 * (monotonic() - start))
+        delay = None
+        if error and error.retryable and number < MAX_INVOCATIONS:
+            backoff = random.uniform(0.1, 0.25) * 2 ** (number - 1)
+            delay = min(max(error.retry_after, backoff), max(0, deadline - monotonic()))
+        async with self.scheduler.progress(claim, retry_delay=delay) as db:
+            await self.settle(db, invocation, usage, prices, request_id, latency, error)
+            if delay is None:
+                await close_step(db, row["id"], action.model_dump() if action and not error else None,
+                                 error.code if error else None)
+                if not error:
+                    await checkpoints.save(db, claim, row, "finish" if isinstance(action, Final) else "tool")
+        if delay is not None:
+            raise RetryScheduled()
+        if error:
+            raise error
+        return action
 
     @staticmethod
     async def settle(db, invocation, usage: Usage | None, prices, request_id, latency, error):

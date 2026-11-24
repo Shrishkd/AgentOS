@@ -45,6 +45,27 @@ class Invocation(BaseModel):
     created_at: datetime
 
 
+class Checkpoint(BaseModel):
+    id: UUID
+    agent_version_id: UUID
+    step_id: UUID
+    ordinal: int
+    schema_version: int
+    next_action: str
+    next_ordinal: int
+    event_seq: int
+    created_at: datetime
+
+
+@router.get("/checkpoints", response_model=list[Checkpoint])
+async def checkpoints(run_id: UUID, access: Access, after: Annotated[int, Query(ge=0)] = 0, limit: Limit = 50):
+    await one(access, "SELECT id FROM runs WHERE tenant_id=:tenant AND id=:id", id=run_id)
+    return (await access.db.execute(text("""SELECT id,agent_version_id,step_id,ordinal,schema_version,
+        next_action,next_ordinal,event_seq,created_at FROM checkpoints WHERE tenant_id=:tenant AND run_id=:run
+        AND ordinal>:after ORDER BY ordinal LIMIT :limit"""), {"tenant": access.tenant, "run": run_id,
+                                                            "after": after, "limit": limit})).mappings().all()
+
+
 @router.get("/steps", response_model=list[Step])
 async def steps(run_id: UUID, access: Access, after: Annotated[int, Query(ge=0)] = 0, limit: Limit = 50):
     await one(access, "SELECT id FROM runs WHERE tenant_id=:tenant AND id=:id", id=run_id)

@@ -105,6 +105,7 @@ class Run(BaseModel):
     input: dict[str, JsonValue]
     output: JsonValue = None
     failure_reason: str | None
+    retry_at: datetime | None
 
 
 T = TypeVar("T")

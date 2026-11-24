@@ -1,4 +1,5 @@
 from decimal import Decimal
+from datetime import UTC, datetime, timedelta
 from uuid import uuid4
 
 from check_registry import request_json
@@ -45,7 +46,7 @@ def check_models(base, run_path, token, compose, sql):
     assert all(u["status"] == "reported" and u["input_tokens"] > 0 for u in usage)
     other_tenant = sql("SELECT id FROM tenants WHERE slug='second'")
     other_token = compose("run", "--rm", "--no-deps", "-T", "operator", "token", "--subject", "lin", capture=True)
-    for resource in ("steps", "usage"):
+    for resource in ("steps", "usage", "checkpoints"):
         status, _, _ = request_json(f"{base}/v1/tenants/{other_tenant}/runs/{final['id']}/{resource}", token=other_token)
         assert status == 404
     _, invalid_steps, _ = run(mock, {"count_text": 4}, "FAILED", "invalid_tool_arguments")
@@ -68,6 +69,19 @@ def check_models(base, run_path, token, compose, sql):
     assert len(usage) == 3 and all(u["status"] == "unknown" and u["input_tokens"] is None for u in usage)
     _, _, usage = run(publish("openai-compatible", max_cost_usd=0.000001), {"mode": "unused"}, "FAILED", "cost_budget_exhausted")
     assert usage == []
+    for cancel in (True, False):
+        submit = {"agent_version_id": remote, "input": {"mode": "backoff"}}
+        if not cancel:
+            submit["deadline_at"] = (datetime.now(UTC) + timedelta(seconds=8)).isoformat()
+        path = "/runs/" + call("/runs", "POST", submit)["id"]
+        wait_for(lambda: call(path)["status"] == "RETRY_WAIT", "Missing durable retry timer")
+        assert call(path)["retry_at"] and call(path+"/attempts")[-1]["outcome"] == "provider_retry"
+        if cancel:
+            assert call(path+"/cancel", "POST")["status"] == "CANCELLED"
+        else:
+            wait_for(lambda: call(path)["status"] == "TIMED_OUT", "Waiting run exceeded its deadline")
+        assert call(path)["retry_at"] is None and call(path+"/steps")[-1]["status"] == "failed"
+        assert len(call(path+"/usage")["items"]) == len(call(path+"/attempts")) == 1
     wait_for(lambda: sql("SELECT count(*) FROM runs WHERE status IN ('QUEUED','RUNNING')") == "0", "Old model backlog stalled")
     compose("stop", "worker", "publisher")
     # A former owner committed dispatch intent and lost its reply. Do not resend on the next claim.
@@ -83,3 +97,4 @@ def check_models(base, run_path, token, compose, sql):
     assert len(uncertain) == 1 and uncertain[0]["status"] == "unknown"
     compose("stop", "worker", "publisher")
     print("Model checks passed: single and multi-step execution, tool grants, budgets, 429 retry, uncertain timeout usage and HTTP adapter.")
+    return remote

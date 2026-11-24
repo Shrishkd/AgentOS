@@ -42,6 +42,9 @@ async def main(high: UUID, middle: UUID, other: UUID):
         else:
             raise AssertionError("Expired lease was renewed")
         assert await scheduler.recover_one()
+        assert not await scheduler.promote_one()
+        await asyncio.sleep(1.1)
+        assert await scheduler.promote_one()
         await scheduler.heartbeat(second)
         assert await scheduler.claim(second) is None  # draining session rejects new work
         third = uuid4()

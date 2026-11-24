@@ -7,12 +7,27 @@ from time import sleep
 from uuid import uuid4
 
 seen = set()
+effects = {}
 lock = Lock()
 
 
 class Handler(BaseHTTPRequestHandler):
     def do_POST(self):
         payload = json.loads(self.rfile.read(int(self.headers["Content-Length"])))
+        if self.path == "/test/length":
+            key = self.headers["Idempotency-Key"]
+            with lock:
+                if key not in effects:
+                    effects[key] = (payload["text"], {"length": len(payload["text"])}, 0)
+                original, result, calls = effects[key]
+                assert original == payload["text"]
+                effects[key] = (original, result, calls + 1)
+            if calls == 0:
+                sleep(1)  # The effect is committed before the client's read timeout.
+            self.send_response(200)
+            self.end_headers()
+            self.wfile.write(json.dumps({"result": result, "requests": calls + 1}).encode())
+            return
         if self.path != "/v1/chat/completions" or payload["model"] != "fixture-model":
             self.send_error(400)
             return
@@ -20,6 +35,11 @@ class Handler(BaseHTTPRequestHandler):
         assert messages[0]["role"] == "system" and payload["max_completion_tokens"] > 0
         data = json.loads(messages[1]["content"])
         mode = data["mode"]
+        if mode == "backoff":
+            self.send_response(429)
+            self.send_header("Retry-After", "60")
+            self.end_headers()
+            return
         if mode == "retry":
             with lock:
                 first = data["key"] not in seen

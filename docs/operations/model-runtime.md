@@ -109,4 +109,4 @@ Prompt reservation uses serialized UTF-8 bytes plus 128 units for framing. This 
 | rejected | A definitive rejection or rate limit releases the reservation. |
 | unknown | A timeout, ambiguous failure or interrupted invocation retains its full reservation. Actual usage remains unknown. |
 
-Transient failures allow up to three invocations per logical step with exponential backoff, jitter and Retry-After handling. Every retry requires a fresh reservation. Inspect `failure_reason` on the run and `/usage` for normalized errors, request IDs and latency. General checkpoint recovery and the full tool gateway are scheduled for Phases 5 and 6.
+Transient failures allow up to three invocations per logical step with exponential backoff, jitter and Retry-After handling. Every retry requires a fresh reservation. Inspect `failure_reason` on the run and `/usage` for normalized errors, request IDs and latency. During backoff the run exposes its database retry time and releases its worker slot. A replacement worker can restore the persisted prompt and reservation history. [Checkpoint recovery](worker-failure-runbook.md#verify-checkpoint-recovery)

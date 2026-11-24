@@ -45,6 +45,10 @@ class RunInterrupted(Exception):
     """Cancellation or the database deadline has stopped model work."""
 
 
+class RetryScheduled(Exception):
+    """This claim released its slot and committed a retry time."""
+
+
 class Scheduler:
     def __init__(self, engine: AsyncEngine, lease_seconds: int, remote_model: str | None = None):
         self.engine = engine
@@ -145,13 +149,18 @@ class Scheduler:
             await self._finish(db, claim, row, params, None, code)
 
     @asynccontextmanager
-    async def progress(self, claim: Claim):
+    async def progress(self, claim: Claim, retry_delay: float | None = None):
         """A short fenced transaction. No provider I/O is allowed while it is open."""
         async with self.engine.begin() as db:
             row, params = await self._locked(db, claim)
             if row["status"] != State.RUNNING or row["due"]:
                 raise RunInterrupted()
             yield db
+            if retry_delay is not None:
+                outcome = await self._wait(db, claim.tenant, claim.run, row["revision"], retry_delay)
+                await self._close_attempt(db, params, "provider_retry" if outcome == State.RETRY_WAIT else outcome)
+                await self._release(db, params)
+                return
             valid = await db.scalar(text("""SELECT expires_at>clock_timestamp() FROM worker_leases
                 WHERE run_id=:run AND owner_id=:worker AND generation=:generation"""), params)
             if not valid:
@@ -175,6 +184,10 @@ class Scheduler:
         if outcome != State.SUCCEEDED:
             await self._abandon(db, params, failure or str(outcome))
         await self._close_attempt(db, params, outcome)
+        await self._release(db, params)
+
+    @staticmethod
+    async def _release(db, params):
         # Final fence in the same transaction as output, history and release.
         released = await db.scalar(text("""UPDATE worker_leases SET owner_id=NULL,expires_at=NULL
             WHERE run_id=:run AND owner_id=:worker AND generation=:generation AND expires_at>clock_timestamp()
@@ -194,6 +207,28 @@ class Scheduler:
         await db.execute(text("""UPDATE attempts SET ended_at=clock_timestamp(),outcome=:outcome
             WHERE run_id=:run AND number=:generation AND ended_at IS NULL"""), {**params, "outcome": outcome})
 
+    @staticmethod
+    async def _wait(db, tenant, run, revision, delay):
+        result = await transition(RunContext(db, tenant), run, State.RUNNING, State.RETRY_WAIT, revision)
+        if result["status"] == State.RETRY_WAIT:
+            await db.execute(text("""UPDATE runs SET retry_at=least(deadline_at,
+                clock_timestamp()+make_interval(secs => :delay)) WHERE id=:run"""), {"run": run, "delay": delay})
+        return result["status"]
+
+    async def promote_one(self) -> bool:
+        """Expire unowned work or promote a due retry and enqueue it atomically."""
+        async with self.engine.begin() as db:
+            row = (await db.execute(text("""SELECT id,tenant_id,status,revision,
+                deadline_at<=clock_timestamp() AS due FROM runs
+                WHERE (status='RETRY_WAIT' AND retry_at<=clock_timestamp()) OR
+                (status IN ('QUEUED','RETRY_WAIT','WAITING_FOR_APPROVAL') AND deadline_at<=clock_timestamp())
+                ORDER BY least(retry_at,deadline_at),id LIMIT 1 FOR UPDATE SKIP LOCKED"""))).mappings().one_or_none()
+            if row is None:
+                return False
+            target = State.TIMED_OUT if row["due"] else State.QUEUED
+            await transition(RunContext(db, row["tenant_id"]), row["id"], State(row["status"]), target, row["revision"])
+            return True
+
     async def recover_one(self) -> bool:
         async with self.engine.begin() as db:
             row = (await db.execute(text("""SELECT r.id,r.tenant_id,r.status,r.revision,l.generation
@@ -212,16 +247,17 @@ class Scheduler:
                 await self._abandon(db, params, str(current))
                 return True
             ctx = RunContext(db, row["tenant_id"])
+            crashes = await db.scalar(text("""SELECT count(*) FROM attempts
+                WHERE run_id=:run AND outcome='lease_expired'"""), params)
             if current == State.CANCEL_REQUESTED:
                 target = State.CANCELLED
-            elif row["generation"] >= 3:
+            elif crashes >= 3:
                 target = State.FAILED
             else:
-                target = State.RETRY_WAIT
+                await self._wait(db, row["tenant_id"], row["id"], row["revision"], 2 ** (crashes-1))
+                return True
             result = await transition(ctx, row["id"], current, target, row["revision"])
-            if result["status"] == State.RETRY_WAIT:
-                await transition(ctx, row["id"], State.RETRY_WAIT, State.QUEUED, result["revision"])
-            elif result["status"] == State.FAILED:
+            if result["status"] == State.FAILED:
                 await db.execute(text("UPDATE runs SET failure_reason='lease_attempts_exhausted' WHERE id=:run"), params)
             if result["status"] in TERMINAL:
                 await self._abandon(db, params, str(result["status"]))

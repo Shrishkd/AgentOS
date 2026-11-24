@@ -10,7 +10,7 @@ from sqlalchemy import text
 from sqlalchemy.ext.asyncio import create_async_engine
 
 from .runtime import CONSUMER, STREAM, RuntimeSettings, log_error, pause, serve
-from .scheduler import Claim, LeaseLost, RunInterrupted, Scheduler
+from .scheduler import Claim, LeaseLost, RetryScheduled, RunInterrupted, Scheduler
 from .model_engine import ModelEngine
 from .providers import ChatAdapter, MockAdapter, ModelFailure, Prices
 
@@ -35,6 +35,8 @@ async def execute(scheduler: Scheduler, claim: Claim, models: ModelEngine | None
                 return
         try:
             output = work.result()
+        except RetryScheduled:
+            return
         except ModelFailure as exc:
             await scheduler.fail(claim, exc.code)
         except RunInterrupted:
@@ -107,6 +109,9 @@ async def run_slots(cfg, nc, stop, scheduler, models):
                 await scheduler.heartbeat(worker)
                 for _ in range(8):
                     if not await scheduler.recover_one():
+                        break
+                for _ in range(8):
+                    if not await scheduler.promote_one():
                         break
             except Exception as exc:
                 log_error("worker_maintenance_retry", exc)
