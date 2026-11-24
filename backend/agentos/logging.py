@@ -26,5 +26,6 @@ def logging_config(level: str) -> dict:
         "formatters": {"json": {"()": JsonFormatter}},
         "handlers": {"stderr": {"class": "logging.StreamHandler", "formatter": "json"}},
         "root": {"level": level, "handlers": ["stderr"]},
-        "loggers": {"uvicorn": {"handlers": [], "propagate": True, "level": level}},
+        "loggers": {"uvicorn": {"handlers": [], "propagate": True, "level": level},
+                    "httpx": {"level": "WARNING"}, "httpcore": {"level": "WARNING"}},
     }

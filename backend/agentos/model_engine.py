@@ -69,7 +69,11 @@ class ModelEngine:
             if cursor.action is None:
                 cursor.action = await self.model_step(claim, cursor.ordinal, cursor.messages)
             else:
-                result = await self.tool_step(claim, cursor.ordinal, cursor.action)
+                try:
+                    result = await self.tool_step(claim, cursor.ordinal, cursor.action)
+                except TimeoutError:
+                    # Record the failure after the interrupted transaction has rolled back.
+                    raise ModelFailure("tool_timeout") from None
                 cursor.applied_tool(result)
             cursor.ordinal += 1
         return {"answer": cursor.action.answer}
@@ -106,7 +110,7 @@ class ModelEngine:
         except ModelFailure as exc:
             retry = tool.name in {"web_search", "http_get"} and dispatch < 2 and exc.code in {
                 "tool_timeout", "tool_http_unavailable", "tool_http_busy"}
-            async with self.scheduler.progress(claim, retry_delay=1 if retry else None) as db:
+            async with self.scheduler.progress(claim, retry_delay=1 if retry else None, retry_outcome="tool_retry") as db:
                 await db.execute(text("UPDATE steps SET last_dispatch_error=:code WHERE id=:id"),
                                  {"code": exc.code, "id": row["id"]})
                 if not retry:

@@ -49,7 +49,10 @@ async def fetch(url, host, limit):
                     data.extend(chunk)
                     if len(data) > limit:
                         raise ModelFailure("tool_output_too_large")
-                return data.decode("utf-8")
+                decoded = data.decode("utf-8")
+                if "\x00" in decoded:
+                    raise ModelFailure("tool_http_response")
+                return decoded
     except (TimeoutError, httpx.TimeoutException):
         raise ModelFailure("tool_timeout") from None
     except (OSError, httpx.RequestError, UnicodeError):
@@ -62,6 +65,11 @@ async def search(query):
     raw = await fetch("https://en.wikipedia.org/w/api.php?" + params, "en.wikipedia.org", 32768)
     try:
         items = json.loads(raw)["query"]["search"]
-        return {"titles": [str(item["title"]) for item in items[:5]]}
+        titles = [item["title"] for item in items[:5]]
+        if any(not isinstance(title, str) or "\x00" in title for title in titles):
+            raise ValueError()
+        for title in titles:
+            title.encode("utf-8")
+        return {"titles": titles}
     except (TypeError, ValueError, KeyError, RecursionError):
         raise ModelFailure("tool_http_response") from None

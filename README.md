@@ -2,7 +2,7 @@
 
 AgentOS is a runtime under development for long-running AI agents. Its design pins each task to an agent version, records worker progress in PostgreSQL and pauses protected actions for human approval.
 
-**Phase 5 · Durability and recovery.** Start the local stack from this directory.
+**Phase 6 · Tool gateway and human approval.** Start the local stack from this directory.
 
 ```sh
 docker compose up --build
@@ -14,6 +14,7 @@ Workers resume interrupted model runs from committed checkpoints. The recovery s
 
 | Start here | What to review |
 | --- | --- |
+| [Review a protected action](docs/operations/tool-approvals.md) | Install a tenant tool, inspect a pending report in the approval inbox and verify the resulting effect |
 | [Technical specification](docs/architecture/overview.md) | System boundaries, guarantees and the path of a run |
 | [Execution lifecycle](docs/architecture/execution-lifecycle.md) | State transitions, scheduling and transaction boundaries |
 | [Crash recovery](docs/architecture/crash-recovery.md) | What happens when a worker dies before or after an external call |

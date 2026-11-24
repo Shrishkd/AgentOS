@@ -2,7 +2,7 @@
 
 Each row is a reviewable increment. Phase numbers identify handoff points. Acceptance criteria describe evidence to collect as implementation lands.
 
-Phases 0–5 cover design, foundation, registry, distributed workers, model execution and checkpoint recovery. The Compose suite interrupts live workers before dispatch, after an external tool effect and after a final checkpoint. It also tests lost API replies and lost publish acknowledgements. Phase 6 adds the registered tool gateway and human approvals. [Run a model-backed agent](operations/model-runtime.md) · [Reproduce worker recovery](operations/worker-failure-runbook.md#verify-checkpoint-recovery)
+Phases 0–6 cover design, foundation, registry, distributed workers, model execution, checkpoint recovery and human approval. The Compose suite exercises tool grants, approval decisions, crash recovery and duplicate delivery. Phase 7 adds observability. [Review a protected tool call](operations/tool-approvals.md) · [Reproduce worker recovery](operations/worker-failure-runbook.md#verify-checkpoint-recovery)
 
 | Phase / increment | Depends on | Work and acceptance criteria |
 | --- | --- | --- |

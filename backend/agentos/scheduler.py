@@ -153,7 +153,7 @@ class Scheduler:
             await self._finish(db, claim, row, params, None, code)
 
     @asynccontextmanager
-    async def progress(self, claim: Claim, retry_delay: float | None = None):
+    async def progress(self, claim: Claim, retry_delay: float | None = None, *, retry_outcome="provider_retry"):
         """A short fenced transaction. No provider I/O is allowed while it is open."""
         async with self.engine.begin() as db:
             row, params = await self._locked(db, claim)
@@ -167,14 +167,14 @@ class Scheduler:
                 await self._close_attempt(db, params, state["status"])
                 await self._release(db, params)
             else:
-                await self._end_progress(db, claim, row, params, retry_delay)
+                await self._end_progress(db, claim, row, params, retry_delay, retry_outcome)
                 return
         raise RetryScheduled()  # The waiting state is durable before the execution loop exits.
 
-    async def _end_progress(self, db, claim, row, params, retry_delay):
+    async def _end_progress(self, db, claim, row, params, retry_delay, retry_outcome):
         if retry_delay is not None:
             outcome = await self._wait(db, claim.tenant, claim.run, row["revision"], retry_delay)
-            await self._close_attempt(db, params, "provider_retry" if outcome == State.RETRY_WAIT else outcome)
+            await self._close_attempt(db, params, retry_outcome if outcome == State.RETRY_WAIT else outcome)
             await self._release(db, params)
             return
         valid = await db.scalar(text("""SELECT expires_at>clock_timestamp() FROM worker_leases

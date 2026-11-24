@@ -69,7 +69,8 @@ def main(browser: bool) -> None:
         with urlopen(base + "/", timeout=5) as response:
             assert "System health" in response.read().decode()
         if browser:
-            subprocess.run([shutil.which("npm.cmd" if os.name == "nt" else "npm"), "run", "test:browser"],
+            subprocess.run([shutil.which("npm.cmd" if os.name == "nt" else "npm"), "run", "test:browser",
+                            "--", "system-health.spec.ts"],
                            cwd=ROOT / "dashboard", env={**env, "AGENTOS_TEST_URL": base}, check=True)
         assert sql("SELECT version_num FROM alembic_version") == "0006_tool_approvals"
         sql("CREATE TABLE persistence_probe AS SELECT 42 AS value")

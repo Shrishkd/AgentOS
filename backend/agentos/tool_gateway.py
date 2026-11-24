@@ -94,9 +94,15 @@ def bounded(tool, result):
 
 
 async def save_report(db, claim, step_id, args):
-    await db.execute(text("""INSERT INTO tool_reports(id,tenant_id,run_id,document)
-        VALUES (:id,:tenant,:run,CAST(:doc AS jsonb))"""), {"id": step_id, "tenant": claim.tenant,
-                                                            "run": claim.run, "doc": args.model_dump_json()})
+    # Check the exact approved document and both deadlines at the write itself.
+    result = await db.execute(text("""INSERT INTO tool_reports(id,tenant_id,run_id,document)
+        SELECT a.step_id,a.tenant_id,a.run_id,a.arguments FROM approvals a JOIN runs r ON r.id=a.run_id
+        WHERE a.step_id=:id AND a.tenant_id=:tenant AND a.run_id=:run AND a.status='approved'
+        AND a.arguments=CAST(:doc AS jsonb) AND a.expires_at>clock_timestamp()
+        AND r.status='RUNNING' AND r.deadline_at>clock_timestamp() RETURNING id"""),
+        {"id": step_id, "tenant": claim.tenant, "run": claim.run, "doc": args.model_dump_json()})
+    if result.scalar_one_or_none() is None:
+        raise ModelFailure("approval_expired")
     return {"report_id": str(step_id), "title": args.title}
 
 

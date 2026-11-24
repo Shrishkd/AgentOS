@@ -101,6 +101,11 @@ async def decide(approval_id: UUID, body: Decision, access: Access):
         raise DomainError(403, "forbidden", "An approver or tenant administrator must decide.")
     proposal = await approval(approval_id, access)
     run = await one(access, RUNS + " AND t.id=:id FOR UPDATE", id=proposal["run_id"])
+    # A decision may have waited behind another reviewer or a cancellation.
+    permitted = await access.db.scalar(text("""SELECT EXISTS (SELECT FROM users WHERE tenant_id=:tenant
+        AND id=:user AND enabled AND role IN ('approver','admin'))"""), {"tenant": access.tenant, "user": access.user})
+    if not permitted:
+        raise DomainError(403, "forbidden", "An approver or tenant administrator must decide.")
     proposal = await approval(approval_id, access)
     if proposal["action_digest"] != body.action_digest:
         raise DomainError(409, "action_mismatch", "The decision does not match the proposed action.")
