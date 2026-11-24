@@ -58,6 +58,44 @@ secrets:
 
 Recreate the workers with `docker compose up -d --build --scale worker=2 worker`. Publish a version with provider `openai-compatible` and the configured model. The endpoint receives the pinned instructions and JSON input. Tool-enabled runs use native function calls, call IDs and tool-result messages. The adapter requests `max_completion_tokens` and requires reported prompt and completion usage. Each turn accepts one final text answer or one function proposal. The Phase 4 tool counts up to 8,192 Unicode code points and requires an enabled, explicitly granted tenant tool version.
 
+### Verify a live tool call with Ollama
+
+On Docker Desktop, start Ollama on the host and run these commands from the repository root. The environment settings apply to workers created from this PowerShell session. To reuse them after recreating the workers from another session, put the same values in the root `.env`.
+
+```powershell
+ollama pull qwen3:0.6b
+$env:AGENTOS_MODEL_BASE_URL = 'http://host.docker.internal:11434/v1'
+$env:AGENTOS_REMOTE_MODEL = 'qwen3:0.6b'
+$env:AGENTOS_MODEL_TIMEOUT_SECONDS = '120'
+$env:AGENTOS_MODEL_INPUT_USD_PER_MILLION = '0'
+$env:AGENTOS_MODEL_OUTPUT_USD_PER_MILLION = '0'
+docker compose up -d --build --scale worker=2 --wait
+```
+
+Reuse `$versions`, `$toolId`, `$headers` and `$rootUrl` from the text-counter walkthrough above. Publish a separate version for the local model, submit a request and inspect its persisted steps.
+
+```powershell
+$config = @{
+  instructions = 'You are a tool calling assistant. For a length request, call text_length with the string exactly as provided. Once you receive a tool response, return its length as a single number.'
+  provider = 'openai-compatible'
+  model = 'qwen3:0.6b'
+  tool_version_ids = @($toolId)
+  limits = @{ max_steps = 3; max_tokens = 8000; timeout_seconds = 300 }
+} | ConvertTo-Json -Depth 4
+$v = Invoke-RestMethod -Method Post -Uri $versions -Headers $headers -ContentType application/json -Body $config
+Invoke-RestMethod -Method Post -Uri "$versions/$($v.id)/publish" -Headers $headers
+$submit = $headers.Clone()
+$submit['Idempotency-Key'] = [guid]::NewGuid().ToString()
+$body = @{ agent_version_id = $v.id; input = @{ request = 'Use the text_length tool to count the characters in strawberry. /no_think' } } | ConvertTo-Json
+$run = Invoke-RestMethod -Method Post -Uri "$rootUrl/runs" -Headers $submit -ContentType application/json -Body $body
+$url = "$rootUrl/runs/$($run.id)"
+Invoke-RestMethod -Uri $url -Headers $headers
+Invoke-RestMethod -Uri "$url/steps" -Headers $headers | ConvertTo-Json -Depth 6
+(Invoke-RestMethod -Uri "$url/usage" -Headers $headers).items | Format-Table model,status,input_tokens,output_tokens
+```
+
+Refresh the last three commands after the run finishes. A successful tool check has a model proposal with `text = "strawberry"`, a completed tool step with `length = 10`, and a final model answer of `10`. Both model invocations should have reported token counts. A model can also answer directly, so inspect the middle step when verifying tool use.
+
 ## Limits and failure records
 
 Each model or tool action consumes one logical step. Before provider I/O the worker commits the step intent, invocation number, token reservation and price snapshot. It releases the database transaction while awaiting the network. Completed steps rebuild the conversation after a handoff. An outstanding invocation whose outcome was never recorded fails with `model_outcome_unknown`.
