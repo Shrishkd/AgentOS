@@ -46,13 +46,15 @@ class Limits(InputModel):
 
 class VersionInput(InputModel):
     instructions: Annotated[str, StringConstraints(strip_whitespace=True, min_length=1, max_length=32000)]
-    provider: Literal["mock", "openai-compatible"]
+    provider: Literal["builtin", "mock", "openai-compatible"]
     model: Name
     limits: Limits
     tool_version_ids: list[UUID] = Field(default_factory=list, max_length=100)
 
     @model_validator(mode="after")
     def valid_configuration(self):
+        if self.provider == "builtin" and (self.model != "receipt" or self.tool_version_ids):
+            raise ValueError("The built-in receipt handler accepts no tool grants")
         if self.provider == "mock" and self.model != "deterministic":
             raise ValueError("The mock provider uses the deterministic model")
         if len(self.tool_version_ids) != len(set(self.tool_version_ids)):

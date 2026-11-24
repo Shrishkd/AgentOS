@@ -15,9 +15,13 @@ bearer = HTTPBearer(auto_error=False)
 
 
 @dataclass
-class TenantAccess:
+class RunContext:
     db: AsyncConnection
     tenant: UUID
+
+
+@dataclass
+class TenantAccess(RunContext):
     user: UUID
     role: str
     request_id: str

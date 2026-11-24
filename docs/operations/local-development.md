@@ -6,11 +6,11 @@ Install Docker with Linux containers and the Compose v2 command or newer. The fi
 docker compose up --build
 ```
 
-Open [AgentOS](http://127.0.0.1:8080). For background mode, append `-d`. Use `docker compose ps -a` to inspect startup. The credentials and migration jobs should exit with code 0. The dashboard, API, PostgreSQL, Redis and NATS should report healthy. The gateway serves dashboard assets, the [API reference](http://127.0.0.1:8080/docs), and probe requests on the same origin.
+Open [AgentOS](http://127.0.0.1:8080). For background mode, append `-d`. Use `docker compose ps -a` to inspect startup. The credentials, runtime-logins and migration jobs should exit with code 0. The publisher should be running. The dashboard, API, PostgreSQL, Redis, NATS and workers should report healthy. The gateway serves dashboard assets, the [API reference](http://127.0.0.1:8080/docs), and probe requests on the same origin. [Worker settings and troubleshooting](worker-failure-runbook.md)
 
 ## Startup and storage
 
-On first boot the credentials job generates random passwords in two Compose volumes. PostgreSQL initializes a restricted API login. The migration job uses the administrative credential to upgrade the schema to its current head. The API runs as an unprivileged OS user and has read access to the schema revision. New domain tables and migrations ship with the features that own them.
+On first boot the credentials job generates random passwords in named Compose volumes. PostgreSQL initializes a restricted API login. The runtime-logins job provisions the publisher and worker logins. The migration job uses the administrative credential to upgrade the schema to its current head. The API runs as an unprivileged OS user and has read access to the schema revision. New domain tables and migrations ship with the features that own them.
 
 Phase 2 grants that API login scoped registry and run privileges, forces row-level security on the tenant tables and commits dispatch intent with each enqueue. The optional operator profile manages membership and local identity keys. [Identity settings and first run](first-run.md)
 

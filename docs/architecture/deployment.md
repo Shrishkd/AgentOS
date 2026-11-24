@@ -21,7 +21,7 @@ flowchart TB
     W --> Egress[Controlled model and tool egress]
 ```
 
-Phase 1 supplies Compose services for the API, dashboard, PostgreSQL, Redis, JetStream and one migration job. A one-shot credentials job initializes passwords in separate named volumes. Only the dashboard gateway publishes a host port, bound to loopback. Database and stream files persist in named volumes. The publisher, timer and worker entry points arrive with their implementation phases. [Local command and environment reference](../operations/local-development.md)
+Compose supplies the API, dashboard, PostgreSQL, Redis, JetStream, outbox publisher and scalable worker processes. One-shot jobs generate local credentials, provision database logins and run migrations. Only the dashboard gateway publishes a host port, bound to loopback. Database and stream files persist in named volumes. The worker maintenance loop reclaims expired receipt leases. The general execution timer arrives with checkpoint recovery. [Local command and environment reference](../operations/local-development.md)
 
 Liveness checks prove the process can respond. Readiness verifies dependencies used by that service and the expected migration revision. The API can durably accept a submission during broker downtime while PostgreSQL and admission controls are healthy. Workers wait for database and consumer readiness before pulling. Migration runs once per rollout before new application instances become ready.
 

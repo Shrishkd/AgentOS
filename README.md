@@ -2,13 +2,13 @@
 
 AgentOS is a runtime under development for long-running AI agents. Its design pins each task to an agent version, records worker progress in PostgreSQL and pauses protected actions for human approval.
 
-**Phase 2 · Agent registry and run management.** Start the local stack from this directory.
+**Phase 3 · Distributed workers.** Start the local stack from this directory.
 
 ```sh
 docker compose up --build
 ```
 
-Open the [system health dashboard](http://127.0.0.1:8080) or [API reference](http://127.0.0.1:8080/docs). The tenant API supports immutable agent configurations, publication, idempotent run submission, ordered history and cancellation. Runs remain queued until a worker claims them in Phase 3. [Register an agent and submit your first run](docs/operations/first-run.md) · [Local setup and troubleshooting](docs/operations/local-development.md)
+Open the [system health dashboard](http://127.0.0.1:8080) or [API reference](http://127.0.0.1:8080/docs). Publish a `builtin/receipt` agent to send work through PostgreSQL, JetStream and a worker. Its result includes an input digest, worker session ID and attempt number. Model-backed runs await the Phase 4 runtime. [Register an agent and run it](docs/operations/first-run.md) · [Scale and inspect workers](docs/operations/worker-failure-runbook.md)
 
 | Start here | What to review |
 | --- | --- |

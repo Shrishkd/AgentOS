@@ -17,17 +17,29 @@ services:
     volumes:
       - admin-secret:/admin
       - api-secret:/api
+      - worker-secret:/worker
+      - publisher-secret:/publisher
+      - broker-secret:/broker
     command:
       - /bin/sh
       - -ec
       - |
         umask 077
-        for dir in /admin /api; do
+        for dir in /admin /api /worker /publisher; do
           if [ ! -s "$$dir/password" ]; then
             head -c 36 /dev/urandom | base64 > "$$dir/new-password"
             chmod 0444 "$$dir/new-password"
             mv "$$dir/new-password" "$$dir/password"
           fi
+        done
+        for dir in /worker /publisher; do
+          if [ ! -s "$$dir/broker" ]; then
+            head -c 36 /dev/urandom | base64 > "$$dir/new-broker"
+            chmod 0444 "$$dir/new-broker"
+            mv "$$dir/new-broker" "$$dir/broker"
+          fi
+          cp "$$dir/broker" "/broker$$dir"
+          chmod 0444 "/broker$$dir"
         done
 
   postgres:
@@ -55,17 +67,37 @@ services:
 
   nats:
     image: nats:2.11-alpine
-    command: ["-js", "-sd", "/data", "-m", "8222"]
+    depends_on:
+      credentials: {condition: service_completed_successfully}
+    entrypoint: ["/bin/sh", "-ec"]
+    command:
+      - |
+        export WORKER_PASSWORD="$$(cat /secrets/worker)"
+        export PUBLISHER_PASSWORD="$$(cat /secrets/publisher)"
+        exec nats-server -c /etc/nats/agentos.conf
     volumes:
       - js-data:/data
+      - broker-secret:/secrets:ro
+      - ./infra/nats/server.conf:/etc/nats/agentos.conf:ro
     healthcheck:
       <<: *probe
       test: ["CMD", "wget", "-q", "-O", "/dev/null", "http://127.0.0.1:8222/healthz?js-enabled-only=true"]
 
+  runtime-logins:
+    image: postgres:17-alpine
+    depends_on:
+      postgres: {condition: service_healthy}
+    entrypoint: ["/bin/sh", "/setup.sh"]
+    volumes:
+      - ./infra/postgres/runtime-logins.sh:/setup.sh:ro
+      - admin-secret:/secrets/admin:ro
+      - worker-secret:/secrets/worker:ro
+      - publisher-secret:/secrets/publisher:ro
+
   migrate:
     <<: *backend
     depends_on:
-      postgres: {condition: service_healthy}
+      runtime-logins: {condition: service_completed_successfully}
     command: ["alembic", "upgrade", "head"]
     environment:
       <<: *db
@@ -96,6 +128,40 @@ services:
       timeout: 14s
       test: ["CMD", "python", "-c", "import urllib.request; urllib.request.urlopen('http://127.0.0.1:8000/health/ready',timeout=12).close()"]
 
+  publisher:
+    <<: *backend
+    command: ["python", "-m", "agentos.publisher"]
+    restart: unless-stopped
+    depends_on:
+      migrate: {condition: service_completed_successfully}
+      nats: {condition: service_healthy}
+    environment:
+      <<: *db
+      AGENTOS_DB_USER: agentos_publisher
+      AGENTOS_DB_PASSWORD_FILE: /secrets/runtime/password
+    volumes:
+      - publisher-secret:/secrets/runtime:ro
+
+  worker:
+    <<: *backend
+    command: ["python", "-m", "agentos.worker"]
+    restart: unless-stopped
+    stop_grace_period: 20s
+    depends_on:
+      migrate: {condition: service_completed_successfully}
+      nats: {condition: service_healthy}
+    environment:
+      <<: *db
+      AGENTOS_DB_USER: agentos_worker
+      AGENTOS_DB_PASSWORD_FILE: /secrets/runtime/password
+      AGENTOS_WORKER_CAPACITY: ${AGENTOS_WORKER_CAPACITY:-2}
+      AGENTOS_LEASE_SECONDS: ${AGENTOS_LEASE_SECONDS:-15}
+    volumes:
+      - worker-secret:/secrets/runtime:ro
+    healthcheck:
+      <<: *probe
+      test: ["CMD", "python", "-m", "agentos.worker", "health"]
+
   operator:
     <<: *backend
     profiles: ["tools"]
@@ -125,5 +191,8 @@ volumes:
   js-data:
   admin-secret:
   api-secret:
+  worker-secret:
+  publisher-secret:
+  broker-secret:
   issuer-public:
   issuer-private:

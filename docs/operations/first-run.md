@@ -16,9 +16,9 @@ Create an agent once. On subsequent visits, retrieve its ID with `GET /agents`. 
 ```powershell
 $agent = Invoke-RestMethod -Method Post -Uri "$rootUrl/agents" -Headers $headers -ContentType application/json -Body '{"name":"Reporter"}'
 $config = @{
-  instructions = "Summarize the supplied text."
-  provider = "mock"
-  model = "deterministic"
+  instructions = "Return a receipt for the submitted input."
+  provider = "builtin"
+  model = "receipt"
   limits = @{ max_steps = 5; max_tokens = 2048; timeout_seconds = 3600 }
   tool_version_ids = @()
 } | ConvertTo-Json -Depth 4
@@ -36,9 +36,13 @@ $body = @{ agent_version_id = $version.id; input = @{ text = "A worker recovered
 $run = Invoke-RestMethod -Method Post -Uri "$rootUrl/runs" -Headers $submissionHeaders -ContentType application/json -Body $body
 Invoke-RestMethod -Uri "$rootUrl/runs/$($run.id)" -Headers $headers
 Invoke-RestMethod -Uri "$rootUrl/runs/$($run.id)/events" -Headers $headers
+Invoke-RestMethod -Uri "$rootUrl/runs/$($run.id)/attempts" -Headers $headers
+Invoke-RestMethod -Uri "$rootUrl/workers" -Headers $headers
 ```
 
 A successful submission returns 201 and the queued run. An identical retry returns 200 and the same ID, including after version deactivation. Changing the input under the same key returns 409. The timeline begins with CREATED and QUEUED. To cancel queued work, post to `/runs/{id}/cancel`; both cancellation transitions appear in history.
+
+Poll the run until it reaches SUCCEEDED. A receipt worker computes SHA-256 over the UTF-8 JSON input with sorted keys, compact separators and unescaped Unicode. The result identifies the worker and attempt. This built-in handler uses no model credentials and accepts no tool grants.
 
 ## Tenant identity and storage
 
@@ -46,4 +50,4 @@ The local issuer uses RS256 and a 30-minute token lifetime. The first token comm
 
 Use `operator grant` again to change a membership role. Viewers and approvers have read access to the Phase 2 API. Developers and admins can manage versions and submit or cancel runs. For an external RS256 issuer, provision its subject with `grant --issuer <issuer>`, configure `AGENTOS_TOKEN_ISSUER` and `AGENTOS_TOKEN_AUDIENCE`, and mount its trusted public PEM at the API's `AGENTOS_TOKEN_PUBLIC_KEY_FILE` (default `/keys/public/issuer.pem`). Obtain access tokens from that issuer. External key distribution and rotation are operator-managed.
 
-The default tenant limits are 1,000 outstanding runs and 120 fresh submissions per minute. The PostgreSQL admission lock serializes quota checks per tenant. Redis enforces the rate window and returns a retry interval on exhaustion. A successful replay bypasses both limits. Each queue transition writes a run event and an outbox row in the same PostgreSQL transaction. Phase 3 adds delivery and claiming.
+The default tenant limits are 1,000 outstanding runs, 120 fresh submissions per minute and four concurrent claims. PostgreSQL serializes quota checks per tenant. Redis enforces the submission rate window. Each enqueue writes a run event and an outbox row in one transaction. The publisher sends a wakeup, and the next worker with capacity claims an eligible run. [Worker operations](worker-failure-runbook.md)

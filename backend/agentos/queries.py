@@ -8,14 +8,14 @@ from uuid import UUID
 from fastapi import Query
 from sqlalchemy import text
 
-from .access import TenantAccess
+from .access import RunContext, TenantAccess
 from .domain import DomainError, missing
 
 Limit = Annotated[int, Query(ge=1, le=100)]
 Cursor = Annotated[str | None, Query(max_length=2048)]
 
 
-async def one(access: TenantAccess, sql: str, **params):
+async def one(access: RunContext, sql: str, **params):
     row = (await access.db.execute(text(sql), {"tenant": access.tenant, **params})).mappings().one_or_none()
     if row is None:
         raise missing()

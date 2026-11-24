@@ -20,7 +20,9 @@ All product routes below are relative to `/v1/tenants/{tenant_id}`. Accept a bea
 
 Phase 1 implements unscoped `GET /health/live` (200, `{"status":"alive"}`) and `GET /health/ready` (200 ready or 503 unavailable). Readiness includes a `checks` object with `postgresql` and `redis` set to `up` or `down`. PostgreSQL must match the application's Alembic head. The gateway also exposes `GET /health/jetstream` as a separate broker probe. API requests receive an `X-Request-ID` UUID. The current API specification is served at `/openapi.json`.
 
-Phase 2 ships agent and version creation, reads, cursor lists, publication and deactivation, run submission, reads, filters and cancellation. Run detail includes the pinned version, input, status, revision, priority, timestamps, deadline, output and failure reason. Run history currently returns an ordered JSON array with `after` (exclusive sequence) and `limit` parameters. Worker fields, streaming, approvals and usage projections arrive in later phases. A queued cancellation completes immediately and returns 200. [PowerShell walkthrough](operations/first-run.md)
+The registry supports version creation, publication and deactivation. Runs support idempotent submission, reads, filters and cancellation. Run history returns an ordered JSON array with `after` (exclusive sequence) and `limit` parameters. A queued cancellation completes immediately. Cancellation of a running receipt returns 202 until the current owner or recovery loop finalizes it. Streaming, approvals and usage projections arrive in later phases. [PowerShell walkthrough](operations/first-run.md)
+
+Phase 3 implements `GET /workers` as a cursor list of tenant-visible sessions. `GET /runs/{id}/attempts` returns attempts in generation order with worker ID, start/end time and outcome. Both routes require verified membership. A published version with provider `builtin` and model `receipt` executes on the worker pool. [Worker operations](operations/worker-failure-runbook.md)
 
 ## Publish and submit
 

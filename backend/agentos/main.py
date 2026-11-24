@@ -17,6 +17,7 @@ from .logging import logging_config
 from .domain import DomainError
 from .registry import router as registry
 from .runs import router as runs
+from .worker_api import router as workers
 
 logger = logging.getLogger(__name__)
 
@@ -39,6 +40,7 @@ def create_app(settings: Settings) -> FastAPI:
     app.state.settings = settings
     app.include_router(registry)
     app.include_router(runs)
+    app.include_router(workers)
 
     @app.exception_handler(DomainError)
     async def domain_error(request: Request, exc: DomainError):

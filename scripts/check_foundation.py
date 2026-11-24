@@ -12,6 +12,7 @@ from urllib.request import urlopen
 from uuid import uuid4
 
 from check_registry import check_registry, request_json
+from check_workers import check_workers
 
 ROOT = Path(__file__).resolve().parents[1]
 
@@ -39,10 +40,10 @@ def main(browser: bool) -> None:
     project = f"agentos-test-{uuid4().hex}"
     env = {**os.environ, "AGENTOS_PORT": "0"}
 
-    def compose(*args: str, capture: bool = False) -> str:
+    def compose(*args: str, capture: bool = False, stdin: str | None = None) -> str:
         result = subprocess.run(
             ["docker", "compose", "-p", project, "-f", str(ROOT / "compose.yaml"), *args],
-            cwd=ROOT, env=env, check=True, stdout=subprocess.PIPE if capture else None, text=True,
+            cwd=ROOT, env=env, check=True, input=stdin, stdout=subprocess.PIPE if capture else None, text=True,
         )
         return (result.stdout or "").strip()
 
@@ -58,14 +59,15 @@ def main(browser: bool) -> None:
                        "-v", "ON_ERROR_STOP=1", "-Atc", query, capture=True)
 
     try:
-        base = start("--build")
+        # Exercise admission and destructive migration fixtures before enabling dispatch.
+        base = start("--build", "--scale", "worker=0", "--scale", "publisher=0")
         await_json(base, "/health/live", 200, {"status": "alive"})
         with urlopen(base + "/", timeout=5) as response:
             assert "System health" in response.read().decode()
         if browser:
             subprocess.run([shutil.which("npm.cmd" if os.name == "nt" else "npm"), "run", "test:browser"],
                            cwd=ROOT / "dashboard", env={**env, "AGENTOS_TEST_URL": base}, check=True)
-        assert sql("SELECT version_num FROM alembic_version") == "0002_registry_runs"
+        assert sql("SELECT version_num FROM alembic_version") == "0003_workers"
         sql("CREATE TABLE persistence_probe AS SELECT 42 AS value")
         compose("run", "--rm", "--no-deps", "migrate")
         compose("run", "--rm", "--no-deps", "migrate", "alembic", "downgrade", "base")
@@ -74,6 +76,7 @@ def main(browser: bool) -> None:
         await_json(base, "/health/ready", 200, {"status": "ready"})
         compose("build", "operator")
         run_path, token, run_id = check_registry(base, compose, sql)
+        check_workers(base, run_path, token, compose, sql)
         for service in ("redis", "postgres"):
             compose("stop", service)
             await_json(base, "/health/live", 200, {"status": "alive"})
@@ -97,7 +100,7 @@ def main(browser: bool) -> None:
         print("Foundation checks passed, including migration replay, dependency outages and volume reuse.")
     except Exception:
         compose("ps", "-a")
-        compose("logs", "--tail", "30", "api", "migrate", "dashboard")
+        compose("logs", "--tail", "30", "api", "migrate", "dashboard", "worker", "publisher", "nats")
         raise
     finally:
         # The random project owns these volumes. Never use the developer's project name.
