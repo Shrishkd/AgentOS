@@ -23,4 +23,4 @@ jobs:
         working-directory: dashboard
       - run: npx playwright install --with-deps chromium
         working-directory: dashboard
-      - run: python scripts/check_foundation.py --browser
+      - run: python scripts/check_foundation.py --browser --observability

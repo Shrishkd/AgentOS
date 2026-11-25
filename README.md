@@ -2,10 +2,10 @@
 
 AgentOS is a runtime under development for long-running AI agents. Its design pins each task to an agent version, records worker progress in PostgreSQL and pauses protected actions for human approval.
 
-**Phase 6 · Tool gateway and human approval.** Start the local stack from this directory.
+**Phase 7 · Execution observability.** Start the local stack with Grafana, Prometheus and Jaeger from this directory.
 
 ```sh
-docker compose up --build
+docker compose -f compose.yaml -f compose.observability.yaml up -d --build
 ```
 
 Open the [system health dashboard](http://127.0.0.1:8080) or [API reference](http://127.0.0.1:8080/docs). Workers execute receipt, deterministic model and configured OpenAI-compatible runs. Model-backed agents can call a granted text-length tool and return a final answer. Inspect their ordered steps, provider invocations, tokens and estimated costs through the API. [Run a model-backed agent](docs/operations/model-runtime.md) · [Register your first agent](docs/operations/first-run.md)
@@ -14,6 +14,7 @@ Workers resume interrupted model runs from committed checkpoints. The recovery s
 
 | Start here | What to review |
 | --- | --- |
+| [Inspect an execution](docs/operations/observability.md) | Resume a live event stream, trace a retry across workers and reconcile token and cost totals |
 | [Review a protected action](docs/operations/tool-approvals.md) | Install a tenant tool, inspect a pending report in the approval inbox and verify the resulting effect |
 | [Technical specification](docs/architecture/overview.md) | System boundaries, guarantees and the path of a run |
 | [Execution lifecycle](docs/architecture/execution-lifecycle.md) | State transitions, scheduling and transaction boundaries |

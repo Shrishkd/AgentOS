@@ -12,7 +12,7 @@ from sqlalchemy.ext.asyncio import create_async_engine
 from .runtime import CONSUMER, STREAM, RuntimeSettings, log_error, pause, serve
 from .scheduler import Claim, LeaseLost, RetryScheduled, RunInterrupted, Scheduler
 from .model_engine import ModelEngine
-from .telemetry import execution_span, failed
+from .telemetry import execution_span, failed, set_outcome
 from .providers import ChatAdapter, MockAdapter, ModelFailure, Prices
 
 SESSION_FILE = Path("/tmp/agentos-worker-id")
@@ -39,15 +39,18 @@ async def execute_attempt(scheduler, claim, models, span):
         while not work.done():
             done, _ = await asyncio.wait({work}, timeout=scheduler.seconds / 4)
             if not done and not await scheduler.renew(claim):
+                set_outcome(span, "interrupted")
                 return
         try:
             output = work.result()
         except RetryScheduled:
+            set_outcome(span, "paused")
             return
         except ModelFailure as exc:
             failed(span, exc.code)
             await scheduler.fail(claim, exc.code)
         except RunInterrupted:
+            set_outcome(span, "interrupted")
             await scheduler.renew(claim)  # Finalize cancellation or expiry under the current fence.
         else:
             await scheduler.finish(claim, output)

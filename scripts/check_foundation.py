@@ -14,6 +14,7 @@ from uuid import uuid4
 from check_registry import check_registry, request_json
 from check_workers import check_workers
 from check_models import check_models
+from check_observability import check_observability
 from check_recovery import check_recovery
 from check_approvals import check_approvals
 
@@ -39,14 +40,15 @@ def await_json(base: str, path: str, status: int, expected: dict) -> None:
     raise AssertionError(f"{path} expected {status} {expected}, last response {last}")
 
 
-def main(browser: bool) -> None:
+def main(browser: bool, observability: bool) -> None:
     project = f"agentos-test-{uuid4().hex}"
-    env = {**os.environ, "AGENTOS_PORT": "0"}
+    env = {**os.environ, "AGENTOS_PORT": "0", "AGENTOS_GRAFANA_PORT": "0", "AGENTOS_JAEGER_PORT": "0"}
+    monitoring = ["-f", str(ROOT / "compose.observability.yaml")] if observability else []
 
     def compose(*args: str, capture: bool = False, stdin: str | None = None) -> str:
         result = subprocess.run(
             ["docker", "compose", "-p", project, "-f", str(ROOT / "compose.yaml"),
-             "-f", str(ROOT / "scripts/fixtures/model-compose.yaml"), *args],
+             "-f", str(ROOT / "scripts/fixtures/model-compose.yaml"), *monitoring, *args],
             cwd=ROOT, env=env, check=True, input=stdin, stdout=subprocess.PIPE if capture else None, text=True,
         )
         return (result.stdout or "").strip()
@@ -72,7 +74,7 @@ def main(browser: bool) -> None:
             subprocess.run([shutil.which("npm.cmd" if os.name == "nt" else "npm"), "run", "test:browser",
                             "--", "system-health.spec.ts"],
                            cwd=ROOT / "dashboard", env={**env, "AGENTOS_TEST_URL": base}, check=True)
-        assert sql("SELECT version_num FROM alembic_version") == "0006_tool_approvals"
+        assert sql("SELECT version_num FROM alembic_version") == "0007_observability"
         sql("CREATE TABLE persistence_probe AS SELECT 42 AS value")
         compose("run", "--rm", "--no-deps", "migrate")
         compose("run", "--rm", "--no-deps", "migrate", "alembic", "downgrade", "base")
@@ -83,6 +85,8 @@ def main(browser: bool) -> None:
         run_path, token, run_id = check_registry(base, compose, sql)
         # Previous phases left two model runs queued. Exercise that backlog before lease-order fixtures.
         remote = check_models(base, run_path, token, compose, sql)
+        if observability:
+            check_observability(base, run_path, token, remote, compose, sql)
         check_approvals(base, run_path, token, compose, sql, browser)
         check_workers(base, run_path, token, compose, sql)
         check_recovery(base, run_path, token, remote, compose, sql)
@@ -119,4 +123,6 @@ def main(browser: bool) -> None:
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--browser", action="store_true", help="also run the installed Playwright suite")
-    main(parser.parse_args().browser)
+    parser.add_argument("--observability", action="store_true", help="also exercise Grafana, Prometheus, Jaeger and SSE")
+    args = parser.parse_args()
+    main(args.browser, args.observability)

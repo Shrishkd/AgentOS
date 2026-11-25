@@ -1,0 +1,37 @@
+x-tracing: &tracing
+  OTEL_EXPORTER_OTLP_TRACES_ENDPOINT: http://jaeger:4318/v1/traces
+
+services:
+  api:
+    environment: *tracing
+
+  worker:
+    environment: *tracing
+
+  jaeger:
+    image: jaegertracing/jaeger:2.15.0
+    ports:
+      - "127.0.0.1:${AGENTOS_JAEGER_PORT:-16686}:16686"
+
+  prometheus:
+    image: prom/prometheus:v3.5.1
+    volumes:
+      - ./infra/observability/prometheus.yaml:/etc/prometheus/prometheus.yml:ro
+      - prometheus-data:/prometheus
+
+  grafana:
+    image: grafana/grafana:12.3.3
+    environment:
+      GF_AUTH_ANONYMOUS_ENABLED: "true"
+      GF_AUTH_ANONYMOUS_ORG_ROLE: Viewer
+      GF_AUTH_DISABLE_LOGIN_FORM: "true"
+      GF_SECURITY_DISABLE_INITIAL_ADMIN_CREATION: "true"
+      GF_ANALYTICS_REPORTING_ENABLED: "false"
+    volumes:
+      - ./infra/observability/grafana/provisioning:/etc/grafana/provisioning:ro
+      - ./infra/observability/grafana/dashboards:/var/lib/agentos/dashboards:ro
+    ports:
+      - "127.0.0.1:${AGENTOS_GRAFANA_PORT:-3000}:3000"
+
+volumes:
+  prometheus-data:

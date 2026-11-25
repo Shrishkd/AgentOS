@@ -12,16 +12,16 @@ flowchart TB
         NATS --> W[Worker replicas]
         W --> PG
         Migration[Alembic migration job] --> PG
-        API --> OT[OpenTelemetry collector]
-        W --> OT
-        BG --> OT
-        OT --> PM[Prometheus]
-        PM --> GF[Grafana]
+        API -->|OTLP spans| J[Jaeger]
+        W -->|OTLP spans| J
+        PM[Prometheus] -->|Scrape /metrics| API
+        GF[Grafana] -->|PromQL| PM
+        GF -->|Trace lookup| J
     end
     W --> Egress[Controlled model and tool egress]
 ```
 
-Compose supplies the API, dashboard, PostgreSQL, Redis, JetStream, outbox publisher and scalable worker processes. One-shot jobs generate local credentials, provision database logins and run migrations. Only the dashboard gateway publishes a host port, bound to loopback. Database and stream files persist in named volumes. The worker maintenance loop reclaims expired receipt leases. The general execution timer arrives with checkpoint recovery. [Local command and environment reference](../operations/local-development.md)
+Compose supplies the API, dashboard, PostgreSQL, Redis, JetStream, outbox publisher and scalable worker processes. One-shot jobs generate local credentials, provision database logins and run migrations. The base stack publishes the dashboard gateway on loopback. The observability overlay also publishes Grafana and Jaeger on loopback. PostgreSQL, JetStream and Prometheus data persist in named volumes. The worker maintenance loop reclaims expired leases and promotes due retries. [Local command and environment reference](../operations/local-development.md) · [Observability operations](../operations/observability.md)
 
 Liveness checks prove the process can respond. Readiness verifies dependencies used by that service and the expected migration revision. The API can durably accept a submission during broker downtime while PostgreSQL and admission controls are healthy. Workers wait for database and consumer readiness before pulling. Migration runs once per rollout before new application instances become ready.
 
