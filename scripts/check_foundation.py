@@ -40,18 +40,22 @@ def await_json(base: str, path: str, status: int, expected: dict) -> None:
     raise AssertionError(f"{path} expected {status} {expected}, last response {last}")
 
 
-def main(browser: bool, observability: bool) -> None:
+def main(browser: bool, observability: bool, benchmark_report: Path | None = None, benchmark_only: bool = False) -> None:
     project = f"agentos-test-{uuid4().hex}"
     env = {**os.environ, "AGENTOS_PORT": "0", "AGENTOS_GRAFANA_PORT": "0", "AGENTOS_JAEGER_PORT": "0"}
     monitoring = ["-f", str(ROOT / "compose.observability.yaml")] if observability else []
+
+    if benchmark_report:
+        monitoring.extend(["-f", str(ROOT / "scripts/fixtures/benchmark-compose.yaml")])
 
     def compose(*args: str, capture: bool = False, stdin: str | None = None) -> str:
         result = subprocess.run(
             ["docker", "compose", "-p", project, "-f", str(ROOT / "compose.yaml"),
              "-f", str(ROOT / "scripts/fixtures/model-compose.yaml"), *monitoring, *args],
-            cwd=ROOT, env=env, check=True, input=stdin, stdout=subprocess.PIPE if capture else None, text=True,
+            cwd=ROOT, env=env, check=True, input=stdin.encode("utf-8") if stdin is not None else None,
+            stdout=subprocess.PIPE if capture else None,
         )
-        return (result.stdout or "").strip()
+        return (result.stdout or b"").decode("utf-8").strip()
 
     def start(*options: str) -> str:
         compose("up", "-d", *options)
@@ -65,6 +69,12 @@ def main(browser: bool, observability: bool) -> None:
                        "-v", "ON_ERROR_STOP=1", "-Atc", query, capture=True)
 
     try:
+        if benchmark_only:
+            from benchmark import run_benchmark
+            base = start("--build", "--scale", "worker=2")
+            compose("build", "operator")
+            run_benchmark(base, compose, sql, None, benchmark_report, observability)
+            return
         # Exercise admission and destructive migration fixtures before enabling dispatch.
         base = start("--build", "--scale", "worker=0", "--scale", "publisher=0")
         await_json(base, "/health/live", 200, {"status": "alive"})
@@ -100,7 +110,10 @@ def main(browser: bool, observability: bool) -> None:
             compose("stop", "publisher", "worker")
         check_approvals(base, run_path, token, compose, sql, browser)
         check_workers(base, run_path, token, compose, sql)
-        check_recovery(base, run_path, token, remote, compose, sql)
+        recovery = check_recovery(base, run_path, token, remote, compose, sql)
+        if benchmark_report:
+            from benchmark import run_benchmark
+            run_benchmark(base, compose, sql, recovery, benchmark_report, observability)
         for service in ("redis", "postgres"):
             compose("stop", service)
             await_json(base, "/health/live", 200, {"status": "alive"})
@@ -135,5 +148,9 @@ if __name__ == "__main__":
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--browser", action="store_true", help="also run the installed Playwright suite")
     parser.add_argument("--observability", action="store_true", help="also exercise Grafana, Prometheus, Jaeger and SSE")
+    parser.add_argument("--benchmark-report", type=Path, metavar="JSON", help="run the bounded k6 workloads and write raw measurements")
+    parser.add_argument("--benchmark-only", action="store_true", help="run load and fault benchmarks on a fresh stack")
     args = parser.parse_args()
-    main(args.browser, args.observability)
+    if args.benchmark_only and (not args.benchmark_report or args.browser):
+        parser.error("--benchmark-only requires --benchmark-report and runs independently of --browser")
+    main(args.browser, args.observability, args.benchmark_report, args.benchmark_only)

@@ -32,6 +32,7 @@ def check_recovery(base, run_path, token, version, compose, sql):
              "Previous events still pending")
     compose("stop", "publisher")
     body = {"agent_version_id": version, "input": {"mode": "tool"}}
+    recovery_samples = []
     key = str(uuid4())
     process("api", "after_api_commit", json.dumps({"path": root + "/runs", "body": body,
         "headers": {"Authorization": "Bearer " + token, "Idempotency-Key": key}}))
@@ -59,6 +60,8 @@ def check_recovery(base, run_path, token, version, compose, sql):
             process("worker", fault)
         saved = get(run, "/checkpoints")
         assert len(saved) == boundary, (fault, saved)
+        expiry_query = f"SELECT extract(epoch FROM expires_at) FROM worker_leases WHERE run_id='{run}'"
+        expiry = sql(expiry_query)
         if fault == "after_tool_effect":
             pending = get(run, "/steps")[-1]
             assert pending["kind"] == "tool" and pending["status"] == "pending"
@@ -73,11 +76,17 @@ def check_recovery(base, run_path, token, version, compose, sql):
                 finally:
                     compose("start", "postgres")
                 wait_for(lambda: request_json(base+"/health/ready")[0] == 200, "Database did not recover")
+                expiry = sql(expiry_query)  # Last committed renewal before the database outage.
             compose("start", "worker")
         wait_for(lambda: get(run)["status"] in {"SUCCEEDED", "FAILED"}, f"Recovery stalled at {fault}")
         attempts = get(run, "/attempts")
         assert len(attempts) == 2 and attempts[0]["outcome"] == "lease_expired", (fault, attempts, get(run))
         assert attempts[0]["worker_id"] != attempts[1]["worker_id"]
+        elapsed = float(sql(f"""SELECT 1000*(extract(epoch FROM started_at)-{float(expiry)})
+            FROM attempts WHERE run_id='{run}' AND number=2"""))
+        assert elapsed >= 0
+        recovery_samples.append({"fault": fault, "expiry_to_claim_ms": round(elapsed, 3),
+                                 "outcome": attempts[1]["outcome"]})
         history = get(run, "/checkpoints")
         assert history[:boundary] == saved
         usage = get(run, "/usage")["items"]
@@ -96,3 +105,4 @@ def check_recovery(base, run_path, token, version, compose, sql):
         compose("stop", "worker")
         print(f"Recovery {fault}: {run}, {attempts[0]['outcome']} -> {attempts[1]['outcome']}.", flush=True)
     print("Recovery checks passed, including API response loss, lost publish acknowledgement and keyed tool replay.")
+    return recovery_samples

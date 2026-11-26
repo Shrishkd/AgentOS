@@ -5,14 +5,14 @@ permissions:
 jobs:
   verify:
     runs-on: ubuntu-latest
-    timeout-minutes: 20
+    timeout-minutes: 30
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-python@v5
         with:
           python-version: "3.12"
       - run: python -m pip install uv==0.12.24
-      - run: uv run --locked pytest -q
+      - run: uv run --locked pytest -q tests integration ../scripts/test_benchmark.py
         working-directory: backend
       - uses: actions/setup-node@v4
         with:
@@ -23,4 +23,9 @@ jobs:
         working-directory: dashboard
       - run: npx playwright install --with-deps chromium
         working-directory: dashboard
-      - run: python scripts/check_foundation.py --browser --observability
+      - run: python scripts/check_foundation.py --browser --observability --benchmark-report test-results/phase9.json
+      - uses: actions/upload-artifact@v4
+        with:
+          name: phase9-measurements
+          path: test-results/phase9.json
+          if-no-files-found: error

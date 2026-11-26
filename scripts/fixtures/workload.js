@@ -8,6 +8,7 @@ const cases = {
   timeout: { vus: 10, iterations: 1 },
 };
 const name = __ENV.WORKLOAD;
+if (!cases[name]) throw new Error("Select a configured benchmark workload");
 export const options = {
   scenarios: { submissions: { executor: "per-vu-iterations", ...cases[name], maxDuration: "3m" } },
 };
@@ -24,7 +25,8 @@ export default function () {
       },
       redirects: 0, timeout: "60s",
     });
-  console.log(JSON.stringify({ index, status: response.status, ms: response.timings.duration }));
+  console.log("AGENTOS_SAMPLE " + JSON.stringify({ index, status: response.status, ms: response.timings.duration,
+    error_code: response.error_code || null }));
 }
 
 export function handleSummary() { return {}; }

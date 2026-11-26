@@ -54,7 +54,9 @@ async def check_scope(port, password):
 def test_transaction_local_tenant_isolation(monkeypatch, tmp_path):
     password = uuid4().hex
     container = DockerContainer("postgres:17-alpine").with_env("POSTGRES_PASSWORD", password)
-    with container.with_bind_ports(5432, ("127.0.0.1", None)):
+    # Docker SDK host-address form requests an ephemeral loopback-only port.
+    container.ports["5432/tcp"] = ("127.0.0.1", None)
+    with container:
         port = container.get_exposed_port(5432)
         asyncio.run(initialize(port, password))
         secret = tmp_path / "pg-password"
