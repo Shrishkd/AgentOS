@@ -51,7 +51,10 @@ class Handler(BaseHTTPRequestHandler):
                 return
         if mode == "timeout":
             sleep(2)
-        if mode == "tool" and messages[-1]["role"] == "user":
+        if mode == "long":
+            sleep(0.5)
+        if ((mode == "tool" and messages[-1]["role"] == "user") or
+                (mode == "long" and sum(m["role"] == "tool" for m in messages) < 24)):
             assert payload["tools"][0]["function"]["name"] == "text_length"
             message = {"tool_calls": [{"id": "call_1", "type": "function",
                        "function": {"name": "text_length", "arguments": '{"text":"hello"}'}}]}

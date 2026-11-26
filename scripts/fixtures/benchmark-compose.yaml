@@ -1,0 +1,15 @@
+services:
+  postgres:
+    command: ["postgres", "-c", "shared_preload_libraries=pg_stat_statements"]
+  k6:
+    image: grafana/k6:1.3.0
+    profiles: ["benchmarks"]
+    volumes:
+      - ./scripts/fixtures/workload.js:/workload.js:ro
+    entrypoint:
+      - /bin/sh
+      - -ec
+      - |
+        read -r BENCH_TOKEN
+        export BENCH_TOKEN
+        exec k6 run --quiet --log-output stdout --log-format raw /workload.js
