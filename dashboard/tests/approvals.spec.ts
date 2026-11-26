@@ -14,6 +14,8 @@ test("approve the displayed report proposal", async ({ page }) => {
   await page.getByRole("button", { name: "Approve", exact: true }).click();
   await expect(page.getByRole("status")).toContainText("save_report approved.");
   await expect(page.getByText("No actions are waiting for approval.")).toBeVisible();
+  await page.getByRole("combobox", { name: "State", exact: true }).selectOption("approved");
+  await expect(page.getByRole("row").filter({ hasText: "save_report" }).first()).toContainText("approved");
   await page.getByRole("button", { name: "Disconnect" }).click();
   await expect(page.getByLabel("Access token")).toBeEmpty();
 });

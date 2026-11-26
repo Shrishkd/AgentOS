@@ -72,8 +72,9 @@ services:
     entrypoint: ["/bin/sh", "-ec"]
     command:
       - |
-        export WORKER_PASSWORD="$$(cat /secrets/worker)"
-        export PUBLISHER_PASSWORD="$$(cat /secrets/publisher)"
+        # NATS parses environment substitutions as configuration values. Quote the stored base64 strings.
+        export WORKER_PASSWORD="\"$$(cat /secrets/worker)\""
+        export PUBLISHER_PASSWORD="\"$$(cat /secrets/publisher)\""
         exec nats-server -c /etc/nats/agentos.conf
     volumes:
       - js-data:/data

@@ -2,13 +2,13 @@
 
 AgentOS is a runtime under development for long-running AI agents. Its design pins each task to an agent version, records worker progress in PostgreSQL and pauses protected actions for human approval.
 
-**Phase 7 · Execution observability.** Start the local stack with Grafana, Prometheus and Jaeger from this directory.
+**Phase 8 · Developer dashboard.** Start the local stack with Grafana, Prometheus and Jaeger from this directory.
 
 ```sh
 docker compose -f compose.yaml -f compose.observability.yaml up -d --build
 ```
 
-Open the [system health dashboard](http://127.0.0.1:8080) or [API reference](http://127.0.0.1:8080/docs). Workers execute receipt, deterministic model and configured OpenAI-compatible runs. Model-backed agents can call a granted text-length tool and return a final answer. Inspect their ordered steps, provider invocations, tokens and estimated costs through the API. [Run a model-backed agent](docs/operations/model-runtime.md) · [Register your first agent](docs/operations/first-run.md)
+Open the workspace and connect with a tenant ID and bearer token. In **Agents**, create an agent, save and publish a version, then start a run. Follow its live timeline, inspect step results, review protected actions, and compare model and tool usage. **System health** is available before sign-in. [Dashboard](http://127.0.0.1:8080) · [Get local credentials](docs/operations/first-run.md) · [API reference](http://127.0.0.1:8080/docs)
 
 Workers resume interrupted model runs from committed checkpoints. The recovery suite kills service processes at known boundaries and verifies the replacement worker's output, attempts and usage. [Recovery walkthrough](docs/operations/worker-failure-runbook.md#verify-checkpoint-recovery)
 

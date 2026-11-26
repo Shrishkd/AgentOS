@@ -69,7 +69,7 @@ def main(browser: bool, observability: bool) -> None:
         base = start("--build", "--scale", "worker=0", "--scale", "publisher=0")
         await_json(base, "/health/live", 200, {"status": "alive"})
         with urlopen(base + "/", timeout=5) as response:
-            assert "System health" in response.read().decode()
+            assert "AgentOS" in response.read().decode()
         if browser:
             subprocess.run([shutil.which("npm.cmd" if os.name == "nt" else "npm"), "run", "test:browser",
                             "--", "system-health.spec.ts"],
@@ -87,6 +87,17 @@ def main(browser: bool, observability: bool) -> None:
         remote = check_models(base, run_path, token, compose, sql)
         if observability:
             check_observability(base, run_path, token, remote, compose, sql)
+        if browser:
+            dashboard_tenant = compose("run", "--rm", "--no-deps", "-T", "operator", "grant", "--tenant",
+                                       "dashboard-test", "--subject", "dashboard-tester", "--role", "developer", capture=True)
+            dashboard_token = compose("run", "--rm", "--no-deps", "-T", "operator", "token",
+                                      "--subject", "dashboard-tester", capture=True)
+            compose("start", "publisher", "worker")
+            subprocess.run([shutil.which("npm.cmd" if os.name == "nt" else "npm"), "run", "test:browser",
+                            "--", "workspace.spec.ts"], cwd=ROOT / "dashboard",
+                           env={**env, "AGENTOS_TEST_URL": base, "AGENTOS_TEST_TENANT": dashboard_tenant,
+                                "AGENTOS_DASHBOARD_TOKEN": dashboard_token}, check=True)
+            compose("stop", "publisher", "worker")
         check_approvals(base, run_path, token, compose, sql, browser)
         check_workers(base, run_path, token, compose, sql)
         check_recovery(base, run_path, token, remote, compose, sql)

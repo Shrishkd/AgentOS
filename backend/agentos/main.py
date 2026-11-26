@@ -14,6 +14,7 @@ from sqlalchemy.ext.asyncio import create_async_engine
 from .config import Settings
 from .telemetry import tracing
 from .observability import router as observability
+from .workspace import router as workspace
 from .health import Readiness, check_readiness, dependency_checks
 from .logging import logging_config
 from .domain import DomainError
@@ -49,6 +50,7 @@ def create_app(settings: Settings) -> FastAPI:
     app.include_router(model_execution)
     app.include_router(tools)
     app.include_router(observability)
+    app.include_router(workspace)
 
     @app.exception_handler(DomainError)
     async def domain_error(request: Request, exc: DomainError):

@@ -22,6 +22,7 @@ class Step(BaseModel):
     result: JsonValue
     error_code: str | None
     tool_version_id: UUID | None
+    tool_name: str | None
     dispatch_count: int
     last_dispatch_error: str | None
     created_at: datetime
@@ -80,7 +81,8 @@ async def checkpoints(run_id: UUID, access: Access, after: Annotated[int, Query(
 @router.get("/steps", response_model=list[Step])
 async def steps(run_id: UUID, access: Access, after: Annotated[int, Query(ge=0)] = 0, limit: Limit = 50):
     await one(access, "SELECT id FROM runs WHERE tenant_id=:tenant AND id=:id", id=run_id)
-    return (await access.db.execute(text("""SELECT id,ordinal,kind,status,result,error_code,tool_version_id,dispatch_count,last_dispatch_error,
+    return (await access.db.execute(text("""SELECT id,ordinal,kind,status,result,error_code,tool_version_id,
+        CASE WHEN kind='tool' THEN request->>'name' END AS tool_name,dispatch_count,last_dispatch_error,
         created_at,ended_at FROM steps WHERE tenant_id=:tenant AND run_id=:run AND ordinal>:after
         ORDER BY ordinal LIMIT :limit"""), {"tenant": access.tenant, "run": run_id, "after": after,
                                            "limit": limit})).mappings().all()

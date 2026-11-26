@@ -11,7 +11,9 @@ $headers = @{ Authorization = "Bearer $accessToken" }
 $rootUrl = "http://127.0.0.1:8080/v1/tenants/$tenantId"
 ```
 
-Create an agent once. On subsequent visits, retrieve its ID with `GET /agents`. The same agent can have multiple published versions.
+Open the [dashboard](http://127.0.0.1:8080) and enter the tenant ID and access token. Under **Agents**, choose **Create agent**, then **New version**. Select the mock provider for a local deterministic run. Save the draft, publish it, select **Start run**, and submit a JSON object. The run detail page tails the execution timeline. Workspace navigation keeps the session in memory. Reloading or disconnecting clears the token. Settings saves the theme preference on this device.
+
+For the equivalent API workflow, create an agent once. On subsequent visits, retrieve its ID with `GET /agents`. The same agent can have multiple published versions.
 
 ```powershell
 $agent = Invoke-RestMethod -Method Post -Uri "$rootUrl/agents" -Headers $headers -ContentType application/json -Body '{"name":"Reporter"}'

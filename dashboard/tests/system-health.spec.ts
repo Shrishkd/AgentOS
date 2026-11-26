@@ -6,7 +6,7 @@ test.use({
 });
 
 test("shows live checks, handles an unreachable API and recovers on refresh", async ({ page }) => {
-  await page.goto("/");
+  await page.goto("/system-health");
   await expect(page.getByRole("status")).toContainText("4 of 4 services passed");
   await expect(page.getByRole("listitem")).toHaveCount(4);
 

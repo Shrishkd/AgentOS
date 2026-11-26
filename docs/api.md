@@ -67,6 +67,12 @@ Submit a run with `Idempotency-Key: summarize-42`. The key is an opaque string o
 
 Hash the canonical, validated submission including version, input, priority and caller-supplied deadline after applying stable defaults. Exclude server-generated timestamps. Look up the tenant/key before checking publication state or recomputing a relative deadline for a replay. A unique constraint resolves concurrent inserts. A reused key with a different request yields 409 `idempotency_conflict`.
 
+## Dashboard read models
+
+All three workspace routes require tenant membership. `GET /workspace` returns the tenant slug, verified role and admission limits. `GET /overview` returns all-time run counts, pending approvals and healthy workers with activity in that tenant. `GET /analytics?days=7` returns daily execution totals, terminal durations, model tokens, priced agent usage and tool dispatches over 1–90 UTC calendar days. Execution cohorts use the submission date. Invocation and tool totals use their own creation dates.
+
+`GET /runs?search=...` matches a run ID prefix or a substring of its agent name and combines with the existing filters and cursor. Tenant worker rows include active run IDs and the latest tenant-visible error outcome and time.
+
 ## Errors and event resumption
 
 ```json

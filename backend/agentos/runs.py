@@ -95,8 +95,13 @@ async def submit(body: RunInput, request: Request, response: Response, access: A
 
 @router.get("", response_model=Page[Run])
 async def list_runs(access: Access, status: State | None = None, agent_id: UUID | None = None,
-                    agent_version_id: UUID | None = None, limit: Limit = 50, cursor: Cursor = None):
+                    agent_version_id: UUID | None = None, limit: Limit = 50, cursor: Cursor = None,
+                    search: Annotated[str, Query(min_length=1, max_length=128)] | None = None):
     sql, params = RUNS, {}
+    if search:
+        sql += """ AND (starts_with(t.id::text,lower(:search)) OR EXISTS (SELECT FROM agent_versions v
+            JOIN agents a ON a.id=v.agent_id WHERE v.id=t.agent_version_id AND strpos(lower(a.name),lower(:search))>0))"""
+        params["search"] = search
     if status is not None:
         sql += " AND t.status=:status"
         params["status"] = status.value

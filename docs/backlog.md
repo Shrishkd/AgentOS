@@ -2,7 +2,7 @@
 
 Each row is a reviewable increment. Phase numbers identify handoff points. Acceptance criteria describe evidence to collect as implementation lands.
 
-Phases 0–7 cover design, foundation, registry, distributed workers, model execution, checkpoint recovery, human approval and execution observability. The next increment is the Phase 8 product dashboard. [Inspect an execution](operations/observability.md) · [Review a protected tool call](operations/tool-approvals.md) · [Reproduce worker recovery](operations/worker-failure-runbook.md#verify-checkpoint-recovery)
+Phases 0–8 cover the runtime, recovery, approvals, observability and tenant dashboard. The next increment is Phase 9 reliability and performance. [Use the dashboard](operations/first-run.md) · [Inspect an execution](operations/observability.md) · [Review a protected tool call](operations/tool-approvals.md)
 
 | Phase / increment | Depends on | Work and acceptance criteria |
 | --- | --- | --- |
