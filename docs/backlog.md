@@ -2,7 +2,7 @@
 
 Each row is a reviewable increment. Phase numbers identify handoff points. Acceptance criteria describe evidence to collect as implementation lands.
 
-Phases 0–8 cover the runtime, recovery, approvals, observability and tenant dashboard. The next increment is Phase 9 reliability and performance. [Use the dashboard](operations/first-run.md) · [Inspect an execution](operations/observability.md) · [Review a protected tool call](operations/tool-approvals.md)
+Phases 0–9 cover the runtime, recovery, approvals, observability, tenant dashboard and reliability benchmarks. Phase 10 covers deployment. Phase 9 measured slow dispatch and burst admission, with all five measured recoveries within 30 seconds. [Benchmark results](../benchmarks/results.md) · [Use the dashboard](operations/first-run.md) · [Inspect an execution](operations/observability.md)
 
 | Phase / increment | Depends on | Work and acceptance criteria |
 | --- | --- | --- |
