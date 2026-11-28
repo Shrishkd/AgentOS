@@ -111,6 +111,12 @@ def check_registry(base, compose, sql):
     sql(f"UPDATE tenants SET submissions_per_minute=120 WHERE id='{tenant}'")
     sql(f"UPDATE tenants SET pending_limit=3 WHERE id='{tenant}'")
     call("/runs", "POST", body, "over-quota", 429)
+    sql(f"UPDATE tenants SET pending_limit=4 WHERE id='{tenant}'")
+    with ThreadPoolExecutor(8) as pool:
+        contenders = list(pool.map(lambda n: request_json(url+"/runs", "POST", body, token, f"last-slot-{n}"), range(8)))
+    assert sorted(item[0] for item in contenders) == [201] + [429]*7
+    accepted = next(data["id"] for code, data, _ in contenders if code == 201)
+    call("/runs/"+accepted+"/cancel", "POST")
     call(versions+"/"+version+"/deactivate", "POST")
     call(publish, "POST", expected=409)
     call("/runs", "POST", body, "another", 409)

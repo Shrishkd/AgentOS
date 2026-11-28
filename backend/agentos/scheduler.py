@@ -83,7 +83,7 @@ class Scheduler:
                 WHERE EXISTS (SELECT FROM execution_queue q WHERE q.tenant_id=t.id AND {SUPPORTED})
                 AND (SELECT count(*) FROM worker_leases l WHERE l.tenant_id=t.id
                      AND l.expires_at>clock_timestamp()) < t.concurrency_limit
-                ORDER BY t.last_admitted_at NULLS FIRST,t.id LIMIT 1 FOR UPDATE SKIP LOCKED"""), {"remote": self.remote_model})
+                ORDER BY t.last_admitted_at NULLS FIRST,t.id LIMIT 1 FOR NO KEY UPDATE SKIP LOCKED"""), {"remote": self.remote_model})
             if tenant is None:
                 return None
             # Recheck capacity in a fresh READ COMMITTED snapshot after obtaining the tenant lock.

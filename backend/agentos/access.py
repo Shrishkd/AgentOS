@@ -1,18 +1,26 @@
 from collections.abc import AsyncIterator
 from contextlib import asynccontextmanager
 from dataclasses import dataclass
+from functools import lru_cache
 from typing import Annotated
 from uuid import UUID
 
 import jwt
 from fastapi import Depends, Request
 from fastapi.security import HTTPAuthorizationCredentials, HTTPBearer
+from jwt.algorithms import RSAAlgorithm
 from sqlalchemy import text
 from sqlalchemy.ext.asyncio import AsyncConnection
 
 from .domain import DomainError, missing
 
 bearer = HTTPBearer(auto_error=False)
+
+
+@lru_cache(maxsize=1)
+def verification_key(pem: bytes):
+    # Key rotation changes the cache key. Claims and expiry are verified on every request.
+    return RSAAlgorithm(RSAAlgorithm.SHA256).prepare_key(pem)
 
 
 @dataclass
@@ -50,7 +58,7 @@ async def scoped_access(request: Request, tenant_id: UUID, credentials: Credenti
     if not credentials:
         raise unauthorized
     try:
-        key = settings.token_public_key_file.read_bytes()
+        key = verification_key(settings.token_public_key_file.read_bytes())
         claims = jwt.decode(credentials.credentials, key, algorithms=["RS256"], issuer=settings.token_issuer,
                             audience=settings.token_audience, options={"require": ["exp", "sub", "iss", "aud"]})
     except jwt.InvalidTokenError:
@@ -58,9 +66,7 @@ async def scoped_access(request: Request, tenant_id: UUID, credentials: Credenti
     except (OSError, jwt.InvalidKeyError):
         raise DomainError(503, "identity_unavailable", "Identity verification is unavailable.") from None
     async with request.app.state.engine.begin() as db:
-        await db.execute(text("SELECT set_config('agentos.tenant_id', :tenant, true)"), {"tenant": str(tenant_id)})
-        member = (await db.execute(text("""SELECT id, role FROM users
-            WHERE tenant_id=:tenant AND issuer=:issuer AND subject=:subject AND enabled"""),
+        member = (await db.execute(text("SELECT id,role FROM scoped_member(:tenant,:issuer,:subject)"),
             {"tenant": tenant_id, "issuer": claims["iss"], "subject": claims["sub"]})).mappings().one_or_none()
         if member is None:
             raise missing()

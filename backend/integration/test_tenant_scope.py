@@ -35,11 +35,13 @@ async def check_scope(port, password):
         for tenant, name in ((first, "alpha"), (second, "beta")):
             await db.execute("INSERT INTO tenants(id,slug) VALUES($1,$2)", tenant, name)
             await db.execute("INSERT INTO agents(tenant_id,name) VALUES($1,$2)", tenant, name)
+            await db.execute("INSERT INTO users(tenant_id,issuer,subject,role) VALUES($1,'issuer',$2,'viewer')",
+                             tenant, name)
         await db.execute("SET ROLE agentos_api")
         assert not await db.fetch("SELECT name FROM agents")
         for tenant, expected in ((first, "alpha"), (second, "beta")):
             async with db.transaction():
-                await db.execute("SELECT set_config('agentos.tenant_id',$1,true)", str(tenant))
+                assert await db.fetchval("SELECT role FROM scoped_member($1,'issuer',$2)", tenant, expected) == "viewer"
                 assert await db.fetchval("SELECT array_agg(name) FROM agents") == [expected]
             assert not await db.fetch("SELECT name FROM agents")
         with pytest.raises(asyncpg.InsufficientPrivilegeError):

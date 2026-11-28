@@ -14,8 +14,8 @@ from sqlalchemy import text
 
 from .access import Access, Credentials, scoped_access
 from .contracts import Page, Run, RunInput
-from .domain import DomainError, State, TERMINAL
-from .lifecycle import RUNS, record_event, transition
+from .domain import DomainError, State, TERMINAL, missing
+from .lifecycle import RUNS, transition
 from .queries import Cursor, Limit, one, page
 from .telemetry import execution_span, traceparent
 
@@ -52,43 +52,48 @@ async def submit(body: RunInput, request: Request, response: Response, access: A
     access.require_developer()
     db = access.db
     digest = fingerprint(body)
-    # Serialize each tenant's admissions so both quota and key checks observe the previous commit.
-    await db.execute(text("SELECT pg_advisory_xact_lock(hashtextextended(:scope,0))"),
-                     {"scope": f"admission:{access.tenant}"})
-    existing = (await db.execute(text("""SELECT id,request_hash FROM runs
-        WHERE tenant_id=:tenant AND submission_key=:key"""), {"tenant": access.tenant, "key": key})).mappings().one_or_none()
-    if existing:
-        if existing["request_hash"] != digest:
+    admission = await one(access, "SELECT * FROM prepare_submission(:tenant,:key,:id)", key=key, id=body.agent_version_id)
+    if admission["existing_id"]:
+        if admission["digest"] != digest:
             raise DomainError(409, "idempotency_conflict", "The key belongs to a different submission.")
         response.status_code = 200
-        row = await one(access, RUNS + " AND t.id=:id", id=existing["id"])
+        row = await one(access, RUNS + " AND t.id=:id", id=admission["existing_id"])
     else:
-        version = await one(access, """SELECT state,limits FROM agent_versions
-            WHERE tenant_id=:tenant AND id=:id FOR SHARE""", id=body.agent_version_id)
-        if version["state"] != "PUBLISHED":
+        if admission["state"] is None:
+            raise missing()
+        if admission["state"] != "PUBLISHED":
             raise DomainError(409, "version_unavailable", "New runs require a published version.")
-        now = await db.scalar(text("SELECT clock_timestamp()"))
-        deadline = now + timedelta(seconds=version["limits"]["timeout_seconds"])
+        now = admission["db_now"]
+        deadline = now + timedelta(seconds=admission["timeout_seconds"])
         if body.deadline_at is not None:
             deadline = min(deadline, body.deadline_at)
         if deadline <= now:
             raise DomainError(422, "deadline_elapsed", "The requested deadline has elapsed.")
-        quota = await one(access, """SELECT pending_limit,submissions_per_minute,
-            (SELECT count(*) FROM runs WHERE tenant_id=:tenant AND status NOT IN
-            ('SUCCEEDED','FAILED','CANCELLED','TIMED_OUT')) AS pending FROM tenants WHERE id=:tenant""")
-        if quota["pending"] >= quota["pending_limit"]:
+        if not admission["has_room"]:
             raise DomainError(429, "quota_exceeded", "Tenant pending run quota reached.", {"Retry-After": "1"})
-        await check_rate(request, access.tenant, quota["submissions_per_minute"])
         run_id = uuid4()
+        await check_rate(request, access.tenant, admission["rate_limit"])
         with execution_span("run.submit", root=True, run_id=str(run_id), request_id=access.request_id):
-            await db.execute(text("""INSERT INTO runs (id,tenant_id,agent_version_id,submitter_id,
-                submission_key,request_hash,input,priority,deadline_at,traceparent) VALUES
-                (:run,:tenant,:version,:user,:key,:digest,CAST(:input AS jsonb),:priority,:deadline,:parent)"""),
+            # A single statement creates the initial state, ordered history and wakeup.
+            # Returning through the CTE avoids reading our own insert with an older snapshot.
+            row = (await db.execute(text("""WITH admitted AS (
+                SELECT clock_timestamp() AS ts
+            ), inserted AS (INSERT INTO runs (id,tenant_id,agent_version_id,submitter_id,
+                submission_key,request_hash,input,priority,deadline_at,traceparent,status,revision,enqueued_at,updated_at)
+                SELECT :run,:tenant,:version,:user,:key,:digest,CAST(:input AS jsonb),:priority,:deadline,:parent,
+                    CASE WHEN :deadline <= ts THEN 'TIMED_OUT' ELSE 'QUEUED' END,2,
+                    CASE WHEN :deadline > ts THEN ts END,ts FROM admitted RETURNING *
+            ), history AS (INSERT INTO run_events(tenant_id,run_id,seq,kind,payload)
+                SELECT tenant_id,id,seq,'run.state',jsonb_build_object('status',
+                    CASE seq WHEN 1 THEN 'CREATED' ELSE status END)
+                FROM inserted CROSS JOIN generate_series(1,2) seq
+            ), wakeup AS (INSERT INTO outbox_events(tenant_id,run_id,kind)
+                SELECT tenant_id,id,'run.queued' FROM inserted WHERE status='QUEUED'
+            ) SELECT id,agent_version_id,submitter_id,status,revision,priority,deadline_at,
+                enqueued_at,created_at,updated_at,input,output,failure_reason,retry_at FROM inserted"""),
                 {"run": run_id, "tenant": access.tenant, "version": body.agent_version_id, "user": access.user,
                  "key": key, "digest": digest, "input": json.dumps(body.input), "priority": body.priority,
-                 "deadline": deadline, "parent": traceparent()})
-            await record_event(access, run_id, 1, State.CREATED)
-            row = await transition(access, run_id, State.CREATED, State.QUEUED, 1)
+                 "deadline": deadline, "parent": traceparent()})).mappings().one()
     response.headers["Location"] = f"/v1/tenants/{access.tenant}/runs/{row['id']}"
     return row
 
