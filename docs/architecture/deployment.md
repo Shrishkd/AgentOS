@@ -25,7 +25,7 @@ Compose supplies the API, dashboard, PostgreSQL, Redis, JetStream, outbox publis
 
 Liveness checks prove the process can respond. Readiness verifies dependencies used by that service and the expected migration revision. The API can durably accept a submission during broker downtime while PostgreSQL and admission controls are healthy. Workers wait for database and consumer readiness before pulling. Migration runs once per rollout before new application instances become ready.
 
-Production deployment adds TLS and workload credentials, separate database roles, limited egress, tested point-in-time database restore, resource limits, graceful drains and alerts on queue age, unpublished outbox age and expired leases. Ship stateless API and worker images separately from stateful backing services. Introduce Kubernetes after Compose recovery tests and backup restoration pass.
+The production Compose overlay terminates TLS at a non-root gateway, runs application images with read-only roots and dropped capabilities, and keeps stateful services on an internal network. The API defaults to three processes with four PostgreSQL connections each. Budget database connections for every API and worker replica. The private Prometheus instance routes alerts through the configured Alertmanager receiver. The deployment drill restores a physical backup into new volumes, replays WAL and verifies the interrupted run through HTTPS. [Deployment and recovery runbook](../operations/production.md)
 
 ## Development environment inspected for Phase 0
 

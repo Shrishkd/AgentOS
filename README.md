@@ -2,7 +2,7 @@
 
 AgentOS is a runtime under development for long-running AI agents. Its design pins each task to an agent version, records worker progress in PostgreSQL and pauses protected actions for human approval.
 
-**Phase 9 · Reliability and performance.** The benchmark covers 220 submissions, five worker-loss scenarios and broker redelivery. Recovery met its initial target. Burst submission and queue dispatch exceeded theirs. [Measured results](benchmarks/results.md) · [Reproduce the suite](benchmarks/methodology.md)
+**Phase 10 · Deployment.** The production Compose release serves HTTPS, drains workers during upgrades, routes operational alerts and recovers interrupted runs from PostgreSQL base backups and archived WAL. [Deployment and recovery runbook](docs/operations/production.md) · [Performance measurements](benchmarks/results.md)
 
 Start the local stack with Grafana, Prometheus and Jaeger from this directory.
 

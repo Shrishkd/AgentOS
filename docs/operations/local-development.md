@@ -16,7 +16,7 @@ Phase 2 grants that API login scoped registry and run privileges, forces row-lev
 
 The API opens long-lived async client pools and closes them at shutdown. A readiness request checks PostgreSQL's revision and Redis PING concurrently with per-probe timeouts. Broker health is independent so a broker outage can be identified while the control plane remains ready. The dashboard polls every ten seconds while visible and supports pausing or manually refreshing checks.
 
-`docker compose down` stops the stack and retains the database, passwords and JetStream storage. Keep the credential volumes with the PostgreSQL volume when reusing a local installation. Redis is ephemeral. The local topology assumes a trusted developer machine and Compose network. Deployment hardening is tracked in Phase 10.
+`docker compose down` stops the stack and retains the database, passwords and JetStream storage. Keep the credential volumes with the PostgreSQL volume when reusing a local installation. Redis is ephemeral. The local topology assumes a trusted developer machine and Compose network. [Production deployment](production.md)
 
 ## Environment reference
 
@@ -25,6 +25,7 @@ To override a Compose setting, set it in your shell or in a local `.env` beside 
 | Setting | Consumer | Default / purpose |
 | --- | --- | --- |
 | AGENTOS_PORT | Compose gateway binding | 8080 on 127.0.0.1. Choose a free port if already occupied. |
+| AGENTOS_API_PROCESSES | API | 3 processes, each with four pooled database connections. Accepts 1 through 8. |
 | AGENTOS_LOG_LEVEL | API | INFO. Also accepts DEBUG, WARNING or ERROR. Logs are JSON records with timestamp, status, request ID and duration. |
 | AGENTOS_HEALTH_TIMEOUT_SECONDS | API | 2 seconds per probe. Must be positive and at most 10. |
 | AGENTOS_DB_HOST / AGENTOS_DB_PORT | API and migrate | Compose supplies postgres and the client defaults to 5432. |

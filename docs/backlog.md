@@ -2,7 +2,7 @@
 
 Each row is a reviewable increment. Phase numbers identify handoff points. Acceptance criteria describe evidence to collect as implementation lands.
 
-Phases 0–9 cover the runtime, recovery, approvals, observability, tenant dashboard and reliability benchmarks. Phase 10 covers deployment. Phase 9 measured slow dispatch and burst admission, with all five measured recoveries within 30 seconds. [Benchmark results](../benchmarks/results.md) · [Use the dashboard](operations/first-run.md) · [Inspect an execution](operations/observability.md)
+Phases 0–10 are implemented. The deployment drill restores a running task into a fresh project through archived WAL, checks a worker drain with an active call, and receives an alert from the production rules. The benchmark retains the original baseline and the post-fix measurements. [Deploy and restore](operations/production.md) · [Benchmark results](../benchmarks/results.md) · [Use the dashboard](operations/first-run.md)
 
 | Phase / increment | Depends on | Work and acceptance criteria |
 | --- | --- | --- |

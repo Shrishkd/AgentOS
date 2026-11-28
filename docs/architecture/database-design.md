@@ -48,6 +48,8 @@ erDiagram
 
 ## Writes, isolation and retention
 
+Submission locks the tenant and idempotency key as a pair before checking for a replay. Independent keys can proceed concurrently while the tenant has enough free pending slots for every possible in-flight database connection. Near the limit, admission takes an exclusive tenant advisory lock and checks the count in a fresh snapshot. That check waits for shared admissions to commit and serializes the last available slots. The run, its first two history events and its queue wakeup commit together.
+
 Run transitions, events, checkpoints, lease changes and dispatch intent share a transaction when they describe the same boundary. Transactions that change capacity acquire tenant, run and worker locks in that order. Acquiring a lease increments generation even on the same worker. Use restrictive foreign key deletion for history, published versions and audit records. An ordinary user cannot hard-delete these records.
 
 Enforce row-level security on tenant-owned tables using transaction-local verified tenant context for both reads and writes. Use a non-owner API role without bypass privileges and force RLS on tenant tables. Global scheduler scans and outbox operations use a separate narrowly privileged service identity. Public queries cannot select the global worker table directly. [PostgreSQL row security](https://www.postgresql.org/docs/current/ddl-rowsecurity.html)

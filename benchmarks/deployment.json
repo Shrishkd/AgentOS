@@ -1,0 +1,5739 @@
+{
+  "started_utc": "2026-11-28T07:45:05.455380+00:00",
+  "environment": {
+    "engine": "29.9.3",
+    "os": "Docker Desktop",
+    "arch": "x86_64",
+    "cpus": 12,
+    "memory_bytes": 3790360576,
+    "host": "Windows-11-10.0.26300-SP0",
+    "cpu_model": "AMD Ryzen 5 5600H with Radeon Graphics",
+    "postgres": "17.12",
+    "python": "3.15.0",
+    "k6": "1.3.0",
+    "workers": 2,
+    "slots": 4,
+    "observability": true
+  },
+  "recovery": [
+    {
+      "fault": "before_dispatch",
+      "expiry_to_claim_ms": 9485.849,
+      "outcome": "SUCCEEDED"
+    },
+    {
+      "fault": "after_tool_effect",
+      "expiry_to_claim_ms": 4786.782,
+      "outcome": "SUCCEEDED"
+    },
+    {
+      "fault": "database_renewal",
+      "expiry_to_claim_ms": 24358.903,
+      "outcome": "SUCCEEDED"
+    },
+    {
+      "fault": "after_final_checkpoint",
+      "expiry_to_claim_ms": 10610.948,
+      "outcome": "SUCCEEDED"
+    },
+    {
+      "fault": "after_provider_reply",
+      "expiry_to_claim_ms": 12198.628,
+      "outcome": "FAILED"
+    }
+  ],
+  "workloads": {
+    "sequential": {
+      "submissions": [
+        {
+          "index": 0,
+          "status": 201,
+          "ms": 20.816124,
+          "error_code": null
+        },
+        {
+          "index": 1,
+          "status": 201,
+          "ms": 12.937096,
+          "error_code": null
+        },
+        {
+          "index": 2,
+          "status": 201,
+          "ms": 10.322,
+          "error_code": null
+        },
+        {
+          "index": 3,
+          "status": 201,
+          "ms": 11.028962,
+          "error_code": null
+        },
+        {
+          "index": 4,
+          "status": 201,
+          "ms": 10.540613,
+          "error_code": null
+        },
+        {
+          "index": 5,
+          "status": 201,
+          "ms": 12.71679,
+          "error_code": null
+        },
+        {
+          "index": 6,
+          "status": 201,
+          "ms": 11.36331,
+          "error_code": null
+        },
+        {
+          "index": 7,
+          "status": 201,
+          "ms": 10.932943,
+          "error_code": null
+        },
+        {
+          "index": 8,
+          "status": 201,
+          "ms": 10.049559,
+          "error_code": null
+        },
+        {
+          "index": 9,
+          "status": 201,
+          "ms": 10.695518,
+          "error_code": null
+        },
+        {
+          "index": 10,
+          "status": 201,
+          "ms": 12.849892,
+          "error_code": null
+        },
+        {
+          "index": 11,
+          "status": 201,
+          "ms": 14.564675,
+          "error_code": null
+        },
+        {
+          "index": 12,
+          "status": 201,
+          "ms": 15.312608,
+          "error_code": null
+        },
+        {
+          "index": 13,
+          "status": 201,
+          "ms": 14.025506,
+          "error_code": null
+        },
+        {
+          "index": 14,
+          "status": 201,
+          "ms": 12.565818,
+          "error_code": null
+        },
+        {
+          "index": 15,
+          "status": 201,
+          "ms": 12.980022,
+          "error_code": null
+        },
+        {
+          "index": 16,
+          "status": 201,
+          "ms": 13.226544,
+          "error_code": null
+        },
+        {
+          "index": 17,
+          "status": 201,
+          "ms": 164.245377,
+          "error_code": null
+        },
+        {
+          "index": 18,
+          "status": 201,
+          "ms": 17.244385,
+          "error_code": null
+        },
+        {
+          "index": 19,
+          "status": 201,
+          "ms": 16.625014,
+          "error_code": null
+        },
+        {
+          "index": 20,
+          "status": 201,
+          "ms": 15.3132,
+          "error_code": null
+        },
+        {
+          "index": 21,
+          "status": 201,
+          "ms": 15.400326,
+          "error_code": null
+        },
+        {
+          "index": 22,
+          "status": 201,
+          "ms": 14.252772,
+          "error_code": null
+        },
+        {
+          "index": 23,
+          "status": 201,
+          "ms": 14.414115,
+          "error_code": null
+        },
+        {
+          "index": 24,
+          "status": 201,
+          "ms": 14.901516,
+          "error_code": null
+        },
+        {
+          "index": 25,
+          "status": 201,
+          "ms": 15.381845,
+          "error_code": null
+        },
+        {
+          "index": 26,
+          "status": 201,
+          "ms": 16.503326,
+          "error_code": null
+        },
+        {
+          "index": 27,
+          "status": 201,
+          "ms": 16.616674,
+          "error_code": null
+        },
+        {
+          "index": 28,
+          "status": 201,
+          "ms": 19.952767,
+          "error_code": null
+        },
+        {
+          "index": 29,
+          "status": 201,
+          "ms": 14.844972,
+          "error_code": null
+        },
+        {
+          "index": 30,
+          "status": 201,
+          "ms": 14.701877,
+          "error_code": null
+        },
+        {
+          "index": 31,
+          "status": 201,
+          "ms": 32.4793,
+          "error_code": null
+        },
+        {
+          "index": 32,
+          "status": 201,
+          "ms": 12.747375,
+          "error_code": null
+        },
+        {
+          "index": 33,
+          "status": 201,
+          "ms": 13.439813,
+          "error_code": null
+        },
+        {
+          "index": 34,
+          "status": 201,
+          "ms": 28.555153,
+          "error_code": null
+        },
+        {
+          "index": 35,
+          "status": 201,
+          "ms": 11.253827,
+          "error_code": null
+        },
+        {
+          "index": 36,
+          "status": 201,
+          "ms": 13.80805,
+          "error_code": null
+        },
+        {
+          "index": 37,
+          "status": 201,
+          "ms": 10.698637,
+          "error_code": null
+        },
+        {
+          "index": 38,
+          "status": 201,
+          "ms": 12.240627,
+          "error_code": null
+        },
+        {
+          "index": 39,
+          "status": 201,
+          "ms": 10.796976,
+          "error_code": null
+        },
+        {
+          "index": 40,
+          "status": 201,
+          "ms": 11.410103,
+          "error_code": null
+        },
+        {
+          "index": 41,
+          "status": 201,
+          "ms": 10.296566,
+          "error_code": null
+        },
+        {
+          "index": 42,
+          "status": 201,
+          "ms": 13.112852,
+          "error_code": null
+        },
+        {
+          "index": 43,
+          "status": 201,
+          "ms": 12.335482,
+          "error_code": null
+        },
+        {
+          "index": 44,
+          "status": 201,
+          "ms": 15.686965,
+          "error_code": null
+        },
+        {
+          "index": 45,
+          "status": 201,
+          "ms": 13.761656,
+          "error_code": null
+        },
+        {
+          "index": 46,
+          "status": 201,
+          "ms": 13.356433,
+          "error_code": null
+        },
+        {
+          "index": 47,
+          "status": 201,
+          "ms": 13.05691,
+          "error_code": null
+        },
+        {
+          "index": 48,
+          "status": 201,
+          "ms": 13.504998,
+          "error_code": null
+        },
+        {
+          "index": 49,
+          "status": 201,
+          "ms": 13.397772,
+          "error_code": null
+        },
+        {
+          "index": 50,
+          "status": 201,
+          "ms": 13.98556,
+          "error_code": null
+        },
+        {
+          "index": 51,
+          "status": 201,
+          "ms": 15.21698,
+          "error_code": null
+        },
+        {
+          "index": 52,
+          "status": 201,
+          "ms": 13.168733,
+          "error_code": null
+        },
+        {
+          "index": 53,
+          "status": 201,
+          "ms": 13.249112,
+          "error_code": null
+        },
+        {
+          "index": 54,
+          "status": 201,
+          "ms": 12.382673,
+          "error_code": null
+        },
+        {
+          "index": 55,
+          "status": 201,
+          "ms": 14.842506,
+          "error_code": null
+        },
+        {
+          "index": 56,
+          "status": 201,
+          "ms": 13.461461,
+          "error_code": null
+        },
+        {
+          "index": 57,
+          "status": 201,
+          "ms": 13.798921,
+          "error_code": null
+        },
+        {
+          "index": 58,
+          "status": 201,
+          "ms": 12.829219,
+          "error_code": null
+        },
+        {
+          "index": 59,
+          "status": 201,
+          "ms": 11.758703,
+          "error_code": null
+        },
+        {
+          "index": 60,
+          "status": 201,
+          "ms": 13.753882,
+          "error_code": null
+        },
+        {
+          "index": 61,
+          "status": 201,
+          "ms": 14.562831,
+          "error_code": null
+        },
+        {
+          "index": 62,
+          "status": 201,
+          "ms": 13.792379,
+          "error_code": null
+        },
+        {
+          "index": 63,
+          "status": 201,
+          "ms": 14.528431,
+          "error_code": null
+        },
+        {
+          "index": 64,
+          "status": 201,
+          "ms": 11.950632,
+          "error_code": null
+        },
+        {
+          "index": 65,
+          "status": 201,
+          "ms": 12.759153,
+          "error_code": null
+        },
+        {
+          "index": 66,
+          "status": 201,
+          "ms": 12.172118,
+          "error_code": null
+        },
+        {
+          "index": 67,
+          "status": 201,
+          "ms": 11.360253,
+          "error_code": null
+        },
+        {
+          "index": 68,
+          "status": 201,
+          "ms": 10.927136,
+          "error_code": null
+        },
+        {
+          "index": 69,
+          "status": 201,
+          "ms": 13.043639,
+          "error_code": null
+        },
+        {
+          "index": 70,
+          "status": 201,
+          "ms": 13.652251,
+          "error_code": null
+        },
+        {
+          "index": 71,
+          "status": 201,
+          "ms": 10.464209,
+          "error_code": null
+        },
+        {
+          "index": 72,
+          "status": 201,
+          "ms": 10.878087,
+          "error_code": null
+        },
+        {
+          "index": 73,
+          "status": 201,
+          "ms": 11.587844,
+          "error_code": null
+        },
+        {
+          "index": 74,
+          "status": 201,
+          "ms": 12.16068,
+          "error_code": null
+        },
+        {
+          "index": 75,
+          "status": 201,
+          "ms": 10.879501,
+          "error_code": null
+        },
+        {
+          "index": 76,
+          "status": 201,
+          "ms": 10.973905,
+          "error_code": null
+        },
+        {
+          "index": 77,
+          "status": 201,
+          "ms": 12.190444,
+          "error_code": null
+        },
+        {
+          "index": 78,
+          "status": 201,
+          "ms": 10.725059,
+          "error_code": null
+        },
+        {
+          "index": 79,
+          "status": 201,
+          "ms": 14.467502,
+          "error_code": null
+        },
+        {
+          "index": 80,
+          "status": 201,
+          "ms": 22.62374,
+          "error_code": null
+        },
+        {
+          "index": 81,
+          "status": 201,
+          "ms": 19.123868,
+          "error_code": null
+        },
+        {
+          "index": 82,
+          "status": 201,
+          "ms": 14.657976,
+          "error_code": null
+        },
+        {
+          "index": 83,
+          "status": 201,
+          "ms": 13.218246,
+          "error_code": null
+        },
+        {
+          "index": 84,
+          "status": 201,
+          "ms": 12.337841,
+          "error_code": null
+        },
+        {
+          "index": 85,
+          "status": 201,
+          "ms": 13.716498,
+          "error_code": null
+        },
+        {
+          "index": 86,
+          "status": 201,
+          "ms": 13.195455,
+          "error_code": null
+        },
+        {
+          "index": 87,
+          "status": 201,
+          "ms": 13.668763,
+          "error_code": null
+        },
+        {
+          "index": 88,
+          "status": 201,
+          "ms": 12.916931,
+          "error_code": null
+        },
+        {
+          "index": 89,
+          "status": 201,
+          "ms": 13.264336,
+          "error_code": null
+        },
+        {
+          "index": 90,
+          "status": 201,
+          "ms": 13.32835,
+          "error_code": null
+        },
+        {
+          "index": 91,
+          "status": 201,
+          "ms": 13.329486,
+          "error_code": null
+        },
+        {
+          "index": 92,
+          "status": 201,
+          "ms": 12.601563,
+          "error_code": null
+        },
+        {
+          "index": 93,
+          "status": 201,
+          "ms": 14.324242,
+          "error_code": null
+        },
+        {
+          "index": 94,
+          "status": 201,
+          "ms": 13.646415,
+          "error_code": null
+        },
+        {
+          "index": 95,
+          "status": 201,
+          "ms": 15.799801,
+          "error_code": null
+        },
+        {
+          "index": 96,
+          "status": 201,
+          "ms": 14.273647,
+          "error_code": null
+        },
+        {
+          "index": 97,
+          "status": 201,
+          "ms": 18.69691,
+          "error_code": null
+        },
+        {
+          "index": 98,
+          "status": 201,
+          "ms": 18.587452,
+          "error_code": null
+        },
+        {
+          "index": 99,
+          "status": 201,
+          "ms": 18.928014,
+          "error_code": null
+        }
+      ],
+      "runs": [
+        {
+          "index": 0,
+          "status": "SUCCEEDED",
+          "failure_reason": null,
+          "submitted": 1795851906.551431,
+          "finished": 1795851906.708083,
+          "completion_ms": 156.652,
+          "dispatch_ms": 140.627,
+          "first_worker": "4061f7ab-111a-48ff-822b-e1bd2124ba39",
+          "busy_seconds": 0.023583,
+          "attempts": 1,
+          "steps": 0
+        },
+        {
+          "index": 1,
+          "status": "SUCCEEDED",
+          "failure_reason": null,
+          "submitted": 1795851906.566446,
+          "finished": 1795851906.73823,
+          "completion_ms": 171.784,
+          "dispatch_ms": 161.778,
+          "first_worker": "4061f7ab-111a-48ff-822b-e1bd2124ba39",
+          "busy_seconds": 0.014025,
+          "attempts": 1,
+          "steps": 0
+        },
+        {
+          "index": 2,
+          "status": "SUCCEEDED",
+          "failure_reason": null,
+          "submitted": 1795851906.578492,
+          "finished": 1795851906.779663,
+          "completion_ms": 201.171,
+          "dispatch_ms": 185.469,
+          "first_worker": "9003f4ef-475b-49cc-940e-b74eb1fc78c8",
+          "busy_seconds": 0.031784,
+          "attempts": 1,
+          "steps": 0
+        },
+        {
+          "index": 3,
+          "status": "SUCCEEDED",
+          "failure_reason": null,
+          "submitted": 1795851906.589605,
+          "finished": 1795851906.805227,
+          "completion_ms": 215.622,
+          "dispatch_ms": 196.973,
+          "first_worker": "4061f7ab-111a-48ff-822b-e1bd2124ba39",
+          "busy_seconds": 0.024789,
+          "attempts": 1,
+          "steps": 0
+        },
+        {
+          "index": 4,
+          "status": "SUCCEEDED",
+          "failure_reason": null,
+          "submitted": 1795851906.600241,
+          "finished": 1795851906.825385,
+          "completion_ms": 225.144,
+          "dispatch_ms": 214.388,
+          "first_worker": "4061f7ab-111a-48ff-822b-e1bd2124ba39",
+          "busy_seconds": 0.016753,
+          "attempts": 1,
+          "steps": 0
+        },
+        {
+          "index": 5,
+          "status": "SUCCEEDED",
+          "failure_reason": null,
+          "submitted": 1795851906.613167,
+          "finished": 1795851906.834863,
+          "completion_ms": 221.696,
+          "dispatch_ms": 214.303,
+          "first_worker": "4061f7ab-111a-48ff-822b-e1bd2124ba39",
+          "busy_seconds": 0.012191,
+          "attempts": 1,
+          "steps": 0
+        },
+        {
+          "index": 6,
+          "status": "SUCCEEDED",
+          "failure_reason": null,
+          "submitted": 1795851906.625261,
+          "finished": 1795851906.854423,
+          "completion_ms": 229.162,
+          "dispatch_ms": 221.87,
+          "first_worker": "4061f7ab-111a-48ff-822b-e1bd2124ba39",
+          "busy_seconds": 0.010314,
+          "attempts": 1,
+          "steps": 0
+        },
+        {
+          "index": 7,
+          "status": "SUCCEEDED",
+          "failure_reason": null,
+          "submitted": 1795851906.636285,
+          "finished": 1795851906.876656,
+          "completion_ms": 240.371,
+          "dispatch_ms": 233.294,
+          "first_worker": "4061f7ab-111a-48ff-822b-e1bd2124ba39",
+          "busy_seconds": 0.009654,
+          "attempts": 1,
+          "steps": 0
+        },
+        {
+          "index": 8,
+          "status": "SUCCEEDED",
+          "failure_reason": null,
+          "submitted": 1795851906.647046,
+          "finished": 1795851906.898323,
+          "completion_ms": 251.277,
+          "dispatch_ms": 244.8,
+          "first_worker": "4061f7ab-111a-48ff-822b-e1bd2124ba39",
+          "busy_seconds": 0.009554,
+          "attempts": 1,
+          "steps": 0
+        },
+        {
+          "index": 9,
+          "status": "SUCCEEDED",
+          "failure_reason": null,
+          "submitted": 1795851906.658196,
+          "finished": 1795851906.920801,
+          "completion_ms": 262.605,
+          "dispatch_ms": 255.584,
+          "first_worker": "4061f7ab-111a-48ff-822b-e1bd2124ba39",
+          "busy_seconds": 0.010041,
+          "attempts": 1,
+          "steps": 0
+        },
+        {
+          "index": 10,
+          "status": "SUCCEEDED",
+          "failure_reason": null,
+          "submitted": 1795851906.670002,
+          "finished": 1795851906.946224,
+          "completion_ms": 276.222,
+          "dispatch_ms": 268.066,
+          "first_worker": "4061f7ab-111a-48ff-822b-e1bd2124ba39",
+          "busy_seconds": 0.011766,
+          "attempts": 1,
+          "steps": 0
+        },
+        {
+          "index": 11,
+          "status": "SUCCEEDED",
+          "failure_reason": null,
+          "submitted": 1795851906.685108,
+          "finished": 1795851906.971998,
+          "completion_ms": 286.89,
+          "dispatch_ms": 279.543,
+          "first_worker": "4061f7ab-111a-48ff-822b-e1bd2124ba39",
+          "busy_seconds": 0.010509,
+          "attempts": 1,
+          "steps": 0
+        },
+        {
+          "index": 12,
+          "status": "SUCCEEDED",
+          "failure_reason": null,
+          "submitted": 1795851906.699966,
+          "finished": 1795851906.994546,
+          "completion_ms": 294.58,
+          "dispatch_ms": 286.959,
+          "first_worker": "4061f7ab-111a-48ff-822b-e1bd2124ba39",
+          "busy_seconds": 0.010539,
+          "attempts": 1,
+          "steps": 0
+        },
+        {
+          "index": 13,
+          "status": "SUCCEEDED",
+          "failure_reason": null,
+          "submitted": 1795851906.715624,
+          "finished": 1795851907.018238,
+          "completion_ms": 302.614,
+          "dispatch_ms": 294.435,
+          "first_worker": "4061f7ab-111a-48ff-822b-e1bd2124ba39",
+          "busy_seconds": 0.011999,
+          "attempts": 1,
+          "steps": 0
+        },
+        {
+          "index": 14,
+          "status": "SUCCEEDED",
+          "failure_reason": null,
+          "submitted": 1795851906.72866,
+          "finished": 1795851907.039211,
+          "completion_ms": 310.551,
+          "dispatch_ms": 300.896,
+          "first_worker": "9003f4ef-475b-49cc-940e-b74eb1fc78c8",
+          "busy_seconds": 0.014568,
+          "attempts": 1,
+          "steps": 0
+        },
+        {
+          "index": 15,
+          "status": "SUCCEEDED",
+          "failure_reason": null,
+          "submitted": 1795851906.742801,
+          "finished": 1795851907.059443,
+          "completion_ms": 316.642,
+          "dispatch_ms": 305.757,
+          "first_worker": "4061f7ab-111a-48ff-822b-e1bd2124ba39",
+          "busy_seconds": 0.015529,
+          "attempts": 1,
+          "steps": 0
+        },
+        {
+          "index": 16,
+          "status": "SUCCEEDED",
+          "failure_reason": null,
+          "submitted": 1795851906.75546,
+          "finished": 1795851907.086963,
+          "completion_ms": 331.503,
+          "dispatch_ms": 319.567,
+          "first_worker": "9003f4ef-475b-49cc-940e-b74eb1fc78c8",
+          "busy_seconds": 0.021228,
+          "attempts": 1,
+          "steps": 0
+        },
+        {
+          "index": 17,
+          "status": "SUCCEEDED",
+          "failure_reason": null,
+          "submitted": 1795851906.918796,
+          "finished": 1795851907.103811,
+          "completion_ms": 185.015,
+          "dispatch_ms": 176.025,
+          "first_worker": "4061f7ab-111a-48ff-822b-e1bd2124ba39",
+          "busy_seconds": 0.012483,
+          "attempts": 1,
+          "steps": 0
+        },
+        {
+          "index": 18,
+          "status": "SUCCEEDED",
+          "failure_reason": null,
+          "submitted": 1795851906.936794,
+          "finished": 1795851907.123489,
+          "completion_ms": 186.695,
+          "dispatch_ms": 178.23,
+          "first_worker": "9003f4ef-475b-49cc-940e-b74eb1fc78c8",
+          "busy_seconds": 0.013112,
+          "attempts": 1,
+          "steps": 0
+        },
+        {
+          "index": 19,
+          "status": "SUCCEEDED",
+          "failure_reason": null,
+          "submitted": 1795851906.954763,
+          "finished": 1795851907.144068,
+          "completion_ms": 189.305,
+          "dispatch_ms": 181.898,
+          "first_worker": "9003f4ef-475b-49cc-940e-b74eb1fc78c8",
+          "busy_seconds": 0.010835,
+          "attempts": 1,
+          "steps": 0
+        },
+        {
+          "index": 20,
+          "status": "SUCCEEDED",
+          "failure_reason": null,
+          "submitted": 1795851906.971277,
+          "finished": 1795851907.166046,
+          "completion_ms": 194.769,
+          "dispatch_ms": 188.469,
+          "first_worker": "9003f4ef-475b-49cc-940e-b74eb1fc78c8",
+          "busy_seconds": 0.010028,
+          "attempts": 1,
+          "steps": 0
+        },
+        {
+          "index": 21,
+          "status": "SUCCEEDED",
+          "failure_reason": null,
+          "submitted": 1795851906.986492,
+          "finished": 1795851907.190425,
+          "completion_ms": 203.933,
+          "dispatch_ms": 196.463,
+          "first_worker": "9003f4ef-475b-49cc-940e-b74eb1fc78c8",
+          "busy_seconds": 0.010593,
+          "attempts": 1,
+          "steps": 0
+        },
+        {
+          "index": 22,
+          "status": "SUCCEEDED",
+          "failure_reason": null,
+          "submitted": 1795851907.001265,
+          "finished": 1795851907.215433,
+          "completion_ms": 214.168,
+          "dispatch_ms": 206.618,
+          "first_worker": "9003f4ef-475b-49cc-940e-b74eb1fc78c8",
+          "busy_seconds": 0.010443,
+          "attempts": 1,
+          "steps": 0
+        },
+        {
+          "index": 23,
+          "status": "SUCCEEDED",
+          "failure_reason": null,
+          "submitted": 1795851907.016014,
+          "finished": 1795851907.235129,
+          "completion_ms": 219.115,
+          "dispatch_ms": 212.969,
+          "first_worker": "9003f4ef-475b-49cc-940e-b74eb1fc78c8",
+          "busy_seconds": 0.009179,
+          "attempts": 1,
+          "steps": 0
+        },
+        {
+          "index": 24,
+          "status": "SUCCEEDED",
+          "failure_reason": null,
+          "submitted": 1795851907.031809,
+          "finished": 1795851907.2563,
+          "completion_ms": 224.491,
+          "dispatch_ms": 217.654,
+          "first_worker": "9003f4ef-475b-49cc-940e-b74eb1fc78c8",
+          "busy_seconds": 0.00939,
+          "attempts": 1,
+          "steps": 0
+        },
+        {
+          "index": 25,
+          "status": "SUCCEEDED",
+          "failure_reason": null,
+          "submitted": 1795851907.047748,
+          "finished": 1795851907.275191,
+          "completion_ms": 227.443,
+          "dispatch_ms": 221.404,
+          "first_worker": "9003f4ef-475b-49cc-940e-b74eb1fc78c8",
+          "busy_seconds": 0.008504,
+          "attempts": 1,
+          "steps": 0
+        },
+        {
+          "index": 26,
+          "status": "SUCCEEDED",
+          "failure_reason": null,
+          "submitted": 1795851907.064169,
+          "finished": 1795851907.29382,
+          "completion_ms": 229.651,
+          "dispatch_ms": 223.739,
+          "first_worker": "9003f4ef-475b-49cc-940e-b74eb1fc78c8",
+          "busy_seconds": 0.008486,
+          "attempts": 1,
+          "steps": 0
+        },
+        {
+          "index": 27,
+          "status": "SUCCEEDED",
+          "failure_reason": null,
+          "submitted": 1795851907.082092,
+          "finished": 1795851907.313504,
+          "completion_ms": 231.412,
+          "dispatch_ms": 225.194,
+          "first_worker": "9003f4ef-475b-49cc-940e-b74eb1fc78c8",
+          "busy_seconds": 0.008773,
+          "attempts": 1,
+          "steps": 0
+        },
+        {
+          "index": 28,
+          "status": "SUCCEEDED",
+          "failure_reason": null,
+          "submitted": 1795851907.101401,
+          "finished": 1795851907.333116,
+          "completion_ms": 231.715,
+          "dispatch_ms": 225.627,
+          "first_worker": "9003f4ef-475b-49cc-940e-b74eb1fc78c8",
+          "busy_seconds": 0.008513,
+          "attempts": 1,
+          "steps": 0
+        },
+        {
+          "index": 29,
+          "status": "SUCCEEDED",
+          "failure_reason": null,
+          "submitted": 1795851907.118481,
+          "finished": 1795851907.355443,
+          "completion_ms": 236.962,
+          "dispatch_ms": 229.008,
+          "first_worker": "9003f4ef-475b-49cc-940e-b74eb1fc78c8",
+          "busy_seconds": 0.011454,
+          "attempts": 1,
+          "steps": 0
+        },
+        {
+          "index": 30,
+          "status": "SUCCEEDED",
+          "failure_reason": null,
+          "submitted": 1795851907.133789,
+          "finished": 1795851907.369076,
+          "completion_ms": 235.287,
+          "dispatch_ms": 226.852,
+          "first_worker": "4061f7ab-111a-48ff-822b-e1bd2124ba39",
+          "busy_seconds": 0.013589,
+          "attempts": 1,
+          "steps": 0
+        },
+        {
+          "index": 31,
+          "status": "SUCCEEDED",
+          "failure_reason": null,
+          "submitted": 1795851907.1467,
+          "finished": 1795851907.383177,
+          "completion_ms": 236.477,
+          "dispatch_ms": 228.599,
+          "first_worker": "9003f4ef-475b-49cc-940e-b74eb1fc78c8",
+          "busy_seconds": 0.011635,
+          "attempts": 1,
+          "steps": 0
+        },
+        {
+          "index": 32,
+          "status": "SUCCEEDED",
+          "failure_reason": null,
+          "submitted": 1795851907.181363,
+          "finished": 1795851907.392986,
+          "completion_ms": 211.623,
+          "dispatch_ms": 205.073,
+          "first_worker": "4061f7ab-111a-48ff-822b-e1bd2124ba39",
+          "busy_seconds": 0.010019,
+          "attempts": 1,
+          "steps": 0
+        },
+        {
+          "index": 33,
+          "status": "SUCCEEDED",
+          "failure_reason": null,
+          "submitted": 1795851907.195017,
+          "finished": 1795851907.407043,
+          "completion_ms": 212.026,
+          "dispatch_ms": 204.32,
+          "first_worker": "9003f4ef-475b-49cc-940e-b74eb1fc78c8",
+          "busy_seconds": 0.010841,
+          "attempts": 1,
+          "steps": 0
+        },
+        {
+          "index": 34,
+          "status": "SUCCEEDED",
+          "failure_reason": null,
+          "submitted": 1795851907.222805,
+          "finished": 1795851907.417763,
+          "completion_ms": 194.958,
+          "dispatch_ms": 186.602,
+          "first_worker": "4061f7ab-111a-48ff-822b-e1bd2124ba39",
+          "busy_seconds": 0.012499,
+          "attempts": 1,
+          "steps": 0
+        },
+        {
+          "index": 35,
+          "status": "SUCCEEDED",
+          "failure_reason": null,
+          "submitted": 1795851907.235574,
+          "finished": 1795851907.431533,
+          "completion_ms": 195.959,
+          "dispatch_ms": 186.805,
+          "first_worker": "9003f4ef-475b-49cc-940e-b74eb1fc78c8",
+          "busy_seconds": 0.012987,
+          "attempts": 1,
+          "steps": 0
+        },
+        {
+          "index": 36,
+          "status": "SUCCEEDED",
+          "failure_reason": null,
+          "submitted": 1795851907.248571,
+          "finished": 1795851907.443538,
+          "completion_ms": 194.967,
+          "dispatch_ms": 186.972,
+          "first_worker": "4061f7ab-111a-48ff-822b-e1bd2124ba39",
+          "busy_seconds": 0.011412,
+          "attempts": 1,
+          "steps": 0
+        },
+        {
+          "index": 37,
+          "status": "SUCCEEDED",
+          "failure_reason": null,
+          "submitted": 1795851907.262386,
+          "finished": 1795851907.458478,
+          "completion_ms": 196.092,
+          "dispatch_ms": 188.245,
+          "first_worker": "9003f4ef-475b-49cc-940e-b74eb1fc78c8",
+          "busy_seconds": 0.011622,
+          "attempts": 1,
+          "steps": 0
+        },
+        {
+          "index": 38,
+          "status": "SUCCEEDED",
+          "failure_reason": null,
+          "submitted": 1795851907.27421,
+          "finished": 1795851907.471757,
+          "completion_ms": 197.547,
+          "dispatch_ms": 189.145,
+          "first_worker": "4061f7ab-111a-48ff-822b-e1bd2124ba39",
+          "busy_seconds": 0.012055,
+          "attempts": 1,
+          "steps": 0
+        },
+        {
+          "index": 39,
+          "status": "SUCCEEDED",
+          "failure_reason": null,
+          "submitted": 1795851907.286357,
+          "finished": 1795851907.48661,
+          "completion_ms": 200.253,
+          "dispatch_ms": 190.237,
+          "first_worker": "9003f4ef-475b-49cc-940e-b74eb1fc78c8",
+          "busy_seconds": 0.013654,
+          "attempts": 1,
+          "steps": 0
+        },
+        {
+          "index": 40,
+          "status": "SUCCEEDED",
+          "failure_reason": null,
+          "submitted": 1795851907.297574,
+          "finished": 1795851907.496024,
+          "completion_ms": 198.45,
+          "dispatch_ms": 190.189,
+          "first_worker": "9003f4ef-475b-49cc-940e-b74eb1fc78c8",
+          "busy_seconds": 0.011913,
+          "attempts": 1,
+          "steps": 0
+        },
+        {
+          "index": 41,
+          "status": "SUCCEEDED",
+          "failure_reason": null,
+          "submitted": 1795851907.309046,
+          "finished": 1795851907.510507,
+          "completion_ms": 201.461,
+          "dispatch_ms": 193.812,
+          "first_worker": "4061f7ab-111a-48ff-822b-e1bd2124ba39",
+          "busy_seconds": 0.011499,
+          "attempts": 1,
+          "steps": 0
+        },
+        {
+          "index": 42,
+          "status": "SUCCEEDED",
+          "failure_reason": null,
+          "submitted": 1795851907.321537,
+          "finished": 1795851907.525054,
+          "completion_ms": 203.517,
+          "dispatch_ms": 195.849,
+          "first_worker": "9003f4ef-475b-49cc-940e-b74eb1fc78c8",
+          "busy_seconds": 0.011089,
+          "attempts": 1,
+          "steps": 0
+        },
+        {
+          "index": 43,
+          "status": "SUCCEEDED",
+          "failure_reason": null,
+          "submitted": 1795851907.333737,
+          "finished": 1795851907.543612,
+          "completion_ms": 209.875,
+          "dispatch_ms": 202.843,
+          "first_worker": "9003f4ef-475b-49cc-940e-b74eb1fc78c8",
+          "busy_seconds": 0.010312,
+          "attempts": 1,
+          "steps": 0
+        },
+        {
+          "index": 44,
+          "status": "SUCCEEDED",
+          "failure_reason": null,
+          "submitted": 1795851907.348995,
+          "finished": 1795851907.558887,
+          "completion_ms": 209.892,
+          "dispatch_ms": 201.725,
+          "first_worker": "4061f7ab-111a-48ff-822b-e1bd2124ba39",
+          "busy_seconds": 0.011659,
+          "attempts": 1,
+          "steps": 0
+        },
+        {
+          "index": 45,
+          "status": "SUCCEEDED",
+          "failure_reason": null,
+          "submitted": 1795851907.363846,
+          "finished": 1795851907.577926,
+          "completion_ms": 214.08,
+          "dispatch_ms": 205.727,
+          "first_worker": "4061f7ab-111a-48ff-822b-e1bd2124ba39",
+          "busy_seconds": 0.011918,
+          "attempts": 1,
+          "steps": 0
+        },
+        {
+          "index": 46,
+          "status": "SUCCEEDED",
+          "failure_reason": null,
+          "submitted": 1795851907.378761,
+          "finished": 1795851907.595977,
+          "completion_ms": 217.216,
+          "dispatch_ms": 208.207,
+          "first_worker": "9003f4ef-475b-49cc-940e-b74eb1fc78c8",
+          "busy_seconds": 0.012698,
+          "attempts": 1,
+          "steps": 0
+        },
+        {
+          "index": 47,
+          "status": "SUCCEEDED",
+          "failure_reason": null,
+          "submitted": 1795851907.391932,
+          "finished": 1795851907.608633,
+          "completion_ms": 216.701,
+          "dispatch_ms": 208.025,
+          "first_worker": "4061f7ab-111a-48ff-822b-e1bd2124ba39",
+          "busy_seconds": 0.013241,
+          "attempts": 1,
+          "steps": 0
+        },
+        {
+          "index": 48,
+          "status": "SUCCEEDED",
+          "failure_reason": null,
+          "submitted": 1795851907.406062,
+          "finished": 1795851907.625596,
+          "completion_ms": 219.534,
+          "dispatch_ms": 213.111,
+          "first_worker": "9003f4ef-475b-49cc-940e-b74eb1fc78c8",
+          "busy_seconds": 0.009488,
+          "attempts": 1,
+          "steps": 0
+        },
+        {
+          "index": 49,
+          "status": "SUCCEEDED",
+          "failure_reason": null,
+          "submitted": 1795851907.419155,
+          "finished": 1795851907.655535,
+          "completion_ms": 236.38,
+          "dispatch_ms": 228.435,
+          "first_worker": "9003f4ef-475b-49cc-940e-b74eb1fc78c8",
+          "busy_seconds": 0.010575,
+          "attempts": 1,
+          "steps": 0
+        },
+        {
+          "index": 50,
+          "status": "SUCCEEDED",
+          "failure_reason": null,
+          "submitted": 1795851907.432841,
+          "finished": 1795851907.676704,
+          "completion_ms": 243.863,
+          "dispatch_ms": 235.996,
+          "first_worker": "9003f4ef-475b-49cc-940e-b74eb1fc78c8",
+          "busy_seconds": 0.012947,
+          "attempts": 1,
+          "steps": 0
+        },
+        {
+          "index": 51,
+          "status": "SUCCEEDED",
+          "failure_reason": null,
+          "submitted": 1795851907.447822,
+          "finished": 1795851907.699639,
+          "completion_ms": 251.817,
+          "dispatch_ms": 245.393,
+          "first_worker": "9003f4ef-475b-49cc-940e-b74eb1fc78c8",
+          "busy_seconds": 0.009156,
+          "attempts": 1,
+          "steps": 0
+        },
+        {
+          "index": 52,
+          "status": "SUCCEEDED",
+          "failure_reason": null,
+          "submitted": 1795851907.463254,
+          "finished": 1795851907.7228,
+          "completion_ms": 259.546,
+          "dispatch_ms": 252.697,
+          "first_worker": "9003f4ef-475b-49cc-940e-b74eb1fc78c8",
+          "busy_seconds": 0.009339,
+          "attempts": 1,
+          "steps": 0
+        },
+        {
+          "index": 53,
+          "status": "SUCCEEDED",
+          "failure_reason": null,
+          "submitted": 1795851907.477258,
+          "finished": 1795851907.742494,
+          "completion_ms": 265.236,
+          "dispatch_ms": 258.473,
+          "first_worker": "9003f4ef-475b-49cc-940e-b74eb1fc78c8",
+          "busy_seconds": 0.010568,
+          "attempts": 1,
+          "steps": 0
+        },
+        {
+          "index": 54,
+          "status": "SUCCEEDED",
+          "failure_reason": null,
+          "submitted": 1795851907.490006,
+          "finished": 1795851907.763532,
+          "completion_ms": 273.526,
+          "dispatch_ms": 267.125,
+          "first_worker": "9003f4ef-475b-49cc-940e-b74eb1fc78c8",
+          "busy_seconds": 0.008881,
+          "attempts": 1,
+          "steps": 0
+        },
+        {
+          "index": 55,
+          "status": "SUCCEEDED",
+          "failure_reason": null,
+          "submitted": 1795851907.50364,
+          "finished": 1795851907.785211,
+          "completion_ms": 281.571,
+          "dispatch_ms": 274.37,
+          "first_worker": "9003f4ef-475b-49cc-940e-b74eb1fc78c8",
+          "busy_seconds": 0.00962,
+          "attempts": 1,
+          "steps": 0
+        },
+        {
+          "index": 56,
+          "status": "SUCCEEDED",
+          "failure_reason": null,
+          "submitted": 1795851907.518404,
+          "finished": 1795851907.806079,
+          "completion_ms": 287.675,
+          "dispatch_ms": 280.009,
+          "first_worker": "9003f4ef-475b-49cc-940e-b74eb1fc78c8",
+          "busy_seconds": 0.011568,
+          "attempts": 1,
+          "steps": 0
+        },
+        {
+          "index": 57,
+          "status": "SUCCEEDED",
+          "failure_reason": null,
+          "submitted": 1795851907.532204,
+          "finished": 1795851907.835103,
+          "completion_ms": 302.899,
+          "dispatch_ms": 290.664,
+          "first_worker": "9003f4ef-475b-49cc-940e-b74eb1fc78c8",
+          "busy_seconds": 0.016804,
+          "attempts": 1,
+          "steps": 0
+        },
+        {
+          "index": 58,
+          "status": "SUCCEEDED",
+          "failure_reason": null,
+          "submitted": 1795851907.546704,
+          "finished": 1795851907.862302,
+          "completion_ms": 315.598,
+          "dispatch_ms": 306.112,
+          "first_worker": "4061f7ab-111a-48ff-822b-e1bd2124ba39",
+          "busy_seconds": 0.014499,
+          "attempts": 1,
+          "steps": 0
+        },
+        {
+          "index": 59,
+          "status": "SUCCEEDED",
+          "failure_reason": null,
+          "submitted": 1795851907.559488,
+          "finished": 1795851907.88173,
+          "completion_ms": 322.242,
+          "dispatch_ms": 314.231,
+          "first_worker": "4061f7ab-111a-48ff-822b-e1bd2124ba39",
+          "busy_seconds": 0.01111,
+          "attempts": 1,
+          "steps": 0
+        },
+        {
+          "index": 60,
+          "status": "SUCCEEDED",
+          "failure_reason": null,
+          "submitted": 1795851907.572787,
+          "finished": 1795851907.897142,
+          "completion_ms": 324.355,
+          "dispatch_ms": 316.864,
+          "first_worker": "9003f4ef-475b-49cc-940e-b74eb1fc78c8",
+          "busy_seconds": 0.010787,
+          "attempts": 1,
+          "steps": 0
+        },
+        {
+          "index": 61,
+          "status": "SUCCEEDED",
+          "failure_reason": null,
+          "submitted": 1795851907.587234,
+          "finished": 1795851907.910627,
+          "completion_ms": 323.393,
+          "dispatch_ms": 315.705,
+          "first_worker": "4061f7ab-111a-48ff-822b-e1bd2124ba39",
+          "busy_seconds": 0.010717,
+          "attempts": 1,
+          "steps": 0
+        },
+        {
+          "index": 62,
+          "status": "SUCCEEDED",
+          "failure_reason": null,
+          "submitted": 1795851907.601395,
+          "finished": 1795851907.923632,
+          "completion_ms": 322.237,
+          "dispatch_ms": 314.23,
+          "first_worker": "9003f4ef-475b-49cc-940e-b74eb1fc78c8",
+          "busy_seconds": 0.010912,
+          "attempts": 1,
+          "steps": 0
+        },
+        {
+          "index": 63,
+          "status": "SUCCEEDED",
+          "failure_reason": null,
+          "submitted": 1795851907.616409,
+          "finished": 1795851907.933844,
+          "completion_ms": 317.435,
+          "dispatch_ms": 309.146,
+          "first_worker": "4061f7ab-111a-48ff-822b-e1bd2124ba39",
+          "busy_seconds": 0.01234,
+          "attempts": 1,
+          "steps": 0
+        },
+        {
+          "index": 64,
+          "status": "SUCCEEDED",
+          "failure_reason": null,
+          "submitted": 1795851907.629455,
+          "finished": 1795851907.948915,
+          "completion_ms": 319.46,
+          "dispatch_ms": 312.148,
+          "first_worker": "9003f4ef-475b-49cc-940e-b74eb1fc78c8",
+          "busy_seconds": 0.011198,
+          "attempts": 1,
+          "steps": 0
+        },
+        {
+          "index": 65,
+          "status": "SUCCEEDED",
+          "failure_reason": null,
+          "submitted": 1795851907.642188,
+          "finished": 1795851907.958725,
+          "completion_ms": 316.537,
+          "dispatch_ms": 309.599,
+          "first_worker": "4061f7ab-111a-48ff-822b-e1bd2124ba39",
+          "busy_seconds": 0.010844,
+          "attempts": 1,
+          "steps": 0
+        },
+        {
+          "index": 66,
+          "status": "SUCCEEDED",
+          "failure_reason": null,
+          "submitted": 1795851907.65526,
+          "finished": 1795851907.97445,
+          "completion_ms": 319.19,
+          "dispatch_ms": 309.641,
+          "first_worker": "9003f4ef-475b-49cc-940e-b74eb1fc78c8",
+          "busy_seconds": 0.013108,
+          "attempts": 1,
+          "steps": 0
+        },
+        {
+          "index": 67,
+          "status": "SUCCEEDED",
+          "failure_reason": null,
+          "submitted": 1795851907.66668,
+          "finished": 1795851907.986628,
+          "completion_ms": 319.948,
+          "dispatch_ms": 310.374,
+          "first_worker": "9003f4ef-475b-49cc-940e-b74eb1fc78c8",
+          "busy_seconds": 0.014084,
+          "attempts": 1,
+          "steps": 0
+        },
+        {
+          "index": 68,
+          "status": "SUCCEEDED",
+          "failure_reason": null,
+          "submitted": 1795851907.678537,
+          "finished": 1795851908.002811,
+          "completion_ms": 324.274,
+          "dispatch_ms": 314.337,
+          "first_worker": "9003f4ef-475b-49cc-940e-b74eb1fc78c8",
+          "busy_seconds": 0.014121,
+          "attempts": 1,
+          "steps": 0
+        },
+        {
+          "index": 69,
+          "status": "SUCCEEDED",
+          "failure_reason": null,
+          "submitted": 1795851907.690563,
+          "finished": 1795851908.013327,
+          "completion_ms": 322.764,
+          "dispatch_ms": 314.785,
+          "first_worker": "9003f4ef-475b-49cc-940e-b74eb1fc78c8",
+          "busy_seconds": 0.011378,
+          "attempts": 1,
+          "steps": 0
+        },
+        {
+          "index": 70,
+          "status": "SUCCEEDED",
+          "failure_reason": null,
+          "submitted": 1795851907.704671,
+          "finished": 1795851908.02513,
+          "completion_ms": 320.459,
+          "dispatch_ms": 312.367,
+          "first_worker": "4061f7ab-111a-48ff-822b-e1bd2124ba39",
+          "busy_seconds": 0.011474,
+          "attempts": 1,
+          "steps": 0
+        },
+        {
+          "index": 71,
+          "status": "SUCCEEDED",
+          "failure_reason": null,
+          "submitted": 1795851907.716554,
+          "finished": 1795851908.036522,
+          "completion_ms": 319.968,
+          "dispatch_ms": 312.992,
+          "first_worker": "9003f4ef-475b-49cc-940e-b74eb1fc78c8",
+          "busy_seconds": 0.01023,
+          "attempts": 1,
+          "steps": 0
+        },
+        {
+          "index": 72,
+          "status": "SUCCEEDED",
+          "failure_reason": null,
+          "submitted": 1795851907.72869,
+          "finished": 1795851908.050259,
+          "completion_ms": 321.569,
+          "dispatch_ms": 313.492,
+          "first_worker": "4061f7ab-111a-48ff-822b-e1bd2124ba39",
+          "busy_seconds": 0.012314,
+          "attempts": 1,
+          "steps": 0
+        },
+        {
+          "index": 73,
+          "status": "SUCCEEDED",
+          "failure_reason": null,
+          "submitted": 1795851907.739879,
+          "finished": 1795851908.061484,
+          "completion_ms": 321.605,
+          "dispatch_ms": 313.902,
+          "first_worker": "9003f4ef-475b-49cc-940e-b74eb1fc78c8",
+          "busy_seconds": 0.011175,
+          "attempts": 1,
+          "steps": 0
+        },
+        {
+          "index": 74,
+          "status": "SUCCEEDED",
+          "failure_reason": null,
+          "submitted": 1795851907.752619,
+          "finished": 1795851908.075781,
+          "completion_ms": 323.162,
+          "dispatch_ms": 315.268,
+          "first_worker": "4061f7ab-111a-48ff-822b-e1bd2124ba39",
+          "busy_seconds": 0.011521,
+          "attempts": 1,
+          "steps": 0
+        },
+        {
+          "index": 75,
+          "status": "SUCCEEDED",
+          "failure_reason": null,
+          "submitted": 1795851907.764379,
+          "finished": 1795851908.099176,
+          "completion_ms": 334.797,
+          "dispatch_ms": 325.457,
+          "first_worker": "9003f4ef-475b-49cc-940e-b74eb1fc78c8",
+          "busy_seconds": 0.013436,
+          "attempts": 1,
+          "steps": 0
+        },
+        {
+          "index": 76,
+          "status": "SUCCEEDED",
+          "failure_reason": null,
+          "submitted": 1795851907.775584,
+          "finished": 1795851908.119328,
+          "completion_ms": 343.744,
+          "dispatch_ms": 334.735,
+          "first_worker": "4061f7ab-111a-48ff-822b-e1bd2124ba39",
+          "busy_seconds": 0.013126,
+          "attempts": 1,
+          "steps": 0
+        },
+        {
+          "index": 77,
+          "status": "SUCCEEDED",
+          "failure_reason": null,
+          "submitted": 1795851907.787749,
+          "finished": 1795851908.139954,
+          "completion_ms": 352.205,
+          "dispatch_ms": 343.318,
+          "first_worker": "9003f4ef-475b-49cc-940e-b74eb1fc78c8",
+          "busy_seconds": 0.011881,
+          "attempts": 1,
+          "steps": 0
+        },
+        {
+          "index": 78,
+          "status": "SUCCEEDED",
+          "failure_reason": null,
+          "submitted": 1795851907.799195,
+          "finished": 1795851908.155586,
+          "completion_ms": 356.391,
+          "dispatch_ms": 349.494,
+          "first_worker": "4061f7ab-111a-48ff-822b-e1bd2124ba39",
+          "busy_seconds": 0.009825,
+          "attempts": 1,
+          "steps": 0
+        },
+        {
+          "index": 79,
+          "status": "SUCCEEDED",
+          "failure_reason": null,
+          "submitted": 1795851907.813779,
+          "finished": 1795851908.176936,
+          "completion_ms": 363.157,
+          "dispatch_ms": 356.319,
+          "first_worker": "4061f7ab-111a-48ff-822b-e1bd2124ba39",
+          "busy_seconds": 0.009474,
+          "attempts": 1,
+          "steps": 0
+        },
+        {
+          "index": 80,
+          "status": "SUCCEEDED",
+          "failure_reason": null,
+          "submitted": 1795851907.831084,
+          "finished": 1795851908.194568,
+          "completion_ms": 363.484,
+          "dispatch_ms": 357.964,
+          "first_worker": "4061f7ab-111a-48ff-822b-e1bd2124ba39",
+          "busy_seconds": 0.007774,
+          "attempts": 1,
+          "steps": 0
+        },
+        {
+          "index": 81,
+          "status": "SUCCEEDED",
+          "failure_reason": null,
+          "submitted": 1795851907.855421,
+          "finished": 1795851908.21239,
+          "completion_ms": 356.969,
+          "dispatch_ms": 350.936,
+          "first_worker": "4061f7ab-111a-48ff-822b-e1bd2124ba39",
+          "busy_seconds": 0.008605,
+          "attempts": 1,
+          "steps": 0
+        },
+        {
+          "index": 82,
+          "status": "SUCCEEDED",
+          "failure_reason": null,
+          "submitted": 1795851907.871543,
+          "finished": 1795851908.236037,
+          "completion_ms": 364.494,
+          "dispatch_ms": 356.569,
+          "first_worker": "4061f7ab-111a-48ff-822b-e1bd2124ba39",
+          "busy_seconds": 0.01169,
+          "attempts": 1,
+          "steps": 0
+        },
+        {
+          "index": 83,
+          "status": "SUCCEEDED",
+          "failure_reason": null,
+          "submitted": 1795851907.884304,
+          "finished": 1795851908.25873,
+          "completion_ms": 374.426,
+          "dispatch_ms": 367.146,
+          "first_worker": "4061f7ab-111a-48ff-822b-e1bd2124ba39",
+          "busy_seconds": 0.010541,
+          "attempts": 1,
+          "steps": 0
+        },
+        {
+          "index": 84,
+          "status": "SUCCEEDED",
+          "failure_reason": null,
+          "submitted": 1795851907.897679,
+          "finished": 1795851908.27852,
+          "completion_ms": 380.841,
+          "dispatch_ms": 375.586,
+          "first_worker": "4061f7ab-111a-48ff-822b-e1bd2124ba39",
+          "busy_seconds": 0.007934,
+          "attempts": 1,
+          "steps": 0
+        },
+        {
+          "index": 85,
+          "status": "SUCCEEDED",
+          "failure_reason": null,
+          "submitted": 1795851907.911827,
+          "finished": 1795851908.296872,
+          "completion_ms": 385.045,
+          "dispatch_ms": 379.519,
+          "first_worker": "4061f7ab-111a-48ff-822b-e1bd2124ba39",
+          "busy_seconds": 0.007894,
+          "attempts": 1,
+          "steps": 0
+        },
+        {
+          "index": 86,
+          "status": "SUCCEEDED",
+          "failure_reason": null,
+          "submitted": 1795851907.926122,
+          "finished": 1795851908.314674,
+          "completion_ms": 388.552,
+          "dispatch_ms": 383.399,
+          "first_worker": "4061f7ab-111a-48ff-822b-e1bd2124ba39",
+          "busy_seconds": 0.007601,
+          "attempts": 1,
+          "steps": 0
+        },
+        {
+          "index": 87,
+          "status": "SUCCEEDED",
+          "failure_reason": null,
+          "submitted": 1795851907.939907,
+          "finished": 1795851908.333742,
+          "completion_ms": 393.835,
+          "dispatch_ms": 387.456,
+          "first_worker": "4061f7ab-111a-48ff-822b-e1bd2124ba39",
+          "busy_seconds": 0.009343,
+          "attempts": 1,
+          "steps": 0
+        },
+        {
+          "index": 88,
+          "status": "SUCCEEDED",
+          "failure_reason": null,
+          "submitted": 1795851907.952441,
+          "finished": 1795851908.358203,
+          "completion_ms": 405.762,
+          "dispatch_ms": 397.839,
+          "first_worker": "4061f7ab-111a-48ff-822b-e1bd2124ba39",
+          "busy_seconds": 0.011473,
+          "attempts": 1,
+          "steps": 0
+        },
+        {
+          "index": 89,
+          "status": "SUCCEEDED",
+          "failure_reason": null,
+          "submitted": 1795851907.966679,
+          "finished": 1795851908.377271,
+          "completion_ms": 410.592,
+          "dispatch_ms": 403.53,
+          "first_worker": "9003f4ef-475b-49cc-940e-b74eb1fc78c8",
+          "busy_seconds": 0.010054,
+          "attempts": 1,
+          "steps": 0
+        },
+        {
+          "index": 90,
+          "status": "SUCCEEDED",
+          "failure_reason": null,
+          "submitted": 1795851907.980333,
+          "finished": 1795851908.411993,
+          "completion_ms": 431.66,
+          "dispatch_ms": 417.868,
+          "first_worker": "9003f4ef-475b-49cc-940e-b74eb1fc78c8",
+          "busy_seconds": 0.020263,
+          "attempts": 1,
+          "steps": 0
+        },
+        {
+          "index": 91,
+          "status": "SUCCEEDED",
+          "failure_reason": null,
+          "submitted": 1795851907.994465,
+          "finished": 1795851908.454961,
+          "completion_ms": 460.496,
+          "dispatch_ms": 449.286,
+          "first_worker": "9003f4ef-475b-49cc-940e-b74eb1fc78c8",
+          "busy_seconds": 0.015577,
+          "attempts": 1,
+          "steps": 0
+        },
+        {
+          "index": 92,
+          "status": "SUCCEEDED",
+          "failure_reason": null,
+          "submitted": 1795851908.008112,
+          "finished": 1795851908.492373,
+          "completion_ms": 484.261,
+          "dispatch_ms": 472.906,
+          "first_worker": "9003f4ef-475b-49cc-940e-b74eb1fc78c8",
+          "busy_seconds": 0.016274,
+          "attempts": 1,
+          "steps": 0
+        },
+        {
+          "index": 93,
+          "status": "SUCCEEDED",
+          "failure_reason": null,
+          "submitted": 1795851908.02207,
+          "finished": 1795851908.522842,
+          "completion_ms": 500.772,
+          "dispatch_ms": 490.825,
+          "first_worker": "9003f4ef-475b-49cc-940e-b74eb1fc78c8",
+          "busy_seconds": 0.013996,
+          "attempts": 1,
+          "steps": 0
+        },
+        {
+          "index": 94,
+          "status": "SUCCEEDED",
+          "failure_reason": null,
+          "submitted": 1795851908.036665,
+          "finished": 1795851908.548043,
+          "completion_ms": 511.378,
+          "dispatch_ms": 504.209,
+          "first_worker": "9003f4ef-475b-49cc-940e-b74eb1fc78c8",
+          "busy_seconds": 0.009972,
+          "attempts": 1,
+          "steps": 0
+        },
+        {
+          "index": 95,
+          "status": "SUCCEEDED",
+          "failure_reason": null,
+          "submitted": 1795851908.051407,
+          "finished": 1795851908.569061,
+          "completion_ms": 517.654,
+          "dispatch_ms": 509.805,
+          "first_worker": "9003f4ef-475b-49cc-940e-b74eb1fc78c8",
+          "busy_seconds": 0.011092,
+          "attempts": 1,
+          "steps": 0
+        },
+        {
+          "index": 96,
+          "status": "SUCCEEDED",
+          "failure_reason": null,
+          "submitted": 1795851908.066733,
+          "finished": 1795851908.5898,
+          "completion_ms": 523.067,
+          "dispatch_ms": 516.568,
+          "first_worker": "9003f4ef-475b-49cc-940e-b74eb1fc78c8",
+          "busy_seconds": 0.009342,
+          "attempts": 1,
+          "steps": 0
+        },
+        {
+          "index": 97,
+          "status": "SUCCEEDED",
+          "failure_reason": null,
+          "submitted": 1795851908.083637,
+          "finished": 1795851908.608089,
+          "completion_ms": 524.452,
+          "dispatch_ms": 517.879,
+          "first_worker": "9003f4ef-475b-49cc-940e-b74eb1fc78c8",
+          "busy_seconds": 0.009216,
+          "attempts": 1,
+          "steps": 0
+        },
+        {
+          "index": 98,
+          "status": "SUCCEEDED",
+          "failure_reason": null,
+          "submitted": 1795851908.10299,
+          "finished": 1795851908.628575,
+          "completion_ms": 525.585,
+          "dispatch_ms": 519.119,
+          "first_worker": "9003f4ef-475b-49cc-940e-b74eb1fc78c8",
+          "busy_seconds": 0.009076,
+          "attempts": 1,
+          "steps": 0
+        },
+        {
+          "index": 99,
+          "status": "SUCCEEDED",
+          "failure_reason": null,
+          "submitted": 1795851908.123644,
+          "finished": 1795851908.651375,
+          "completion_ms": 527.731,
+          "dispatch_ms": 520.536,
+          "first_worker": "9003f4ef-475b-49cc-940e-b74eb1fc78c8",
+          "busy_seconds": 0.010077,
+          "attempts": 1,
+          "steps": 0
+        }
+      ],
+      "usage": [],
+      "resources": [
+        {
+          "utc": "2026-11-28T07:45:07.871907+00:00",
+          "containers": {
+            "api-1": {
+              "cpu_percent": 102.68,
+              "memory": "247.5MiB"
+            },
+            "dashboard-1": {
+              "cpu_percent": 3.77,
+              "memory": "14.71MiB"
+            },
+            "model-fixture-1": {
+              "cpu_percent": 0.01,
+              "memory": "14.57MiB"
+            },
+            "nats-1": {
+              "cpu_percent": 6.99,
+              "memory": "8.207MiB"
+            },
+            "postgres-1": {
+              "cpu_percent": 93.43,
+              "memory": "74.11MiB"
+            },
+            "publisher-1": {
+              "cpu_percent": 23.39,
+              "memory": "68.45MiB"
+            },
+            "redis-1": {
+              "cpu_percent": 4.55,
+              "memory": "11.48MiB"
+            },
+            "worker-1": {
+              "cpu_percent": 137.92,
+              "memory": "111.6MiB"
+            },
+            "worker-2": {
+              "cpu_percent": 50.94,
+              "memory": "86.51MiB"
+            }
+          }
+        },
+        {
+          "utc": "2026-11-28T07:45:09.900341+00:00",
+          "containers": {
+            "api-1": {
+              "cpu_percent": 0.43,
+              "memory": "246.3MiB"
+            },
+            "dashboard-1": {
+              "cpu_percent": 0.0,
+              "memory": "13.4MiB"
+            },
+            "model-fixture-1": {
+              "cpu_percent": 0.01,
+              "memory": "14.57MiB"
+            },
+            "nats-1": {
+              "cpu_percent": 3.18,
+              "memory": "8.984MiB"
+            },
+            "postgres-1": {
+              "cpu_percent": 2.57,
+              "memory": "74.77MiB"
+            },
+            "publisher-1": {
+              "cpu_percent": 0.99,
+              "memory": "66.74MiB"
+            },
+            "redis-1": {
+              "cpu_percent": 0.34,
+              "memory": "7.293MiB"
+            },
+            "worker-1": {
+              "cpu_percent": 55.22,
+              "memory": "71.21MiB"
+            },
+            "worker-2": {
+              "cpu_percent": 95.91,
+              "memory": "71.09MiB"
+            }
+          }
+        }
+      ],
+      "sql_profile": [
+        {
+          "queryid": "-3508426635121808263",
+          "total_ms": 109.0,
+          "calls": 100,
+          "statement": "SELECT * FROM prepare_submission($1,$2,$3)"
+        },
+        {
+          "queryid": "1617327143711092739",
+          "total_ms": 84.04,
+          "calls": 100,
+          "statement": "WITH admitted AS ( SELECT clock_timestamp() AS ts ), inserted AS (INSERT INTO runs (id,tenant_id,agent_version_id,submitter_id, submission_k"
+        },
+        {
+          "queryid": "-4393085423925374951",
+          "total_ms": 52.9,
+          "calls": 200,
+          "statement": "INSERT INTO run_events (tenant_id,run_id,seq,kind,payload) VALUES ($1,$2,$3,$5,CAST($4 AS jsonb))"
+        },
+        {
+          "queryid": "-1019676104941685357",
+          "total_ms": 43.28,
+          "calls": 201,
+          "statement": "SELECT t.id FROM tenants t WHERE EXISTS (SELECT FROM execution_queue q WHERE q.tenant_id=t.id AND (q.provider IN ($2,$3) OR (q.provider=$4 A"
+        },
+        {
+          "queryid": "-6596462322982327179",
+          "total_ms": 42.05,
+          "calls": 100,
+          "statement": "UPDATE runs SET output=CAST($1 AS jsonb) WHERE id=$2"
+        }
+      ],
+      "workers": {
+        "4061f7ab-111a-48ff-822b-e1bd2124ba39": 44,
+        "9003f4ef-475b-49cc-940e-b74eb1fc78c8": 56
+      },
+      "summary": {
+        "runs": 100,
+        "elapsed_seconds": 2.1,
+        "terminal_runs_per_second": 47.62,
+        "failed_runs": 0,
+        "slot_occupancy_percent": 14.19,
+        "submit_ms": {
+          "p50": 13.329,
+          "p95": 19.953,
+          "p99": 32.479
+        },
+        "first_dispatch_ms": {
+          "p50": 274.37,
+          "p95": 504.209,
+          "p99": 519.119
+        },
+        "completion_ms": {
+          "p50": 281.571,
+          "p95": 511.378,
+          "p99": 525.585
+        }
+      }
+    },
+    "burst": {
+      "submissions": [
+        {
+          "index": 0,
+          "status": 201,
+          "ms": 228.834592,
+          "error_code": null
+        },
+        {
+          "index": 1,
+          "status": 201,
+          "ms": 330.176244,
+          "error_code": null
+        },
+        {
+          "index": 2,
+          "status": 201,
+          "ms": 177.896911,
+          "error_code": null
+        },
+        {
+          "index": 3,
+          "status": 201,
+          "ms": 139.826853,
+          "error_code": null
+        },
+        {
+          "index": 4,
+          "status": 201,
+          "ms": 348.489043,
+          "error_code": null
+        },
+        {
+          "index": 5,
+          "status": 201,
+          "ms": 158.528058,
+          "error_code": null
+        },
+        {
+          "index": 6,
+          "status": 201,
+          "ms": 198.322843,
+          "error_code": null
+        },
+        {
+          "index": 7,
+          "status": 201,
+          "ms": 141.577377,
+          "error_code": null
+        },
+        {
+          "index": 8,
+          "status": 201,
+          "ms": 184.701885,
+          "error_code": null
+        },
+        {
+          "index": 9,
+          "status": 201,
+          "ms": 177.863717,
+          "error_code": null
+        },
+        {
+          "index": 10,
+          "status": 201,
+          "ms": 206.138456,
+          "error_code": null
+        },
+        {
+          "index": 11,
+          "status": 201,
+          "ms": 391.672738,
+          "error_code": null
+        },
+        {
+          "index": 12,
+          "status": 201,
+          "ms": 149.825855,
+          "error_code": null
+        },
+        {
+          "index": 13,
+          "status": 201,
+          "ms": 113.723627,
+          "error_code": null
+        },
+        {
+          "index": 14,
+          "status": 201,
+          "ms": 162.497972,
+          "error_code": null
+        },
+        {
+          "index": 15,
+          "status": 201,
+          "ms": 213.796756,
+          "error_code": null
+        },
+        {
+          "index": 16,
+          "status": 201,
+          "ms": 256.025464,
+          "error_code": null
+        },
+        {
+          "index": 17,
+          "status": 201,
+          "ms": 223.746239,
+          "error_code": null
+        },
+        {
+          "index": 18,
+          "status": 201,
+          "ms": 367.149487,
+          "error_code": null
+        },
+        {
+          "index": 19,
+          "status": 201,
+          "ms": 318.391314,
+          "error_code": null
+        },
+        {
+          "index": 20,
+          "status": 201,
+          "ms": 311.422564,
+          "error_code": null
+        },
+        {
+          "index": 21,
+          "status": 201,
+          "ms": 296.419746,
+          "error_code": null
+        },
+        {
+          "index": 22,
+          "status": 201,
+          "ms": 351.911438,
+          "error_code": null
+        },
+        {
+          "index": 23,
+          "status": 201,
+          "ms": 260.292232,
+          "error_code": null
+        },
+        {
+          "index": 24,
+          "status": 201,
+          "ms": 211.123241,
+          "error_code": null
+        },
+        {
+          "index": 25,
+          "status": 201,
+          "ms": 375.041211,
+          "error_code": null
+        },
+        {
+          "index": 26,
+          "status": 201,
+          "ms": 361.346729,
+          "error_code": null
+        },
+        {
+          "index": 27,
+          "status": 201,
+          "ms": 375.991244,
+          "error_code": null
+        },
+        {
+          "index": 28,
+          "status": 201,
+          "ms": 275.305797,
+          "error_code": null
+        },
+        {
+          "index": 29,
+          "status": 201,
+          "ms": 192.105716,
+          "error_code": null
+        },
+        {
+          "index": 30,
+          "status": 201,
+          "ms": 192.735695,
+          "error_code": null
+        },
+        {
+          "index": 31,
+          "status": 201,
+          "ms": 151.612665,
+          "error_code": null
+        },
+        {
+          "index": 32,
+          "status": 201,
+          "ms": 103.659184,
+          "error_code": null
+        },
+        {
+          "index": 33,
+          "status": 201,
+          "ms": 153.464531,
+          "error_code": null
+        },
+        {
+          "index": 34,
+          "status": 201,
+          "ms": 287.047249,
+          "error_code": null
+        },
+        {
+          "index": 35,
+          "status": 201,
+          "ms": 177.41192,
+          "error_code": null
+        },
+        {
+          "index": 36,
+          "status": 201,
+          "ms": 189.12878,
+          "error_code": null
+        },
+        {
+          "index": 37,
+          "status": 201,
+          "ms": 347.358974,
+          "error_code": null
+        },
+        {
+          "index": 38,
+          "status": 201,
+          "ms": 355.095508,
+          "error_code": null
+        },
+        {
+          "index": 39,
+          "status": 201,
+          "ms": 156.452445,
+          "error_code": null
+        },
+        {
+          "index": 40,
+          "status": 201,
+          "ms": 342.458127,
+          "error_code": null
+        },
+        {
+          "index": 41,
+          "status": 201,
+          "ms": 259.719835,
+          "error_code": null
+        },
+        {
+          "index": 42,
+          "status": 201,
+          "ms": 291.363995,
+          "error_code": null
+        },
+        {
+          "index": 43,
+          "status": 201,
+          "ms": 189.834233,
+          "error_code": null
+        },
+        {
+          "index": 44,
+          "status": 201,
+          "ms": 256.510083,
+          "error_code": null
+        },
+        {
+          "index": 45,
+          "status": 201,
+          "ms": 224.427043,
+          "error_code": null
+        },
+        {
+          "index": 46,
+          "status": 201,
+          "ms": 382.257372,
+          "error_code": null
+        },
+        {
+          "index": 47,
+          "status": 201,
+          "ms": 343.487278,
+          "error_code": null
+        },
+        {
+          "index": 48,
+          "status": 201,
+          "ms": 337.737085,
+          "error_code": null
+        },
+        {
+          "index": 49,
+          "status": 201,
+          "ms": 253.905144,
+          "error_code": null
+        },
+        {
+          "index": 50,
+          "status": 201,
+          "ms": 324.046573,
+          "error_code": null
+        },
+        {
+          "index": 51,
+          "status": 201,
+          "ms": 349.098554,
+          "error_code": null
+        },
+        {
+          "index": 52,
+          "status": 201,
+          "ms": 362.94762,
+          "error_code": null
+        },
+        {
+          "index": 53,
+          "status": 201,
+          "ms": 338.111072,
+          "error_code": null
+        },
+        {
+          "index": 54,
+          "status": 201,
+          "ms": 357.642797,
+          "error_code": null
+        },
+        {
+          "index": 55,
+          "status": 201,
+          "ms": 265.581531,
+          "error_code": null
+        },
+        {
+          "index": 56,
+          "status": 201,
+          "ms": 320.328095,
+          "error_code": null
+        },
+        {
+          "index": 57,
+          "status": 201,
+          "ms": 387.039203,
+          "error_code": null
+        },
+        {
+          "index": 58,
+          "status": 201,
+          "ms": 310.969096,
+          "error_code": null
+        },
+        {
+          "index": 59,
+          "status": 201,
+          "ms": 131.425479,
+          "error_code": null
+        },
+        {
+          "index": 60,
+          "status": 201,
+          "ms": 291.263432,
+          "error_code": null
+        },
+        {
+          "index": 61,
+          "status": 201,
+          "ms": 355.477066,
+          "error_code": null
+        },
+        {
+          "index": 62,
+          "status": 201,
+          "ms": 391.661889,
+          "error_code": null
+        },
+        {
+          "index": 63,
+          "status": 201,
+          "ms": 389.528184,
+          "error_code": null
+        },
+        {
+          "index": 64,
+          "status": 201,
+          "ms": 306.638129,
+          "error_code": null
+        },
+        {
+          "index": 65,
+          "status": 201,
+          "ms": 275.014418,
+          "error_code": null
+        },
+        {
+          "index": 66,
+          "status": 201,
+          "ms": 243.084718,
+          "error_code": null
+        },
+        {
+          "index": 67,
+          "status": 201,
+          "ms": 130.714226,
+          "error_code": null
+        },
+        {
+          "index": 68,
+          "status": 201,
+          "ms": 172.574857,
+          "error_code": null
+        },
+        {
+          "index": 69,
+          "status": 201,
+          "ms": 136.784291,
+          "error_code": null
+        },
+        {
+          "index": 70,
+          "status": 201,
+          "ms": 117.902647,
+          "error_code": null
+        },
+        {
+          "index": 71,
+          "status": 201,
+          "ms": 389.015201,
+          "error_code": null
+        },
+        {
+          "index": 72,
+          "status": 201,
+          "ms": 141.269788,
+          "error_code": null
+        },
+        {
+          "index": 73,
+          "status": 201,
+          "ms": 108.740985,
+          "error_code": null
+        },
+        {
+          "index": 74,
+          "status": 201,
+          "ms": 306.896408,
+          "error_code": null
+        },
+        {
+          "index": 75,
+          "status": 201,
+          "ms": 141.325745,
+          "error_code": null
+        },
+        {
+          "index": 76,
+          "status": 201,
+          "ms": 167.91923,
+          "error_code": null
+        },
+        {
+          "index": 77,
+          "status": 201,
+          "ms": 155.374572,
+          "error_code": null
+        },
+        {
+          "index": 78,
+          "status": 201,
+          "ms": 331.51202,
+          "error_code": null
+        },
+        {
+          "index": 79,
+          "status": 201,
+          "ms": 128.587287,
+          "error_code": null
+        },
+        {
+          "index": 80,
+          "status": 201,
+          "ms": 244.328502,
+          "error_code": null
+        },
+        {
+          "index": 81,
+          "status": 201,
+          "ms": 299.687601,
+          "error_code": null
+        },
+        {
+          "index": 82,
+          "status": 201,
+          "ms": 337.703112,
+          "error_code": null
+        },
+        {
+          "index": 83,
+          "status": 201,
+          "ms": 165.404669,
+          "error_code": null
+        },
+        {
+          "index": 84,
+          "status": 201,
+          "ms": 200.940779,
+          "error_code": null
+        },
+        {
+          "index": 85,
+          "status": 201,
+          "ms": 183.127176,
+          "error_code": null
+        },
+        {
+          "index": 86,
+          "status": 201,
+          "ms": 215.329972,
+          "error_code": null
+        },
+        {
+          "index": 87,
+          "status": 201,
+          "ms": 232.504643,
+          "error_code": null
+        },
+        {
+          "index": 88,
+          "status": 201,
+          "ms": 247.769958,
+          "error_code": null
+        },
+        {
+          "index": 89,
+          "status": 201,
+          "ms": 277.038145,
+          "error_code": null
+        },
+        {
+          "index": 90,
+          "status": 201,
+          "ms": 228.926036,
+          "error_code": null
+        },
+        {
+          "index": 91,
+          "status": 201,
+          "ms": 99.409328,
+          "error_code": null
+        },
+        {
+          "index": 92,
+          "status": 201,
+          "ms": 280.586014,
+          "error_code": null
+        },
+        {
+          "index": 93,
+          "status": 201,
+          "ms": 336.228132,
+          "error_code": null
+        },
+        {
+          "index": 94,
+          "status": 201,
+          "ms": 241.836794,
+          "error_code": null
+        },
+        {
+          "index": 95,
+          "status": 201,
+          "ms": 319.262962,
+          "error_code": null
+        },
+        {
+          "index": 96,
+          "status": 201,
+          "ms": 214.116985,
+          "error_code": null
+        },
+        {
+          "index": 97,
+          "status": 201,
+          "ms": 220.326562,
+          "error_code": null
+        },
+        {
+          "index": 98,
+          "status": 201,
+          "ms": 286.931938,
+          "error_code": null
+        },
+        {
+          "index": 99,
+          "status": 201,
+          "ms": 207.397909,
+          "error_code": null
+        }
+      ],
+      "runs": [
+        {
+          "index": 0,
+          "status": "SUCCEEDED",
+          "failure_reason": null,
+          "submitted": 1795851911.649234,
+          "finished": 1795851912.251149,
+          "completion_ms": 601.915,
+          "dispatch_ms": 591.765,
+          "first_worker": "4061f7ab-111a-48ff-822b-e1bd2124ba39",
+          "busy_seconds": 0.013288,
+          "attempts": 1,
+          "steps": 0
+        },
+        {
+          "index": 1,
+          "status": "SUCCEEDED",
+          "failure_reason": null,
+          "submitted": 1795851911.755505,
+          "finished": 1795851912.608917,
+          "completion_ms": 853.412,
+          "dispatch_ms": 846.956,
+          "first_worker": "9003f4ef-475b-49cc-940e-b74eb1fc78c8",
+          "busy_seconds": 0.009515,
+          "attempts": 1,
+          "steps": 0
+        },
+        {
+          "index": 2,
+          "status": "SUCCEEDED",
+          "failure_reason": null,
+          "submitted": 1795851911.603791,
+          "finished": 1795851911.998765,
+          "completion_ms": 394.974,
+          "dispatch_ms": 389.388,
+          "first_worker": "9003f4ef-475b-49cc-940e-b74eb1fc78c8",
+          "busy_seconds": 0.008234,
+          "attempts": 1,
+          "steps": 0
+        },
+        {
+          "index": 3,
+          "status": "SUCCEEDED",
+          "failure_reason": null,
+          "submitted": 1795851911.564616,
+          "finished": 1795851911.81448,
+          "completion_ms": 249.864,
+          "dispatch_ms": 240.76,
+          "first_worker": "9003f4ef-475b-49cc-940e-b74eb1fc78c8",
+          "busy_seconds": 0.011963,
+          "attempts": 1,
+          "steps": 0
+        },
+        {
+          "index": 4,
+          "status": "SUCCEEDED",
+          "failure_reason": null,
+          "submitted": 1795851911.801907,
+          "finished": 1795851912.74578,
+          "completion_ms": 943.873,
+          "dispatch_ms": 938.381,
+          "first_worker": "9003f4ef-475b-49cc-940e-b74eb1fc78c8",
+          "busy_seconds": 0.007713,
+          "attempts": 1,
+          "steps": 0
+        },
+        {
+          "index": 5,
+          "status": "SUCCEEDED",
+          "failure_reason": null,
+          "submitted": 1795851911.588193,
+          "finished": 1795851911.941688,
+          "completion_ms": 353.495,
+          "dispatch_ms": 344.965,
+          "first_worker": "4061f7ab-111a-48ff-822b-e1bd2124ba39",
+          "busy_seconds": 0.012091,
+          "attempts": 1,
+          "steps": 0
+        },
+        {
+          "index": 6,
+          "status": "SUCCEEDED",
+          "failure_reason": null,
+          "submitted": 1795851911.623577,
+          "finished": 1795851912.106685,
+          "completion_ms": 483.108,
+          "dispatch_ms": 471.737,
+          "first_worker": "9003f4ef-475b-49cc-940e-b74eb1fc78c8",
+          "busy_seconds": 0.014868,
+          "attempts": 1,
+          "steps": 0
+        },
+        {
+          "index": 7,
+          "status": "SUCCEEDED",
+          "failure_reason": null,
+          "submitted": 1795851911.566433,
+          "finished": 1795851911.843892,
+          "completion_ms": 277.459,
+          "dispatch_ms": 269.47,
+          "first_worker": "9003f4ef-475b-49cc-940e-b74eb1fc78c8",
+          "busy_seconds": 0.010336,
+          "attempts": 1,
+          "steps": 0
+        },
+        {
+          "index": 8,
+          "status": "SUCCEEDED",
+          "failure_reason": null,
+          "submitted": 1795851911.609049,
+          "finished": 1795851912.048283,
+          "completion_ms": 439.234,
+          "dispatch_ms": 432.68,
+          "first_worker": "9003f4ef-475b-49cc-940e-b74eb1fc78c8",
+          "busy_seconds": 0.011387,
+          "attempts": 1,
+          "steps": 0
+        },
+        {
+          "index": 9,
+          "status": "SUCCEEDED",
+          "failure_reason": null,
+          "submitted": 1795851911.60703,
+          "finished": 1795851912.022158,
+          "completion_ms": 415.128,
+          "dispatch_ms": 409.783,
+          "first_worker": "4061f7ab-111a-48ff-822b-e1bd2124ba39",
+          "busy_seconds": 0.007754,
+          "attempts": 1,
+          "steps": 0
+        },
+        {
+          "index": 10,
+          "status": "SUCCEEDED",
+          "failure_reason": null,
+          "submitted": 1795851911.628485,
+          "finished": 1795851912.120722,
+          "completion_ms": 492.237,
+          "dispatch_ms": 483.088,
+          "first_worker": "4061f7ab-111a-48ff-822b-e1bd2124ba39",
+          "busy_seconds": 0.013465,
+          "attempts": 1,
+          "steps": 0
+        },
+        {
+          "index": 11,
+          "status": "SUCCEEDED",
+          "failure_reason": null,
+          "submitted": 1795851911.855493,
+          "finished": 1795851912.876618,
+          "completion_ms": 1021.125,
+          "dispatch_ms": 1015.422,
+          "first_worker": "4061f7ab-111a-48ff-822b-e1bd2124ba39",
+          "busy_seconds": 0.008061,
+          "attempts": 1,
+          "steps": 0
+        },
+        {
+          "index": 12,
+          "status": "SUCCEEDED",
+          "failure_reason": null,
+          "submitted": 1795851911.57562,
+          "finished": 1795851911.873685,
+          "completion_ms": 298.065,
+          "dispatch_ms": 290.769,
+          "first_worker": "4061f7ab-111a-48ff-822b-e1bd2124ba39",
+          "busy_seconds": 0.009176,
+          "attempts": 1,
+          "steps": 0
+        },
+        {
+          "index": 13,
+          "status": "SUCCEEDED",
+          "failure_reason": null,
+          "submitted": 1795851911.543304,
+          "finished": 1795851911.680181,
+          "completion_ms": 136.877,
+          "dispatch_ms": 128.337,
+          "first_worker": "9003f4ef-475b-49cc-940e-b74eb1fc78c8",
+          "busy_seconds": 0.012585,
+          "attempts": 1,
+          "steps": 0
+        },
+        {
+          "index": 14,
+          "status": "SUCCEEDED",
+          "failure_reason": null,
+          "submitted": 1795851911.591929,
+          "finished": 1795851911.954919,
+          "completion_ms": 362.99,
+          "dispatch_ms": 353.841,
+          "first_worker": "9003f4ef-475b-49cc-940e-b74eb1fc78c8",
+          "busy_seconds": 0.012416,
+          "attempts": 1,
+          "steps": 0
+        },
+        {
+          "index": 15,
+          "status": "SUCCEEDED",
+          "failure_reason": null,
+          "submitted": 1795851911.635304,
+          "finished": 1795851912.140079,
+          "completion_ms": 504.775,
+          "dispatch_ms": 491.433,
+          "first_worker": "9003f4ef-475b-49cc-940e-b74eb1fc78c8",
+          "busy_seconds": 0.017961,
+          "attempts": 1,
+          "steps": 0
+        },
+        {
+          "index": 16,
+          "status": "SUCCEEDED",
+          "failure_reason": null,
+          "submitted": 1795851911.680337,
+          "finished": 1795851912.375441,
+          "completion_ms": 695.104,
+          "dispatch_ms": 686.544,
+          "first_worker": "9003f4ef-475b-49cc-940e-b74eb1fc78c8",
+          "busy_seconds": 0.011182,
+          "attempts": 1,
+          "steps": 0
+        },
+        {
+          "index": 17,
+          "status": "SUCCEEDED",
+          "failure_reason": null,
+          "submitted": 1795851911.647686,
+          "finished": 1795851912.23841,
+          "completion_ms": 590.724,
+          "dispatch_ms": 579.234,
+          "first_worker": "4061f7ab-111a-48ff-822b-e1bd2124ba39",
+          "busy_seconds": 0.015381,
+          "attempts": 1,
+          "steps": 0
+        },
+        {
+          "index": 18,
+          "status": "SUCCEEDED",
+          "failure_reason": null,
+          "submitted": 1795851911.818936,
+          "finished": 1795851912.798197,
+          "completion_ms": 979.261,
+          "dispatch_ms": 973.377,
+          "first_worker": "9003f4ef-475b-49cc-940e-b74eb1fc78c8",
+          "busy_seconds": 0.008417,
+          "attempts": 1,
+          "steps": 0
+        },
+        {
+          "index": 19,
+          "status": "SUCCEEDED",
+          "failure_reason": null,
+          "submitted": 1795851911.742567,
+          "finished": 1795851912.589837,
+          "completion_ms": 847.27,
+          "dispatch_ms": 839.716,
+          "first_worker": "9003f4ef-475b-49cc-940e-b74eb1fc78c8",
+          "busy_seconds": 0.01018,
+          "attempts": 1,
+          "steps": 0
+        },
+        {
+          "index": 20,
+          "status": "SUCCEEDED",
+          "failure_reason": null,
+          "submitted": 1795851911.736813,
+          "finished": 1795851912.553527,
+          "completion_ms": 816.714,
+          "dispatch_ms": 810.991,
+          "first_worker": "4061f7ab-111a-48ff-822b-e1bd2124ba39",
+          "busy_seconds": 0.009166,
+          "attempts": 1,
+          "steps": 0
+        },
+        {
+          "index": 21,
+          "status": "SUCCEEDED",
+          "failure_reason": null,
+          "submitted": 1795851911.720038,
+          "finished": 1795851912.505422,
+          "completion_ms": 785.384,
+          "dispatch_ms": 779.079,
+          "first_worker": "9003f4ef-475b-49cc-940e-b74eb1fc78c8",
+          "busy_seconds": 0.008843,
+          "attempts": 1,
+          "steps": 0
+        },
+        {
+          "index": 22,
+          "status": "SUCCEEDED",
+          "failure_reason": null,
+          "submitted": 1795851911.776557,
+          "finished": 1795851912.676592,
+          "completion_ms": 900.035,
+          "dispatch_ms": 894.418,
+          "first_worker": "9003f4ef-475b-49cc-940e-b74eb1fc78c8",
+          "busy_seconds": 0.00806,
+          "attempts": 1,
+          "steps": 0
+        },
+        {
+          "index": 23,
+          "status": "SUCCEEDED",
+          "failure_reason": null,
+          "submitted": 1795851911.687745,
+          "finished": 1795851912.38925,
+          "completion_ms": 701.505,
+          "dispatch_ms": 694.87,
+          "first_worker": "4061f7ab-111a-48ff-822b-e1bd2124ba39",
+          "busy_seconds": 0.009277,
+          "attempts": 1,
+          "steps": 0
+        },
+        {
+          "index": 24,
+          "status": "SUCCEEDED",
+          "failure_reason": null,
+          "submitted": 1795851911.636594,
+          "finished": 1795851912.152311,
+          "completion_ms": 515.717,
+          "dispatch_ms": 506.158,
+          "first_worker": "4061f7ab-111a-48ff-822b-e1bd2124ba39",
+          "busy_seconds": 0.0142,
+          "attempts": 1,
+          "steps": 0
+        },
+        {
+          "index": 25,
+          "status": "SUCCEEDED",
+          "failure_reason": null,
+          "submitted": 1795851911.831618,
+          "finished": 1795851912.825309,
+          "completion_ms": 993.691,
+          "dispatch_ms": 987.414,
+          "first_worker": "4061f7ab-111a-48ff-822b-e1bd2124ba39",
+          "busy_seconds": 0.008484,
+          "attempts": 1,
+          "steps": 0
+        },
+        {
+          "index": 26,
+          "status": "SUCCEEDED",
+          "failure_reason": null,
+          "submitted": 1795851911.786251,
+          "finished": 1795851912.693241,
+          "completion_ms": 906.99,
+          "dispatch_ms": 901.723,
+          "first_worker": "9003f4ef-475b-49cc-940e-b74eb1fc78c8",
+          "busy_seconds": 0.00748,
+          "attempts": 1,
+          "steps": 0
+        },
+        {
+          "index": 27,
+          "status": "SUCCEEDED",
+          "failure_reason": null,
+          "submitted": 1795851911.827613,
+          "finished": 1795851912.815967,
+          "completion_ms": 988.354,
+          "dispatch_ms": 982.799,
+          "first_worker": "9003f4ef-475b-49cc-940e-b74eb1fc78c8",
+          "busy_seconds": 0.007961,
+          "attempts": 1,
+          "steps": 0
+        },
+        {
+          "index": 28,
+          "status": "SUCCEEDED",
+          "failure_reason": null,
+          "submitted": 1795851911.727807,
+          "finished": 1795851912.525378,
+          "completion_ms": 797.571,
+          "dispatch_ms": 791.638,
+          "first_worker": "9003f4ef-475b-49cc-940e-b74eb1fc78c8",
+          "busy_seconds": 0.008435,
+          "attempts": 1,
+          "steps": 0
+        },
+        {
+          "index": 29,
+          "status": "SUCCEEDED",
+          "failure_reason": null,
+          "submitted": 1795851911.644026,
+          "finished": 1795851912.21597,
+          "completion_ms": 571.944,
+          "dispatch_ms": 561.953,
+          "first_worker": "9003f4ef-475b-49cc-940e-b74eb1fc78c8",
+          "busy_seconds": 0.01454,
+          "attempts": 1,
+          "steps": 0
+        },
+        {
+          "index": 30,
+          "status": "SUCCEEDED",
+          "failure_reason": null,
+          "submitted": 1795851911.616282,
+          "finished": 1795851912.076276,
+          "completion_ms": 459.994,
+          "dispatch_ms": 451.056,
+          "first_worker": "9003f4ef-475b-49cc-940e-b74eb1fc78c8",
+          "busy_seconds": 0.012711,
+          "attempts": 1,
+          "steps": 0
+        },
+        {
+          "index": 31,
+          "status": "SUCCEEDED",
+          "failure_reason": null,
+          "submitted": 1795851911.579642,
+          "finished": 1795851911.885293,
+          "completion_ms": 305.651,
+          "dispatch_ms": 299.828,
+          "first_worker": "9003f4ef-475b-49cc-940e-b74eb1fc78c8",
+          "busy_seconds": 0.008159,
+          "attempts": 1,
+          "steps": 0
+        },
+        {
+          "index": 32,
+          "status": "SUCCEEDED",
+          "failure_reason": null,
+          "submitted": 1795851911.535934,
+          "finished": 1795851911.655976,
+          "completion_ms": 120.042,
+          "dispatch_ms": 112.23,
+          "first_worker": "4061f7ab-111a-48ff-822b-e1bd2124ba39",
+          "busy_seconds": 0.011246,
+          "attempts": 1,
+          "steps": 0
+        },
+        {
+          "index": 33,
+          "status": "SUCCEEDED",
+          "failure_reason": null,
+          "submitted": 1795851911.58168,
+          "finished": 1795851911.898934,
+          "completion_ms": 317.254,
+          "dispatch_ms": 310.436,
+          "first_worker": "9003f4ef-475b-49cc-940e-b74eb1fc78c8",
+          "busy_seconds": 0.00999,
+          "attempts": 1,
+          "steps": 0
+        },
+        {
+          "index": 34,
+          "status": "SUCCEEDED",
+          "failure_reason": null,
+          "submitted": 1795851911.712073,
+          "finished": 1795851912.495719,
+          "completion_ms": 783.646,
+          "dispatch_ms": 777.85,
+          "first_worker": "4061f7ab-111a-48ff-822b-e1bd2124ba39",
+          "busy_seconds": 0.008373,
+          "attempts": 1,
+          "steps": 0
+        },
+        {
+          "index": 35,
+          "status": "SUCCEEDED",
+          "failure_reason": null,
+          "submitted": 1795851911.605563,
+          "finished": 1795851912.011482,
+          "completion_ms": 405.919,
+          "dispatch_ms": 400.631,
+          "first_worker": "9003f4ef-475b-49cc-940e-b74eb1fc78c8",
+          "busy_seconds": 0.007822,
+          "attempts": 1,
+          "steps": 0
+        },
+        {
+          "index": 36,
+          "status": "SUCCEEDED",
+          "failure_reason": null,
+          "submitted": 1795851911.612798,
+          "finished": 1795851912.062529,
+          "completion_ms": 449.731,
+          "dispatch_ms": 441.143,
+          "first_worker": "4061f7ab-111a-48ff-822b-e1bd2124ba39",
+          "busy_seconds": 0.011507,
+          "attempts": 1,
+          "steps": 0
+        },
+        {
+          "index": 37,
+          "status": "SUCCEEDED",
+          "failure_reason": null,
+          "submitted": 1795851911.80076,
+          "finished": 1795851912.73712,
+          "completion_ms": 936.36,
+          "dispatch_ms": 930.555,
+          "first_worker": "4061f7ab-111a-48ff-822b-e1bd2124ba39",
+          "busy_seconds": 0.008165,
+          "attempts": 1,
+          "steps": 0
+        },
+        {
+          "index": 38,
+          "status": "SUCCEEDED",
+          "failure_reason": null,
+          "submitted": 1795851911.807479,
+          "finished": 1795851912.772214,
+          "completion_ms": 964.735,
+          "dispatch_ms": 959.175,
+          "first_worker": "4061f7ab-111a-48ff-822b-e1bd2124ba39",
+          "busy_seconds": 0.008091,
+          "attempts": 1,
+          "steps": 0
+        },
+        {
+          "index": 39,
+          "status": "SUCCEEDED",
+          "failure_reason": null,
+          "submitted": 1795851911.583651,
+          "finished": 1795851911.927505,
+          "completion_ms": 343.854,
+          "dispatch_ms": 335.349,
+          "first_worker": "9003f4ef-475b-49cc-940e-b74eb1fc78c8",
+          "busy_seconds": 0.013754,
+          "attempts": 1,
+          "steps": 0
+        },
+        {
+          "index": 40,
+          "status": "SUCCEEDED",
+          "failure_reason": null,
+          "submitted": 1795851911.770011,
+          "finished": 1795851912.651614,
+          "completion_ms": 881.603,
+          "dispatch_ms": 876.528,
+          "first_worker": "4061f7ab-111a-48ff-822b-e1bd2124ba39",
+          "busy_seconds": 0.007451,
+          "attempts": 1,
+          "steps": 0
+        },
+        {
+          "index": 41,
+          "status": "SUCCEEDED",
+          "failure_reason": null,
+          "submitted": 1795851911.71017,
+          "finished": 1795851912.486298,
+          "completion_ms": 776.128,
+          "dispatch_ms": 770.035,
+          "first_worker": "9003f4ef-475b-49cc-940e-b74eb1fc78c8",
+          "busy_seconds": 0.008833,
+          "attempts": 1,
+          "steps": 0
+        },
+        {
+          "index": 42,
+          "status": "SUCCEEDED",
+          "failure_reason": null,
+          "submitted": 1795851911.744095,
+          "finished": 1795851912.599429,
+          "completion_ms": 855.334,
+          "dispatch_ms": 848.937,
+          "first_worker": "4061f7ab-111a-48ff-822b-e1bd2124ba39",
+          "busy_seconds": 0.008924,
+          "attempts": 1,
+          "steps": 0
+        },
+        {
+          "index": 43,
+          "status": "SUCCEEDED",
+          "failure_reason": null,
+          "submitted": 1795851911.638958,
+          "finished": 1795851912.170786,
+          "completion_ms": 531.828,
+          "dispatch_ms": 521.869,
+          "first_worker": "9003f4ef-475b-49cc-940e-b74eb1fc78c8",
+          "busy_seconds": 0.014733,
+          "attempts": 1,
+          "steps": 0
+        },
+        {
+          "index": 44,
+          "status": "SUCCEEDED",
+          "failure_reason": null,
+          "submitted": 1795851911.707508,
+          "finished": 1795851912.476134,
+          "completion_ms": 768.626,
+          "dispatch_ms": 761.583,
+          "first_worker": "4061f7ab-111a-48ff-822b-e1bd2124ba39",
+          "busy_seconds": 0.009507,
+          "attempts": 1,
+          "steps": 0
+        },
+        {
+          "index": 45,
+          "status": "SUCCEEDED",
+          "failure_reason": null,
+          "submitted": 1795851911.675743,
+          "finished": 1795851912.342698,
+          "completion_ms": 666.955,
+          "dispatch_ms": 659.097,
+          "first_worker": "9003f4ef-475b-49cc-940e-b74eb1fc78c8",
+          "busy_seconds": 0.011338,
+          "attempts": 1,
+          "steps": 0
+        },
+        {
+          "index": 46,
+          "status": "SUCCEEDED",
+          "failure_reason": null,
+          "submitted": 1795851911.837029,
+          "finished": 1795851912.832696,
+          "completion_ms": 995.667,
+          "dispatch_ms": 990.535,
+          "first_worker": "9003f4ef-475b-49cc-940e-b74eb1fc78c8",
+          "busy_seconds": 0.007527,
+          "attempts": 1,
+          "steps": 0
+        },
+        {
+          "index": 47,
+          "status": "SUCCEEDED",
+          "failure_reason": null,
+          "submitted": 1795851911.796386,
+          "finished": 1795851912.72811,
+          "completion_ms": 931.724,
+          "dispatch_ms": 926.075,
+          "first_worker": "9003f4ef-475b-49cc-940e-b74eb1fc78c8",
+          "busy_seconds": 0.007928,
+          "attempts": 1,
+          "steps": 0
+        },
+        {
+          "index": 48,
+          "status": "SUCCEEDED",
+          "failure_reason": null,
+          "submitted": 1795851911.790044,
+          "finished": 1795851912.701725,
+          "completion_ms": 911.681,
+          "dispatch_ms": 906.176,
+          "first_worker": "4061f7ab-111a-48ff-822b-e1bd2124ba39",
+          "busy_seconds": 0.007914,
+          "attempts": 1,
+          "steps": 0
+        },
+        {
+          "index": 49,
+          "status": "SUCCEEDED",
+          "failure_reason": null,
+          "submitted": 1795851911.704862,
+          "finished": 1795851912.465534,
+          "completion_ms": 760.672,
+          "dispatch_ms": 753.812,
+          "first_worker": "9003f4ef-475b-49cc-940e-b74eb1fc78c8",
+          "busy_seconds": 0.009709,
+          "attempts": 1,
+          "steps": 0
+        },
+        {
+          "index": 50,
+          "status": "SUCCEEDED",
+          "failure_reason": null,
+          "submitted": 1795851911.777079,
+          "finished": 1795851912.684646,
+          "completion_ms": 907.567,
+          "dispatch_ms": 902.266,
+          "first_worker": "4061f7ab-111a-48ff-822b-e1bd2124ba39",
+          "busy_seconds": 0.007835,
+          "attempts": 1,
+          "steps": 0
+        },
+        {
+          "index": 51,
+          "status": "SUCCEEDED",
+          "failure_reason": null,
+          "submitted": 1795851911.804063,
+          "finished": 1795851912.754549,
+          "completion_ms": 950.486,
+          "dispatch_ms": 944.94,
+          "first_worker": "4061f7ab-111a-48ff-822b-e1bd2124ba39",
+          "busy_seconds": 0.008164,
+          "attempts": 1,
+          "steps": 0
+        },
+        {
+          "index": 52,
+          "status": "SUCCEEDED",
+          "failure_reason": null,
+          "submitted": 1795851911.817358,
+          "finished": 1795851912.780862,
+          "completion_ms": 963.504,
+          "dispatch_ms": 957.946,
+          "first_worker": "9003f4ef-475b-49cc-940e-b74eb1fc78c8",
+          "busy_seconds": 0.007799,
+          "attempts": 1,
+          "steps": 0
+        },
+        {
+          "index": 53,
+          "status": "SUCCEEDED",
+          "failure_reason": null,
+          "submitted": 1795851911.793205,
+          "finished": 1795851912.719401,
+          "completion_ms": 926.196,
+          "dispatch_ms": 920.82,
+          "first_worker": "4061f7ab-111a-48ff-822b-e1bd2124ba39",
+          "busy_seconds": 0.007916,
+          "attempts": 1,
+          "steps": 0
+        },
+        {
+          "index": 54,
+          "status": "SUCCEEDED",
+          "failure_reason": null,
+          "submitted": 1795851911.818232,
+          "finished": 1795851912.789291,
+          "completion_ms": 971.059,
+          "dispatch_ms": 965.511,
+          "first_worker": "4061f7ab-111a-48ff-822b-e1bd2124ba39",
+          "busy_seconds": 0.007932,
+          "attempts": 1,
+          "steps": 0
+        },
+        {
+          "index": 55,
+          "status": "SUCCEEDED",
+          "failure_reason": null,
+          "submitted": 1795851911.690871,
+          "finished": 1795851912.4068,
+          "completion_ms": 715.929,
+          "dispatch_ms": 708.15,
+          "first_worker": "4061f7ab-111a-48ff-822b-e1bd2124ba39",
+          "busy_seconds": 0.010485,
+          "attempts": 1,
+          "steps": 0
+        },
+        {
+          "index": 56,
+          "status": "SUCCEEDED",
+          "failure_reason": null,
+          "submitted": 1795851911.774637,
+          "finished": 1795851912.667701,
+          "completion_ms": 893.064,
+          "dispatch_ms": 888.077,
+          "first_worker": "4061f7ab-111a-48ff-822b-e1bd2124ba39",
+          "busy_seconds": 0.007658,
+          "attempts": 1,
+          "steps": 0
+        },
+        {
+          "index": 57,
+          "status": "SUCCEEDED",
+          "failure_reason": null,
+          "submitted": 1795851911.844949,
+          "finished": 1795851912.841928,
+          "completion_ms": 996.979,
+          "dispatch_ms": 991.871,
+          "first_worker": "4061f7ab-111a-48ff-822b-e1bd2124ba39",
+          "busy_seconds": 0.007324,
+          "attempts": 1,
+          "steps": 0
+        },
+        {
+          "index": 58,
+          "status": "SUCCEEDED",
+          "failure_reason": null,
+          "submitted": 1795851911.764127,
+          "finished": 1795851912.643787,
+          "completion_ms": 879.66,
+          "dispatch_ms": 874.425,
+          "first_worker": "9003f4ef-475b-49cc-940e-b74eb1fc78c8",
+          "busy_seconds": 0.007323,
+          "attempts": 1,
+          "steps": 0
+        },
+        {
+          "index": 59,
+          "status": "SUCCEEDED",
+          "failure_reason": null,
+          "submitted": 1795851911.560703,
+          "finished": 1795851911.775448,
+          "completion_ms": 214.745,
+          "dispatch_ms": 205.439,
+          "first_worker": "4061f7ab-111a-48ff-822b-e1bd2124ba39",
+          "busy_seconds": 0.012667,
+          "attempts": 1,
+          "steps": 0
+        },
+        {
+          "index": 60,
+          "status": "SUCCEEDED",
+          "failure_reason": null,
+          "submitted": 1795851911.740586,
+          "finished": 1795851912.578882,
+          "completion_ms": 838.296,
+          "dispatch_ms": 830.456,
+          "first_worker": "4061f7ab-111a-48ff-822b-e1bd2124ba39",
+          "busy_seconds": 0.010731,
+          "attempts": 1,
+          "steps": 0
+        },
+        {
+          "index": 61,
+          "status": "SUCCEEDED",
+          "failure_reason": null,
+          "submitted": 1795851911.807394,
+          "finished": 1795851912.763334,
+          "completion_ms": 955.94,
+          "dispatch_ms": 949.819,
+          "first_worker": "9003f4ef-475b-49cc-940e-b74eb1fc78c8",
+          "busy_seconds": 0.008456,
+          "attempts": 1,
+          "steps": 0
+        },
+        {
+          "index": 62,
+          "status": "SUCCEEDED",
+          "failure_reason": null,
+          "submitted": 1795851911.852304,
+          "finished": 1795851912.857777,
+          "completion_ms": 1005.473,
+          "dispatch_ms": 1000.723,
+          "first_worker": "4061f7ab-111a-48ff-822b-e1bd2124ba39",
+          "busy_seconds": 0.00729,
+          "attempts": 1,
+          "steps": 0
+        },
+        {
+          "index": 63,
+          "status": "SUCCEEDED",
+          "failure_reason": null,
+          "submitted": 1795851911.845873,
+          "finished": 1795851912.848919,
+          "completion_ms": 1003.046,
+          "dispatch_ms": 998.239,
+          "first_worker": "9003f4ef-475b-49cc-940e-b74eb1fc78c8",
+          "busy_seconds": 0.007145,
+          "attempts": 1,
+          "steps": 0
+        },
+        {
+          "index": 64,
+          "status": "SUCCEEDED",
+          "failure_reason": null,
+          "submitted": 1795851911.731396,
+          "finished": 1795851912.54375,
+          "completion_ms": 812.354,
+          "dispatch_ms": 806.172,
+          "first_worker": "9003f4ef-475b-49cc-940e-b74eb1fc78c8",
+          "busy_seconds": 0.009109,
+          "attempts": 1,
+          "steps": 0
+        },
+        {
+          "index": 65,
+          "status": "SUCCEEDED",
+          "failure_reason": null,
+          "submitted": 1795851911.699944,
+          "finished": 1795851912.445162,
+          "completion_ms": 745.218,
+          "dispatch_ms": 737.138,
+          "first_worker": "9003f4ef-475b-49cc-940e-b74eb1fc78c8",
+          "busy_seconds": 0.010763,
+          "attempts": 1,
+          "steps": 0
+        },
+        {
+          "index": 66,
+          "status": "SUCCEEDED",
+          "failure_reason": null,
+          "submitted": 1795851911.666953,
+          "finished": 1795851912.299626,
+          "completion_ms": 632.673,
+          "dispatch_ms": 625.874,
+          "first_worker": "4061f7ab-111a-48ff-822b-e1bd2124ba39",
+          "busy_seconds": 0.010266,
+          "attempts": 1,
+          "steps": 0
+        },
+        {
+          "index": 67,
+          "status": "SUCCEEDED",
+          "failure_reason": null,
+          "submitted": 1795851911.559024,
+          "finished": 1795851911.758156,
+          "completion_ms": 199.132,
+          "dispatch_ms": 191.552,
+          "first_worker": "9003f4ef-475b-49cc-940e-b74eb1fc78c8",
+          "busy_seconds": 0.011117,
+          "attempts": 1,
+          "steps": 0
+        },
+        {
+          "index": 68,
+          "status": "SUCCEEDED",
+          "failure_reason": null,
+          "submitted": 1795851911.596372,
+          "finished": 1795851911.986793,
+          "completion_ms": 390.421,
+          "dispatch_ms": 384.579,
+          "first_worker": "4061f7ab-111a-48ff-822b-e1bd2124ba39",
+          "busy_seconds": 0.008698,
+          "attempts": 1,
+          "steps": 0
+        },
+        {
+          "index": 69,
+          "status": "SUCCEEDED",
+          "failure_reason": null,
+          "submitted": 1795851911.565473,
+          "finished": 1795851911.829071,
+          "completion_ms": 263.598,
+          "dispatch_ms": 255.705,
+          "first_worker": "4061f7ab-111a-48ff-822b-e1bd2124ba39",
+          "busy_seconds": 0.011379,
+          "attempts": 1,
+          "steps": 0
+        },
+        {
+          "index": 70,
+          "status": "SUCCEEDED",
+          "failure_reason": null,
+          "submitted": 1795851911.548755,
+          "finished": 1795851911.69962,
+          "completion_ms": 150.865,
+          "dispatch_ms": 142.896,
+          "first_worker": "9003f4ef-475b-49cc-940e-b74eb1fc78c8",
+          "busy_seconds": 0.012282,
+          "attempts": 1,
+          "steps": 0
+        },
+        {
+          "index": 71,
+          "status": "SUCCEEDED",
+          "failure_reason": null,
+          "submitted": 1795851911.820088,
+          "finished": 1795851912.807638,
+          "completion_ms": 987.55,
+          "dispatch_ms": 980.89,
+          "first_worker": "4061f7ab-111a-48ff-822b-e1bd2124ba39",
+          "busy_seconds": 0.008932,
+          "attempts": 1,
+          "steps": 0
+        },
+        {
+          "index": 72,
+          "status": "SUCCEEDED",
+          "failure_reason": null,
+          "submitted": 1795851911.566463,
+          "finished": 1795851911.860741,
+          "completion_ms": 294.278,
+          "dispatch_ms": 286.125,
+          "first_worker": "9003f4ef-475b-49cc-940e-b74eb1fc78c8",
+          "busy_seconds": 0.010476,
+          "attempts": 1,
+          "steps": 0
+        },
+        {
+          "index": 73,
+          "status": "SUCCEEDED",
+          "failure_reason": null,
+          "submitted": 1795851911.50792,
+          "finished": 1795851911.639502,
+          "completion_ms": 131.582,
+          "dispatch_ms": 121.235,
+          "first_worker": "9003f4ef-475b-49cc-940e-b74eb1fc78c8",
+          "busy_seconds": 0.015272,
+          "attempts": 1,
+          "steps": 0
+        },
+        {
+          "index": 74,
+          "status": "SUCCEEDED",
+          "failure_reason": null,
+          "submitted": 1795851911.759625,
+          "finished": 1795851912.626665,
+          "completion_ms": 867.04,
+          "dispatch_ms": 861.778,
+          "first_worker": "9003f4ef-475b-49cc-940e-b74eb1fc78c8",
+          "busy_seconds": 0.007657,
+          "attempts": 1,
+          "steps": 0
+        },
+        {
+          "index": 75,
+          "status": "SUCCEEDED",
+          "failure_reason": null,
+          "submitted": 1795851911.564238,
+          "finished": 1795851911.792638,
+          "completion_ms": 228.4,
+          "dispatch_ms": 218.088,
+          "first_worker": "9003f4ef-475b-49cc-940e-b74eb1fc78c8",
+          "busy_seconds": 0.013992,
+          "attempts": 1,
+          "steps": 0
+        },
+        {
+          "index": 76,
+          "status": "SUCCEEDED",
+          "failure_reason": null,
+          "submitted": 1795851911.594463,
+          "finished": 1795851911.975825,
+          "completion_ms": 381.362,
+          "dispatch_ms": 375.385,
+          "first_worker": "9003f4ef-475b-49cc-940e-b74eb1fc78c8",
+          "busy_seconds": 0.008428,
+          "attempts": 1,
+          "steps": 0
+        },
+        {
+          "index": 77,
+          "status": "SUCCEEDED",
+          "failure_reason": null,
+          "submitted": 1795851911.582999,
+          "finished": 1795851911.912417,
+          "completion_ms": 329.418,
+          "dispatch_ms": 320.61,
+          "first_worker": "4061f7ab-111a-48ff-822b-e1bd2124ba39",
+          "busy_seconds": 0.013045,
+          "attempts": 1,
+          "steps": 0
+        },
+        {
+          "index": 78,
+          "status": "SUCCEEDED",
+          "failure_reason": null,
+          "submitted": 1795851911.757947,
+          "finished": 1795851912.618137,
+          "completion_ms": 860.19,
+          "dispatch_ms": 854.402,
+          "first_worker": "4061f7ab-111a-48ff-822b-e1bd2124ba39",
+          "busy_seconds": 0.008121,
+          "attempts": 1,
+          "steps": 0
+        },
+        {
+          "index": 79,
+          "status": "SUCCEEDED",
+          "failure_reason": null,
+          "submitted": 1795851911.558952,
+          "finished": 1795851911.741086,
+          "completion_ms": 182.134,
+          "dispatch_ms": 172.946,
+          "first_worker": "4061f7ab-111a-48ff-822b-e1bd2124ba39",
+          "busy_seconds": 0.012674,
+          "attempts": 1,
+          "steps": 0
+        },
+        {
+          "index": 80,
+          "status": "SUCCEEDED",
+          "failure_reason": null,
+          "submitted": 1795851911.670104,
+          "finished": 1795851912.308837,
+          "completion_ms": 638.733,
+          "dispatch_ms": 632.111,
+          "first_worker": "9003f4ef-475b-49cc-940e-b74eb1fc78c8",
+          "busy_seconds": 0.009279,
+          "attempts": 1,
+          "steps": 0
+        },
+        {
+          "index": 81,
+          "status": "SUCCEEDED",
+          "failure_reason": null,
+          "submitted": 1795851911.723523,
+          "finished": 1795851912.515972,
+          "completion_ms": 792.449,
+          "dispatch_ms": 785.487,
+          "first_worker": "4061f7ab-111a-48ff-822b-e1bd2124ba39",
+          "busy_seconds": 0.009743,
+          "attempts": 1,
+          "steps": 0
+        },
+        {
+          "index": 82,
+          "status": "SUCCEEDED",
+          "failure_reason": null,
+          "submitted": 1795851911.761622,
+          "finished": 1795851912.634878,
+          "completion_ms": 873.256,
+          "dispatch_ms": 868.042,
+          "first_worker": "4061f7ab-111a-48ff-822b-e1bd2124ba39",
+          "busy_seconds": 0.00799,
+          "attempts": 1,
+          "steps": 0
+        },
+        {
+          "index": 83,
+          "status": "SUCCEEDED",
+          "failure_reason": null,
+          "submitted": 1795851911.593751,
+          "finished": 1795851911.963892,
+          "completion_ms": 370.141,
+          "dispatch_ms": 363.421,
+          "first_worker": "9003f4ef-475b-49cc-940e-b74eb1fc78c8",
+          "busy_seconds": 0.009575,
+          "attempts": 1,
+          "steps": 0
+        },
+        {
+          "index": 84,
+          "status": "SUCCEEDED",
+          "failure_reason": null,
+          "submitted": 1795851911.622949,
+          "finished": 1795851912.09077,
+          "completion_ms": 467.821,
+          "dispatch_ms": 458.428,
+          "first_worker": "4061f7ab-111a-48ff-822b-e1bd2124ba39",
+          "busy_seconds": 0.013732,
+          "attempts": 1,
+          "steps": 0
+        },
+        {
+          "index": 85,
+          "status": "SUCCEEDED",
+          "failure_reason": null,
+          "submitted": 1795851911.608568,
+          "finished": 1795851912.032362,
+          "completion_ms": 423.794,
+          "dispatch_ms": 418.644,
+          "first_worker": "9003f4ef-475b-49cc-940e-b74eb1fc78c8",
+          "busy_seconds": 0.008112,
+          "attempts": 1,
+          "steps": 0
+        },
+        {
+          "index": 86,
+          "status": "SUCCEEDED",
+          "failure_reason": null,
+          "submitted": 1795851911.639084,
+          "finished": 1795851912.193323,
+          "completion_ms": 554.239,
+          "dispatch_ms": 543.572,
+          "first_worker": "4061f7ab-111a-48ff-822b-e1bd2124ba39",
+          "busy_seconds": 0.015118,
+          "attempts": 1,
+          "steps": 0
+        },
+        {
+          "index": 87,
+          "status": "SUCCEEDED",
+          "failure_reason": null,
+          "submitted": 1795851911.657129,
+          "finished": 1795851912.263196,
+          "completion_ms": 606.067,
+          "dispatch_ms": 598.317,
+          "first_worker": "4061f7ab-111a-48ff-822b-e1bd2124ba39",
+          "busy_seconds": 0.012203,
+          "attempts": 1,
+          "steps": 0
+        },
+        {
+          "index": 88,
+          "status": "SUCCEEDED",
+          "failure_reason": null,
+          "submitted": 1795851911.697071,
+          "finished": 1795851912.432326,
+          "completion_ms": 735.255,
+          "dispatch_ms": 727.023,
+          "first_worker": "4061f7ab-111a-48ff-822b-e1bd2124ba39",
+          "busy_seconds": 0.012461,
+          "attempts": 1,
+          "steps": 0
+        },
+        {
+          "index": 89,
+          "status": "SUCCEEDED",
+          "failure_reason": null,
+          "submitted": 1795851911.700575,
+          "finished": 1795851912.45484,
+          "completion_ms": 754.265,
+          "dispatch_ms": 747.566,
+          "first_worker": "4061f7ab-111a-48ff-822b-e1bd2124ba39",
+          "busy_seconds": 0.009641,
+          "attempts": 1,
+          "steps": 0
+        },
+        {
+          "index": 90,
+          "status": "SUCCEEDED",
+          "failure_reason": null,
+          "submitted": 1795851911.677999,
+          "finished": 1795851912.359739,
+          "completion_ms": 681.74,
+          "dispatch_ms": 673.149,
+          "first_worker": "4061f7ab-111a-48ff-822b-e1bd2124ba39",
+          "busy_seconds": 0.013335,
+          "attempts": 1,
+          "steps": 0
+        },
+        {
+          "index": 91,
+          "status": "SUCCEEDED",
+          "failure_reason": null,
+          "submitted": 1795851911.55506,
+          "finished": 1795851911.719961,
+          "completion_ms": 164.901,
+          "dispatch_ms": 156.664,
+          "first_worker": "4061f7ab-111a-48ff-822b-e1bd2124ba39",
+          "busy_seconds": 0.01347,
+          "attempts": 1,
+          "steps": 0
+        },
+        {
+          "index": 92,
+          "status": "SUCCEEDED",
+          "failure_reason": null,
+          "submitted": 1795851911.731253,
+          "finished": 1795851912.533894,
+          "completion_ms": 802.641,
+          "dispatch_ms": 797.107,
+          "first_worker": "4061f7ab-111a-48ff-822b-e1bd2124ba39",
+          "busy_seconds": 0.00861,
+          "attempts": 1,
+          "steps": 0
+        },
+        {
+          "index": 93,
+          "status": "SUCCEEDED",
+          "failure_reason": null,
+          "submitted": 1795851911.790086,
+          "finished": 1795851912.710516,
+          "completion_ms": 920.43,
+          "dispatch_ms": 914.542,
+          "first_worker": "9003f4ef-475b-49cc-940e-b74eb1fc78c8",
+          "busy_seconds": 0.008012,
+          "attempts": 1,
+          "steps": 0
+        },
+        {
+          "index": 94,
+          "status": "SUCCEEDED",
+          "failure_reason": null,
+          "submitted": 1795851911.694139,
+          "finished": 1795851912.418799,
+          "completion_ms": 724.66,
+          "dispatch_ms": 717.266,
+          "first_worker": "9003f4ef-475b-49cc-940e-b74eb1fc78c8",
+          "busy_seconds": 0.011839,
+          "attempts": 1,
+          "steps": 0
+        },
+        {
+          "index": 95,
+          "status": "SUCCEEDED",
+          "failure_reason": null,
+          "submitted": 1795851911.772392,
+          "finished": 1795851912.660029,
+          "completion_ms": 887.637,
+          "dispatch_ms": 882.403,
+          "first_worker": "9003f4ef-475b-49cc-940e-b74eb1fc78c8",
+          "busy_seconds": 0.007354,
+          "attempts": 1,
+          "steps": 0
+        },
+        {
+          "index": 96,
+          "status": "SUCCEEDED",
+          "failure_reason": null,
+          "submitted": 1795851911.661917,
+          "finished": 1795851912.287122,
+          "completion_ms": 625.205,
+          "dispatch_ms": 617.902,
+          "first_worker": "9003f4ef-475b-49cc-940e-b74eb1fc78c8",
+          "busy_seconds": 0.010049,
+          "attempts": 1,
+          "steps": 0
+        },
+        {
+          "index": 97,
+          "status": "SUCCEEDED",
+          "failure_reason": null,
+          "submitted": 1795851911.672646,
+          "finished": 1795851912.324022,
+          "completion_ms": 651.376,
+          "dispatch_ms": 641.799,
+          "first_worker": "4061f7ab-111a-48ff-822b-e1bd2124ba39",
+          "busy_seconds": 0.013619,
+          "attempts": 1,
+          "steps": 0
+        },
+        {
+          "index": 98,
+          "status": "SUCCEEDED",
+          "failure_reason": null,
+          "submitted": 1795851911.738646,
+          "finished": 1795851912.565654,
+          "completion_ms": 827.008,
+          "dispatch_ms": 818.496,
+          "first_worker": "9003f4ef-475b-49cc-940e-b74eb1fc78c8",
+          "busy_seconds": 0.012385,
+          "attempts": 1,
+          "steps": 0
+        },
+        {
+          "index": 99,
+          "status": "SUCCEEDED",
+          "failure_reason": null,
+          "submitted": 1795851911.657786,
+          "finished": 1795851912.277838,
+          "completion_ms": 620.052,
+          "dispatch_ms": 610.366,
+          "first_worker": "4061f7ab-111a-48ff-822b-e1bd2124ba39",
+          "busy_seconds": 0.012704,
+          "attempts": 1,
+          "steps": 0
+        }
+      ],
+      "usage": [],
+      "resources": [
+        {
+          "utc": "2026-11-28T07:45:11.951565+00:00",
+          "containers": {
+            "api-1": {
+              "cpu_percent": 73.76,
+              "memory": "250.6MiB"
+            },
+            "dashboard-1": {
+              "cpu_percent": 6.01,
+              "memory": "13.52MiB"
+            },
+            "model-fixture-1": {
+              "cpu_percent": 0.01,
+              "memory": "14.57MiB"
+            },
+            "nats-1": {
+              "cpu_percent": 4.65,
+              "memory": "9.223MiB"
+            },
+            "postgres-1": {
+              "cpu_percent": 74.04,
+              "memory": "97.65MiB"
+            },
+            "publisher-1": {
+              "cpu_percent": 16.86,
+              "memory": "67.79MiB"
+            },
+            "redis-1": {
+              "cpu_percent": 1.99,
+              "memory": "6.84MiB"
+            },
+            "worker-1": {
+              "cpu_percent": 16.95,
+              "memory": "71.21MiB"
+            },
+            "worker-2": {
+              "cpu_percent": 19.6,
+              "memory": "71.04MiB"
+            }
+          }
+        },
+        {
+          "utc": "2026-11-28T07:45:13.982631+00:00",
+          "containers": {
+            "api-1": {
+              "cpu_percent": 0.51,
+              "memory": "250.3MiB"
+            },
+            "dashboard-1": {
+              "cpu_percent": 2.45,
+              "memory": "14MiB"
+            },
+            "model-fixture-1": {
+              "cpu_percent": 0.01,
+              "memory": "14.57MiB"
+            },
+            "nats-1": {
+              "cpu_percent": 0.58,
+              "memory": "9.023MiB"
+            },
+            "postgres-1": {
+              "cpu_percent": 4.46,
+              "memory": "98.57MiB"
+            },
+            "publisher-1": {
+              "cpu_percent": 1.04,
+              "memory": "67.82MiB"
+            },
+            "redis-1": {
+              "cpu_percent": 0.38,
+              "memory": "7.367MiB"
+            },
+            "worker-1": {
+              "cpu_percent": 0.6,
+              "memory": "71.45MiB"
+            },
+            "worker-2": {
+              "cpu_percent": 0.59,
+              "memory": "70.92MiB"
+            }
+          }
+        }
+      ],
+      "sql_profile": [
+        {
+          "queryid": "-3508426635121808263",
+          "total_ms": 174.31,
+          "calls": 100,
+          "statement": "SELECT * FROM prepare_submission($1,$2,$3)"
+        },
+        {
+          "queryid": "1617327143711092739",
+          "total_ms": 117.47,
+          "calls": 100,
+          "statement": "WITH admitted AS ( SELECT clock_timestamp() AS ts ), inserted AS (INSERT INTO runs (id,tenant_id,agent_version_id,submitter_id, submission_k"
+        },
+        {
+          "queryid": "-1019676104941685357",
+          "total_ms": 56.18,
+          "calls": 201,
+          "statement": "SELECT t.id FROM tenants t WHERE EXISTS (SELECT FROM execution_queue q WHERE q.tenant_id=t.id AND (q.provider IN ('builtin','mock') OR (q.pr"
+        },
+        {
+          "queryid": "-7333107186202349088",
+          "total_ms": 39.13,
+          "calls": 100,
+          "statement": "SELECT id,role FROM scoped_member($1,$2,$3)"
+        },
+        {
+          "queryid": "-4393085423925374951",
+          "total_ms": 37.63,
+          "calls": 200,
+          "statement": "INSERT INTO run_events (tenant_id,run_id,seq,kind,payload) VALUES ($1,$2,$3,'run.state',CAST($4 AS jsonb))"
+        }
+      ],
+      "workers": {
+        "4061f7ab-111a-48ff-822b-e1bd2124ba39": 49,
+        "9003f4ef-475b-49cc-940e-b74eb1fc78c8": 51
+      },
+      "summary": {
+        "runs": 100,
+        "elapsed_seconds": 1.369,
+        "terminal_runs_per_second": 73.062,
+        "failed_runs": 0,
+        "slot_occupancy_percent": 18.75,
+        "submit_ms": {
+          "p50": 247.77,
+          "p95": 382.257,
+          "p99": 391.662
+        },
+        "first_dispatch_ms": {
+          "p50": 694.87,
+          "p95": 987.414,
+          "p99": 1000.723
+        },
+        "completion_ms": {
+          "p50": 701.505,
+          "p95": 993.691,
+          "p99": 1005.473
+        }
+      }
+    },
+    "long": {
+      "submissions": [
+        {
+          "index": 0,
+          "status": 201,
+          "ms": 31.619161,
+          "error_code": null
+        },
+        {
+          "index": 1,
+          "status": 201,
+          "ms": 31.212325,
+          "error_code": null
+        },
+        {
+          "index": 2,
+          "status": 201,
+          "ms": 34.575518,
+          "error_code": null
+        },
+        {
+          "index": 3,
+          "status": 201,
+          "ms": 30.469581,
+          "error_code": null
+        },
+        {
+          "index": 4,
+          "status": 201,
+          "ms": 26.2251,
+          "error_code": null
+        },
+        {
+          "index": 5,
+          "status": 201,
+          "ms": 26.677958,
+          "error_code": null
+        },
+        {
+          "index": 6,
+          "status": 201,
+          "ms": 43.140436,
+          "error_code": null
+        },
+        {
+          "index": 7,
+          "status": 201,
+          "ms": 34.981912,
+          "error_code": null
+        },
+        {
+          "index": 8,
+          "status": 201,
+          "ms": 26.195794,
+          "error_code": null
+        },
+        {
+          "index": 9,
+          "status": 201,
+          "ms": 29.966793,
+          "error_code": null
+        }
+      ],
+      "runs": [
+        {
+          "index": 0,
+          "status": "SUCCEEDED",
+          "failure_reason": null,
+          "submitted": 1795851915.886778,
+          "finished": 1795851943.338743,
+          "completion_ms": 27451.965,
+          "dispatch_ms": 13865.103,
+          "first_worker": "4061f7ab-111a-48ff-822b-e1bd2124ba39",
+          "busy_seconds": 13.593564,
+          "attempts": 1,
+          "steps": 49
+        },
+        {
+          "index": 1,
+          "status": "SUCCEEDED",
+          "failure_reason": null,
+          "submitted": 1795851915.881679,
+          "finished": 1795851929.744079,
+          "completion_ms": 13862.4,
+          "dispatch_ms": 96.7,
+          "first_worker": "4061f7ab-111a-48ff-822b-e1bd2124ba39",
+          "busy_seconds": 13.768307,
+          "attempts": 1,
+          "steps": 49
+        },
+        {
+          "index": 2,
+          "status": "SUCCEEDED",
+          "failure_reason": null,
+          "submitted": 1795851915.887111,
+          "finished": 1795851943.357691,
+          "completion_ms": 27470.58,
+          "dispatch_ms": 13872.111,
+          "first_worker": "4061f7ab-111a-48ff-822b-e1bd2124ba39",
+          "busy_seconds": 13.600717,
+          "attempts": 1,
+          "steps": 49
+        },
+        {
+          "index": 3,
+          "status": "SUCCEEDED",
+          "failure_reason": null,
+          "submitted": 1795851915.881072,
+          "finished": 1795851929.644705,
+          "completion_ms": 13763.633,
+          "dispatch_ms": 64.391,
+          "first_worker": "9003f4ef-475b-49cc-940e-b74eb1fc78c8",
+          "busy_seconds": 13.701857,
+          "attempts": 1,
+          "steps": 49
+        },
+        {
+          "index": 4,
+          "status": "SUCCEEDED",
+          "failure_reason": null,
+          "submitted": 1795851915.882024,
+          "finished": 1795851943.33794,
+          "completion_ms": 27455.916,
+          "dispatch_ms": 13774.911,
+          "first_worker": "9003f4ef-475b-49cc-940e-b74eb1fc78c8",
+          "busy_seconds": 13.683924,
+          "attempts": 1,
+          "steps": 49
+        },
+        {
+          "index": 5,
+          "status": "SUCCEEDED",
+          "failure_reason": null,
+          "submitted": 1795851915.880275,
+          "finished": 1795851929.647879,
+          "completion_ms": 13767.604,
+          "dispatch_ms": 47.448,
+          "first_worker": "9003f4ef-475b-49cc-940e-b74eb1fc78c8",
+          "busy_seconds": 13.722757,
+          "attempts": 1,
+          "steps": 49
+        },
+        {
+          "index": 6,
+          "status": "SUCCEEDED",
+          "failure_reason": null,
+          "submitted": 1795851915.900145,
+          "finished": 1795851956.801232,
+          "completion_ms": 40901.087,
+          "dispatch_ms": 27468.464,
+          "first_worker": "4061f7ab-111a-48ff-822b-e1bd2124ba39",
+          "busy_seconds": 13.435527,
+          "attempts": 1,
+          "steps": 49
+        },
+        {
+          "index": 7,
+          "status": "SUCCEEDED",
+          "failure_reason": null,
+          "submitted": 1795851915.888376,
+          "finished": 1795851956.80037,
+          "completion_ms": 40911.994,
+          "dispatch_ms": 27462.127,
+          "first_worker": "9003f4ef-475b-49cc-940e-b74eb1fc78c8",
+          "busy_seconds": 13.453096,
+          "attempts": 1,
+          "steps": 49
+        },
+        {
+          "index": 8,
+          "status": "SUCCEEDED",
+          "failure_reason": null,
+          "submitted": 1795851915.881219,
+          "finished": 1795851929.739719,
+          "completion_ms": 13858.5,
+          "dispatch_ms": 78.93,
+          "first_worker": "4061f7ab-111a-48ff-822b-e1bd2124ba39",
+          "busy_seconds": 13.782385,
+          "attempts": 1,
+          "steps": 49
+        },
+        {
+          "index": 9,
+          "status": "SUCCEEDED",
+          "failure_reason": null,
+          "submitted": 1795851915.886183,
+          "finished": 1795851943.34034,
+          "completion_ms": 27454.157,
+          "dispatch_ms": 13779.06,
+          "first_worker": "9003f4ef-475b-49cc-940e-b74eb1fc78c8",
+          "busy_seconds": 13.677476,
+          "attempts": 1,
+          "steps": 49
+        }
+      ],
+      "usage": [
+        {
+          "status": "reported",
+          "calls": 250,
+          "input_tokens": 3000,
+          "output_tokens": 1000,
+          "estimated_usd": "0.00500"
+        }
+      ],
+      "resources": [
+        {
+          "utc": "2026-11-28T07:45:17.063989+00:00",
+          "containers": {
+            "api-1": {
+              "cpu_percent": 0.56,
+              "memory": "250.5MiB"
+            },
+            "dashboard-1": {
+              "cpu_percent": 0.0,
+              "memory": "13.29MiB"
+            },
+            "model-fixture-1": {
+              "cpu_percent": 2.15,
+              "memory": "16.1MiB"
+            },
+            "nats-1": {
+              "cpu_percent": 0.39,
+              "memory": "8.379MiB"
+            },
+            "postgres-1": {
+              "cpu_percent": 12.78,
+              "memory": "104.2MiB"
+            },
+            "publisher-1": {
+              "cpu_percent": 1.37,
+              "memory": "67.41MiB"
+            },
+            "redis-1": {
+              "cpu_percent": 0.37,
+              "memory": "7.359MiB"
+            },
+            "worker-1": {
+              "cpu_percent": 124.26,
+              "memory": "129.7MiB"
+            },
+            "worker-2": {
+              "cpu_percent": 123.16,
+              "memory": "96.57MiB"
+            }
+          }
+        },
+        {
+          "utc": "2026-11-28T07:45:19.099078+00:00",
+          "containers": {
+            "api-1": {
+              "cpu_percent": 0.57,
+              "memory": "250.2MiB"
+            },
+            "dashboard-1": {
+              "cpu_percent": 3.05,
+              "memory": "14.26MiB"
+            },
+            "model-fixture-1": {
+              "cpu_percent": 1.24,
+              "memory": "15.51MiB"
+            },
+            "nats-1": {
+              "cpu_percent": 0.27,
+              "memory": "8.383MiB"
+            },
+            "postgres-1": {
+              "cpu_percent": 15.6,
+              "memory": "105.4MiB"
+            },
+            "publisher-1": {
+              "cpu_percent": 1.41,
+              "memory": "66.8MiB"
+            },
+            "redis-1": {
+              "cpu_percent": 0.44,
+              "memory": "7.758MiB"
+            },
+            "worker-1": {
+              "cpu_percent": 12.04,
+              "memory": "76.31MiB"
+            },
+            "worker-2": {
+              "cpu_percent": 22.44,
+              "memory": "76.36MiB"
+            }
+          }
+        },
+        {
+          "utc": "2026-11-28T07:45:21.135402+00:00",
+          "containers": {
+            "api-1": {
+              "cpu_percent": 0.88,
+              "memory": "250.5MiB"
+            },
+            "dashboard-1": {
+              "cpu_percent": 0.0,
+              "memory": "13.48MiB"
+            },
+            "model-fixture-1": {
+              "cpu_percent": 0.94,
+              "memory": "15.57MiB"
+            },
+            "nats-1": {
+              "cpu_percent": 0.27,
+              "memory": "8.418MiB"
+            },
+            "postgres-1": {
+              "cpu_percent": 13.82,
+              "memory": "105.7MiB"
+            },
+            "publisher-1": {
+              "cpu_percent": 1.09,
+              "memory": "66.71MiB"
+            },
+            "redis-1": {
+              "cpu_percent": 0.37,
+              "memory": "7.355MiB"
+            },
+            "worker-1": {
+              "cpu_percent": 8.22,
+              "memory": "76.69MiB"
+            },
+            "worker-2": {
+              "cpu_percent": 6.99,
+              "memory": "76.42MiB"
+            }
+          }
+        },
+        {
+          "utc": "2026-11-28T07:45:23.182305+00:00",
+          "containers": {
+            "api-1": {
+              "cpu_percent": 22.53,
+              "memory": "264.1MiB"
+            },
+            "dashboard-1": {
+              "cpu_percent": 0.0,
+              "memory": "13.25MiB"
+            },
+            "model-fixture-1": {
+              "cpu_percent": 1.0,
+              "memory": "15.66MiB"
+            },
+            "nats-1": {
+              "cpu_percent": 0.22,
+              "memory": "8.156MiB"
+            },
+            "postgres-1": {
+              "cpu_percent": 10.27,
+              "memory": "106MiB"
+            },
+            "publisher-1": {
+              "cpu_percent": 1.09,
+              "memory": "66.97MiB"
+            },
+            "redis-1": {
+              "cpu_percent": 3.36,
+              "memory": "8.453MiB"
+            },
+            "worker-1": {
+              "cpu_percent": 36.85,
+              "memory": "92.01MiB"
+            },
+            "worker-2": {
+              "cpu_percent": 7.68,
+              "memory": "76.44MiB"
+            }
+          }
+        },
+        {
+          "utc": "2026-11-28T07:45:25.226449+00:00",
+          "containers": {
+            "api-1": {
+              "cpu_percent": 0.51,
+              "memory": "250.2MiB"
+            },
+            "dashboard-1": {
+              "cpu_percent": 0.0,
+              "memory": "13.32MiB"
+            },
+            "model-fixture-1": {
+              "cpu_percent": 1.11,
+              "memory": "16.16MiB"
+            },
+            "nats-1": {
+              "cpu_percent": 3.18,
+              "memory": "8.941MiB"
+            },
+            "postgres-1": {
+              "cpu_percent": 11.11,
+              "memory": "111.2MiB"
+            },
+            "publisher-1": {
+              "cpu_percent": 1.22,
+              "memory": "67.23MiB"
+            },
+            "redis-1": {
+              "cpu_percent": 0.37,
+              "memory": "7.121MiB"
+            },
+            "worker-1": {
+              "cpu_percent": 106.95,
+              "memory": "132.7MiB"
+            },
+            "worker-2": {
+              "cpu_percent": 104.34,
+              "memory": "126.7MiB"
+            }
+          }
+        },
+        {
+          "utc": "2026-11-28T07:45:27.268290+00:00",
+          "containers": {
+            "api-1": {
+              "cpu_percent": 0.53,
+              "memory": "250.3MiB"
+            },
+            "dashboard-1": {
+              "cpu_percent": 0.0,
+              "memory": "13.25MiB"
+            },
+            "model-fixture-1": {
+              "cpu_percent": 1.0,
+              "memory": "16.28MiB"
+            },
+            "nats-1": {
+              "cpu_percent": 0.27,
+              "memory": "8.656MiB"
+            },
+            "postgres-1": {
+              "cpu_percent": 12.41,
+              "memory": "108.6MiB"
+            },
+            "publisher-1": {
+              "cpu_percent": 1.07,
+              "memory": "66.7MiB"
+            },
+            "redis-1": {
+              "cpu_percent": 0.39,
+              "memory": "7.355MiB"
+            },
+            "worker-1": {
+              "cpu_percent": 9.04,
+              "memory": "76.97MiB"
+            },
+            "worker-2": {
+              "cpu_percent": 7.96,
+              "memory": "76.83MiB"
+            }
+          }
+        },
+        {
+          "utc": "2026-11-28T07:45:29.299033+00:00",
+          "containers": {
+            "api-1": {
+              "cpu_percent": 20.9,
+              "memory": "250.5MiB"
+            },
+            "dashboard-1": {
+              "cpu_percent": 2.53,
+              "memory": "13.75MiB"
+            },
+            "model-fixture-1": {
+              "cpu_percent": 0.94,
+              "memory": "15.29MiB"
+            },
+            "nats-1": {
+              "cpu_percent": 0.22,
+              "memory": "8.234MiB"
+            },
+            "postgres-1": {
+              "cpu_percent": 9.83,
+              "memory": "107.8MiB"
+            },
+            "publisher-1": {
+              "cpu_percent": 1.07,
+              "memory": "66.74MiB"
+            },
+            "redis-1": {
+              "cpu_percent": 0.39,
+              "memory": "7.707MiB"
+            },
+            "worker-1": {
+              "cpu_percent": 7.46,
+              "memory": "76.83MiB"
+            },
+            "worker-2": {
+              "cpu_percent": 7.15,
+              "memory": "76.49MiB"
+            }
+          }
+        },
+        {
+          "utc": "2026-11-28T07:45:31.342199+00:00",
+          "containers": {
+            "api-1": {
+              "cpu_percent": 0.52,
+              "memory": "250.5MiB"
+            },
+            "dashboard-1": {
+              "cpu_percent": 0.0,
+              "memory": "13.25MiB"
+            },
+            "model-fixture-1": {
+              "cpu_percent": 0.83,
+              "memory": "15.66MiB"
+            },
+            "nats-1": {
+              "cpu_percent": 0.22,
+              "memory": "8.66MiB"
+            },
+            "postgres-1": {
+              "cpu_percent": 5.45,
+              "memory": "108.4MiB"
+            },
+            "publisher-1": {
+              "cpu_percent": 1.16,
+              "memory": "66.75MiB"
+            },
+            "redis-1": {
+              "cpu_percent": 0.39,
+              "memory": "7.355MiB"
+            },
+            "worker-1": {
+              "cpu_percent": 51.85,
+              "memory": "94.97MiB"
+            },
+            "worker-2": {
+              "cpu_percent": 30.08,
+              "memory": "87.36MiB"
+            }
+          }
+        },
+        {
+          "utc": "2026-11-28T07:45:33.395218+00:00",
+          "containers": {
+            "api-1": {
+              "cpu_percent": 0.77,
+              "memory": "250.8MiB"
+            },
+            "dashboard-1": {
+              "cpu_percent": 0.0,
+              "memory": "13.25MiB"
+            },
+            "model-fixture-1": {
+              "cpu_percent": 0.92,
+              "memory": "15.53MiB"
+            },
+            "nats-1": {
+              "cpu_percent": 0.23,
+              "memory": "7.953MiB"
+            },
+            "postgres-1": {
+              "cpu_percent": 11.61,
+              "memory": "109MiB"
+            },
+            "publisher-1": {
+              "cpu_percent": 1.09,
+              "memory": "66.68MiB"
+            },
+            "redis-1": {
+              "cpu_percent": 3.43,
+              "memory": "7.988MiB"
+            },
+            "worker-1": {
+              "cpu_percent": 105.61,
+              "memory": "141.6MiB"
+            },
+            "worker-2": {
+              "cpu_percent": 104.81,
+              "memory": "134.6MiB"
+            }
+          }
+        },
+        {
+          "utc": "2026-11-28T07:45:35.409691+00:00",
+          "containers": {
+            "api-1": {
+              "cpu_percent": 0.49,
+              "memory": "250.5MiB"
+            },
+            "dashboard-1": {
+              "cpu_percent": 0.0,
+              "memory": "13.27MiB"
+            },
+            "model-fixture-1": {
+              "cpu_percent": 0.92,
+              "memory": "15.8MiB"
+            },
+            "nats-1": {
+              "cpu_percent": 2.94,
+              "memory": "9.438MiB"
+            },
+            "postgres-1": {
+              "cpu_percent": 15.84,
+              "memory": "111.6MiB"
+            },
+            "publisher-1": {
+              "cpu_percent": 1.23,
+              "memory": "66.68MiB"
+            },
+            "redis-1": {
+              "cpu_percent": 0.42,
+              "memory": "7.355MiB"
+            },
+            "worker-1": {
+              "cpu_percent": 7.92,
+              "memory": "76.45MiB"
+            },
+            "worker-2": {
+              "cpu_percent": 8.21,
+              "memory": "76.06MiB"
+            }
+          }
+        },
+        {
+          "utc": "2026-11-28T07:45:37.446778+00:00",
+          "containers": {
+            "api-1": {
+              "cpu_percent": 0.49,
+              "memory": "250.3MiB"
+            },
+            "dashboard-1": {
+              "cpu_percent": 0.0,
+              "memory": "13.25MiB"
+            },
+            "model-fixture-1": {
+              "cpu_percent": 0.89,
+              "memory": "15.65MiB"
+            },
+            "nats-1": {
+              "cpu_percent": 0.22,
+              "memory": "8.594MiB"
+            },
+            "postgres-1": {
+              "cpu_percent": 7.26,
+              "memory": "111.6MiB"
+            },
+            "publisher-1": {
+              "cpu_percent": 1.2,
+              "memory": "66.66MiB"
+            },
+            "redis-1": {
+              "cpu_percent": 0.4,
+              "memory": "7.105MiB"
+            },
+            "worker-1": {
+              "cpu_percent": 8.32,
+              "memory": "77.14MiB"
+            },
+            "worker-2": {
+              "cpu_percent": 7.54,
+              "memory": "77.02MiB"
+            }
+          }
+        },
+        {
+          "utc": "2026-11-28T07:45:39.503982+00:00",
+          "containers": {
+            "api-1": {
+              "cpu_percent": 40.98,
+              "memory": "251.5MiB"
+            },
+            "dashboard-1": {
+              "cpu_percent": 2.64,
+              "memory": "13.25MiB"
+            },
+            "model-fixture-1": {
+              "cpu_percent": 0.98,
+              "memory": "15.28MiB"
+            },
+            "nats-1": {
+              "cpu_percent": 0.29,
+              "memory": "8.473MiB"
+            },
+            "postgres-1": {
+              "cpu_percent": 12.25,
+              "memory": "113.1MiB"
+            },
+            "publisher-1": {
+              "cpu_percent": 1.43,
+              "memory": "67.05MiB"
+            },
+            "redis-1": {
+              "cpu_percent": 0.52,
+              "memory": "7.602MiB"
+            },
+            "worker-1": {
+              "cpu_percent": 101.81,
+              "memory": "101MiB"
+            },
+            "worker-2": {
+              "cpu_percent": 71.79,
+              "memory": "95.98MiB"
+            }
+          }
+        },
+        {
+          "utc": "2026-11-28T07:45:41.545655+00:00",
+          "containers": {
+            "api-1": {
+              "cpu_percent": 0.64,
+              "memory": "250.3MiB"
+            },
+            "dashboard-1": {
+              "cpu_percent": 0.0,
+              "memory": "13.25MiB"
+            },
+            "model-fixture-1": {
+              "cpu_percent": 1.35,
+              "memory": "15.66MiB"
+            },
+            "nats-1": {
+              "cpu_percent": 0.27,
+              "memory": "9.16MiB"
+            },
+            "postgres-1": {
+              "cpu_percent": 12.47,
+              "memory": "112.8MiB"
+            },
+            "publisher-1": {
+              "cpu_percent": 1.28,
+              "memory": "66.92MiB"
+            },
+            "redis-1": {
+              "cpu_percent": 0.47,
+              "memory": "7.352MiB"
+            },
+            "worker-1": {
+              "cpu_percent": 110.72,
+              "memory": "132.8MiB"
+            },
+            "worker-2": {
+              "cpu_percent": 109.8,
+              "memory": "131.5MiB"
+            }
+          }
+        },
+        {
+          "utc": "2026-11-28T07:45:43.578439+00:00",
+          "containers": {
+            "api-1": {
+              "cpu_percent": 0.92,
+              "memory": "250.8MiB"
+            },
+            "dashboard-1": {
+              "cpu_percent": 2.47,
+              "memory": "18.39MiB"
+            },
+            "model-fixture-1": {
+              "cpu_percent": 0.8,
+              "memory": "15.34MiB"
+            },
+            "nats-1": {
+              "cpu_percent": 0.33,
+              "memory": "8.746MiB"
+            },
+            "postgres-1": {
+              "cpu_percent": 7.78,
+              "memory": "113.2MiB"
+            },
+            "publisher-1": {
+              "cpu_percent": 1.09,
+              "memory": "66.72MiB"
+            },
+            "redis-1": {
+              "cpu_percent": 3.11,
+              "memory": "8.02MiB"
+            },
+            "worker-1": {
+              "cpu_percent": 7.98,
+              "memory": "75.44MiB"
+            },
+            "worker-2": {
+              "cpu_percent": 7.2,
+              "memory": "75.8MiB"
+            }
+          }
+        },
+        {
+          "utc": "2026-11-28T07:45:45.613044+00:00",
+          "containers": {
+            "api-1": {
+              "cpu_percent": 0.48,
+              "memory": "250.8MiB"
+            },
+            "dashboard-1": {
+              "cpu_percent": 0.0,
+              "memory": "13.27MiB"
+            },
+            "model-fixture-1": {
+              "cpu_percent": 0.48,
+              "memory": "15.25MiB"
+            },
+            "nats-1": {
+              "cpu_percent": 2.96,
+              "memory": "8.75MiB"
+            },
+            "postgres-1": {
+              "cpu_percent": 10.99,
+              "memory": "113.9MiB"
+            },
+            "publisher-1": {
+              "cpu_percent": 1.07,
+              "memory": "66.98MiB"
+            },
+            "redis-1": {
+              "cpu_percent": 0.38,
+              "memory": "7.129MiB"
+            },
+            "worker-1": {
+              "cpu_percent": 4.82,
+              "memory": "76.58MiB"
+            },
+            "worker-2": {
+              "cpu_percent": 4.44,
+              "memory": "76.67MiB"
+            }
+          }
+        },
+        {
+          "utc": "2026-11-28T07:45:47.661693+00:00",
+          "containers": {
+            "api-1": {
+              "cpu_percent": 0.73,
+              "memory": "250.8MiB"
+            },
+            "dashboard-1": {
+              "cpu_percent": 0.0,
+              "memory": "13.25MiB"
+            },
+            "model-fixture-1": {
+              "cpu_percent": 0.35,
+              "memory": "16.24MiB"
+            },
+            "nats-1": {
+              "cpu_percent": 0.27,
+              "memory": "8.789MiB"
+            },
+            "postgres-1": {
+              "cpu_percent": 8.28,
+              "memory": "113.9MiB"
+            },
+            "publisher-1": {
+              "cpu_percent": 1.07,
+              "memory": "66.96MiB"
+            },
+            "redis-1": {
+              "cpu_percent": 0.36,
+              "memory": "7.105MiB"
+            },
+            "worker-1": {
+              "cpu_percent": 68.98,
+              "memory": "100.2MiB"
+            },
+            "worker-2": {
+              "cpu_percent": 35.95,
+              "memory": "92.05MiB"
+            }
+          }
+        },
+        {
+          "utc": "2026-11-28T07:45:49.698319+00:00",
+          "containers": {
+            "api-1": {
+              "cpu_percent": 23.75,
+              "memory": "263.6MiB"
+            },
+            "dashboard-1": {
+              "cpu_percent": 0.0,
+              "memory": "13.57MiB"
+            },
+            "model-fixture-1": {
+              "cpu_percent": 0.52,
+              "memory": "15.84MiB"
+            },
+            "nats-1": {
+              "cpu_percent": 0.27,
+              "memory": "8.555MiB"
+            },
+            "postgres-1": {
+              "cpu_percent": 4.71,
+              "memory": "114.2MiB"
+            },
+            "publisher-1": {
+              "cpu_percent": 1.05,
+              "memory": "66.96MiB"
+            },
+            "redis-1": {
+              "cpu_percent": 0.38,
+              "memory": "7.637MiB"
+            },
+            "worker-1": {
+              "cpu_percent": 102.61,
+              "memory": "141.7MiB"
+            },
+            "worker-2": {
+              "cpu_percent": 102.7,
+              "memory": "134.7MiB"
+            }
+          }
+        },
+        {
+          "utc": "2026-11-28T07:45:51.728435+00:00",
+          "containers": {
+            "api-1": {
+              "cpu_percent": 0.51,
+              "memory": "250.3MiB"
+            },
+            "dashboard-1": {
+              "cpu_percent": 0.0,
+              "memory": "13.25MiB"
+            },
+            "model-fixture-1": {
+              "cpu_percent": 0.51,
+              "memory": "15.69MiB"
+            },
+            "nats-1": {
+              "cpu_percent": 0.33,
+              "memory": "8.723MiB"
+            },
+            "postgres-1": {
+              "cpu_percent": 7.66,
+              "memory": "113.7MiB"
+            },
+            "publisher-1": {
+              "cpu_percent": 1.11,
+              "memory": "66.65MiB"
+            },
+            "redis-1": {
+              "cpu_percent": 0.39,
+              "memory": "7.105MiB"
+            },
+            "worker-1": {
+              "cpu_percent": 4.92,
+              "memory": "76.55MiB"
+            },
+            "worker-2": {
+              "cpu_percent": 4.77,
+              "memory": "76.53MiB"
+            }
+          }
+        },
+        {
+          "utc": "2026-11-28T07:45:53.764284+00:00",
+          "containers": {
+            "api-1": {
+              "cpu_percent": 0.47,
+              "memory": "250.3MiB"
+            },
+            "dashboard-1": {
+              "cpu_percent": 2.49,
+              "memory": "14.31MiB"
+            },
+            "model-fixture-1": {
+              "cpu_percent": 0.58,
+              "memory": "15.16MiB"
+            },
+            "nats-1": {
+              "cpu_percent": 0.25,
+              "memory": "8.719MiB"
+            },
+            "postgres-1": {
+              "cpu_percent": 7.59,
+              "memory": "113.8MiB"
+            },
+            "publisher-1": {
+              "cpu_percent": 1.17,
+              "memory": "66.74MiB"
+            },
+            "redis-1": {
+              "cpu_percent": 3.11,
+              "memory": "8.102MiB"
+            },
+            "worker-1": {
+              "cpu_percent": 4.87,
+              "memory": "76.4MiB"
+            },
+            "worker-2": {
+              "cpu_percent": 4.2,
+              "memory": "75.93MiB"
+            }
+          }
+        },
+        {
+          "utc": "2026-11-28T07:45:55.806112+00:00",
+          "containers": {
+            "api-1": {
+              "cpu_percent": 23.14,
+              "memory": "251.1MiB"
+            },
+            "dashboard-1": {
+              "cpu_percent": 0.0,
+              "memory": "13.33MiB"
+            },
+            "model-fixture-1": {
+              "cpu_percent": 0.56,
+              "memory": "15.71MiB"
+            },
+            "nats-1": {
+              "cpu_percent": 2.79,
+              "memory": "8.613MiB"
+            },
+            "postgres-1": {
+              "cpu_percent": 7.59,
+              "memory": "114MiB"
+            },
+            "publisher-1": {
+              "cpu_percent": 1.06,
+              "memory": "66.78MiB"
+            },
+            "redis-1": {
+              "cpu_percent": 0.36,
+              "memory": "7.352MiB"
+            },
+            "worker-1": {
+              "cpu_percent": 97.46,
+              "memory": "114.2MiB"
+            },
+            "worker-2": {
+              "cpu_percent": 68.75,
+              "memory": "100.2MiB"
+            }
+          }
+        },
+        {
+          "utc": "2026-11-28T07:45:57.839125+00:00",
+          "containers": {
+            "api-1": {
+              "cpu_percent": 0.74,
+              "memory": "250.7MiB"
+            },
+            "dashboard-1": {
+              "cpu_percent": 0.0,
+              "memory": "13.33MiB"
+            },
+            "model-fixture-1": {
+              "cpu_percent": 0.01,
+              "memory": "15.25MiB"
+            },
+            "nats-1": {
+              "cpu_percent": 0.47,
+              "memory": "9.598MiB"
+            },
+            "postgres-1": {
+              "cpu_percent": 7.46,
+              "memory": "114.2MiB"
+            },
+            "publisher-1": {
+              "cpu_percent": 1.01,
+              "memory": "66.83MiB"
+            },
+            "redis-1": {
+              "cpu_percent": 0.37,
+              "memory": "7.602MiB"
+            },
+            "worker-1": {
+              "cpu_percent": 74.67,
+              "memory": "76.3MiB"
+            },
+            "worker-2": {
+              "cpu_percent": 97.36,
+              "memory": "76.14MiB"
+            }
+          }
+        }
+      ],
+      "sql_profile": [
+        {
+          "queryid": "959797740570034658",
+          "total_ms": 125.13,
+          "calls": 490,
+          "statement": "INSERT INTO steps (tenant_id,run_id,ordinal,kind,request,tool_version_id) VALUES ($1,$2,$3,$4,CAST($5 AS jsonb),$6) ON CONFLICT (run_id,ordi"
+        },
+        {
+          "queryid": "4099620411514593265",
+          "total_ms": 119.6,
+          "calls": 490,
+          "statement": "INSERT INTO checkpoints(tenant_id,run_id,agent_version_id,step_id,ordinal, schema_version,next_action,next_ordinal,event_seq) VALUES ($1,$2,"
+        },
+        {
+          "queryid": "-4393085423925374951",
+          "total_ms": 101.47,
+          "calls": 510,
+          "statement": "INSERT INTO run_events (tenant_id,run_id,seq,kind,payload) VALUES ($1,$2,$3,'run.state',CAST($4 AS jsonb))"
+        },
+        {
+          "queryid": "-5933399896544837969",
+          "total_ms": 62.36,
+          "calls": 1030,
+          "statement": "SELECT r.status,r.revision,r.deadline_at<=clock_timestamp() AS due FROM runs r WHERE r.id=$1 FOR UPDATE"
+        },
+        {
+          "queryid": "2340761547618603581",
+          "total_ms": 43.83,
+          "calls": 490,
+          "statement": "UPDATE runs SET revision=revision+$2,updated_at=clock_timestamp() WHERE id=$1 RETURNING revision"
+        }
+      ],
+      "workers": {
+        "4061f7ab-111a-48ff-822b-e1bd2124ba39": 5,
+        "9003f4ef-475b-49cc-940e-b74eb1fc78c8": 5
+      },
+      "summary": {
+        "runs": 10,
+        "elapsed_seconds": 40.921,
+        "terminal_runs_per_second": 0.244,
+        "failed_runs": 0,
+        "slot_occupancy_percent": 83.34,
+        "submit_ms": {
+          "p50": 30.47,
+          "p95": 43.14
+        },
+        "first_dispatch_ms": {
+          "p50": 13774.911,
+          "p95": 27468.464
+        },
+        "completion_ms": {
+          "p50": 27451.965,
+          "p95": 40911.994
+        }
+      }
+    },
+    "timeout": {
+      "submissions": [
+        {
+          "index": 0,
+          "status": 201,
+          "ms": 28.653605,
+          "error_code": null
+        },
+        {
+          "index": 1,
+          "status": 201,
+          "ms": 26.403632,
+          "error_code": null
+        },
+        {
+          "index": 2,
+          "status": 201,
+          "ms": 27.369213,
+          "error_code": null
+        },
+        {
+          "index": 3,
+          "status": 201,
+          "ms": 19.186118,
+          "error_code": null
+        },
+        {
+          "index": 4,
+          "status": 201,
+          "ms": 25.612506,
+          "error_code": null
+        },
+        {
+          "index": 5,
+          "status": 201,
+          "ms": 19.867944,
+          "error_code": null
+        },
+        {
+          "index": 6,
+          "status": 201,
+          "ms": 34.720786,
+          "error_code": null
+        },
+        {
+          "index": 7,
+          "status": 201,
+          "ms": 22.524522,
+          "error_code": null
+        },
+        {
+          "index": 8,
+          "status": 201,
+          "ms": 25.002055,
+          "error_code": null
+        },
+        {
+          "index": 9,
+          "status": 201,
+          "ms": 21.64489,
+          "error_code": null
+        }
+      ],
+      "runs": [
+        {
+          "index": 0,
+          "status": "FAILED",
+          "failure_reason": "provider_timeout",
+          "submitted": 1795851959.490516,
+          "finished": 1795851967.654483,
+          "completion_ms": 8163.967,
+          "dispatch_ms": 2110.577,
+          "first_worker": "9003f4ef-475b-49cc-940e-b74eb1fc78c8",
+          "busy_seconds": 3.090276,
+          "attempts": 3,
+          "steps": 1
+        },
+        {
+          "index": 1,
+          "status": "FAILED",
+          "failure_reason": "provider_timeout",
+          "submitted": 1795851959.488212,
+          "finished": 1795851966.83114,
+          "completion_ms": 7342.928,
+          "dispatch_ms": 1100.023,
+          "first_worker": "4061f7ab-111a-48ff-822b-e1bd2124ba39",
+          "busy_seconds": 3.089856,
+          "attempts": 3,
+          "steps": 1
+        },
+        {
+          "index": 2,
+          "status": "FAILED",
+          "failure_reason": "provider_timeout",
+          "submitted": 1795851959.488888,
+          "finished": 1795851965.794891,
+          "completion_ms": 6306.003,
+          "dispatch_ms": 1109.609,
+          "first_worker": "4061f7ab-111a-48ff-822b-e1bd2124ba39",
+          "busy_seconds": 3.089471,
+          "attempts": 3,
+          "steps": 1
+        },
+        {
+          "index": 3,
+          "status": "FAILED",
+          "failure_reason": "provider_timeout",
+          "submitted": 1795851959.48215,
+          "finished": 1795851965.784105,
+          "completion_ms": 6301.955,
+          "dispatch_ms": 33.244,
+          "first_worker": "9003f4ef-475b-49cc-940e-b74eb1fc78c8",
+          "busy_seconds": 3.093768,
+          "attempts": 3,
+          "steps": 1
+        },
+        {
+          "index": 4,
+          "status": "FAILED",
+          "failure_reason": "provider_timeout",
+          "submitted": 1795851959.487065,
+          "finished": 1795851966.613644,
+          "completion_ms": 7126.579,
+          "dispatch_ms": 1085.306,
+          "first_worker": "9003f4ef-475b-49cc-940e-b74eb1fc78c8",
+          "busy_seconds": 3.084909,
+          "attempts": 3,
+          "steps": 1
+        },
+        {
+          "index": 5,
+          "status": "FAILED",
+          "failure_reason": "provider_timeout",
+          "submitted": 1795851959.482658,
+          "finished": 1795851966.813326,
+          "completion_ms": 7330.668,
+          "dispatch_ms": 45.025,
+          "first_worker": "9003f4ef-475b-49cc-940e-b74eb1fc78c8",
+          "busy_seconds": 3.092257,
+          "attempts": 3,
+          "steps": 1
+        },
+        {
+          "index": 6,
+          "status": "FAILED",
+          "failure_reason": "provider_timeout",
+          "submitted": 1795851959.501024,
+          "finished": 1795851967.869333,
+          "completion_ms": 8368.309,
+          "dispatch_ms": 2110.716,
+          "first_worker": "9003f4ef-475b-49cc-940e-b74eb1fc78c8",
+          "busy_seconds": 3.091161,
+          "attempts": 3,
+          "steps": 1
+        },
+        {
+          "index": 7,
+          "status": "FAILED",
+          "failure_reason": "provider_timeout",
+          "submitted": 1795851959.484226,
+          "finished": 1795851966.825471,
+          "completion_ms": 7341.245,
+          "dispatch_ms": 77.697,
+          "first_worker": "4061f7ab-111a-48ff-822b-e1bd2124ba39",
+          "busy_seconds": 3.086958,
+          "attempts": 3,
+          "steps": 1
+        },
+        {
+          "index": 8,
+          "status": "FAILED",
+          "failure_reason": "provider_timeout",
+          "submitted": 1795851959.486282,
+          "finished": 1795851967.864858,
+          "completion_ms": 8378.576,
+          "dispatch_ms": 1077.57,
+          "first_worker": "9003f4ef-475b-49cc-940e-b74eb1fc78c8",
+          "busy_seconds": 3.105153,
+          "attempts": 3,
+          "steps": 1
+        },
+        {
+          "index": 9,
+          "status": "FAILED",
+          "failure_reason": "provider_timeout",
+          "submitted": 1795851959.483533,
+          "finished": 1795851965.770142,
+          "completion_ms": 6286.609,
+          "dispatch_ms": 61.744,
+          "first_worker": "4061f7ab-111a-48ff-822b-e1bd2124ba39",
+          "busy_seconds": 3.096905,
+          "attempts": 3,
+          "steps": 1
+        }
+      ],
+      "usage": [
+        {
+          "status": "unknown",
+          "calls": 30,
+          "input_tokens": null,
+          "output_tokens": null,
+          "estimated_usd": null
+        }
+      ],
+      "resources": [
+        {
+          "utc": "2026-11-28T07:46:00.890996+00:00",
+          "containers": {
+            "api-1": {
+              "cpu_percent": 24.84,
+              "memory": "251.2MiB"
+            },
+            "dashboard-1": {
+              "cpu_percent": 0.0,
+              "memory": "13.26MiB"
+            },
+            "model-fixture-1": {
+              "cpu_percent": 0.3,
+              "memory": "16.36MiB"
+            },
+            "nats-1": {
+              "cpu_percent": 1.23,
+              "memory": "8.926MiB"
+            },
+            "postgres-1": {
+              "cpu_percent": 11.39,
+              "memory": "115.3MiB"
+            },
+            "publisher-1": {
+              "cpu_percent": 1.0,
+              "memory": "67.04MiB"
+            },
+            "redis-1": {
+              "cpu_percent": 0.4,
+              "memory": "7.109MiB"
+            },
+            "worker-1": {
+              "cpu_percent": 4.02,
+              "memory": "75.85MiB"
+            },
+            "worker-2": {
+              "cpu_percent": 4.96,
+              "memory": "76.25MiB"
+            }
+          }
+        },
+        {
+          "utc": "2026-11-28T07:46:02.929864+00:00",
+          "containers": {
+            "api-1": {
+              "cpu_percent": 0.85,
+              "memory": "250.2MiB"
+            },
+            "dashboard-1": {
+              "cpu_percent": 0.0,
+              "memory": "13.26MiB"
+            },
+            "model-fixture-1": {
+              "cpu_percent": 0.75,
+              "memory": "22.26MiB"
+            },
+            "nats-1": {
+              "cpu_percent": 0.45,
+              "memory": "9.199MiB"
+            },
+            "postgres-1": {
+              "cpu_percent": 10.12,
+              "memory": "116.3MiB"
+            },
+            "publisher-1": {
+              "cpu_percent": 2.13,
+              "memory": "67.02MiB"
+            },
+            "redis-1": {
+              "cpu_percent": 0.39,
+              "memory": "7.109MiB"
+            },
+            "worker-1": {
+              "cpu_percent": 34.07,
+              "memory": "92.13MiB"
+            },
+            "worker-2": {
+              "cpu_percent": 13.44,
+              "memory": "88.58MiB"
+            }
+          }
+        },
+        {
+          "utc": "2026-11-28T07:46:04.975298+00:00",
+          "containers": {
+            "api-1": {
+              "cpu_percent": 0.53,
+              "memory": "250.3MiB"
+            },
+            "dashboard-1": {
+              "cpu_percent": 0.0,
+              "memory": "13.98MiB"
+            },
+            "model-fixture-1": {
+              "cpu_percent": 0.7,
+              "memory": "21.18MiB"
+            },
+            "nats-1": {
+              "cpu_percent": 0.75,
+              "memory": "10.38MiB"
+            },
+            "postgres-1": {
+              "cpu_percent": 9.37,
+              "memory": "120.4MiB"
+            },
+            "publisher-1": {
+              "cpu_percent": 1.53,
+              "memory": "66.88MiB"
+            },
+            "redis-1": {
+              "cpu_percent": 0.42,
+              "memory": "7.148MiB"
+            },
+            "worker-1": {
+              "cpu_percent": 103.11,
+              "memory": "131.3MiB"
+            },
+            "worker-2": {
+              "cpu_percent": 104.56,
+              "memory": "126.2MiB"
+            }
+          }
+        },
+        {
+          "utc": "2026-11-28T07:46:07.009152+00:00",
+          "containers": {
+            "api-1": {
+              "cpu_percent": 0.48,
+              "memory": "250.9MiB"
+            },
+            "dashboard-1": {
+              "cpu_percent": 0.0,
+              "memory": "13.26MiB"
+            },
+            "model-fixture-1": {
+              "cpu_percent": 0.51,
+              "memory": "21.66MiB"
+            },
+            "nats-1": {
+              "cpu_percent": 0.55,
+              "memory": "10.13MiB"
+            },
+            "postgres-1": {
+              "cpu_percent": 8.41,
+              "memory": "117.2MiB"
+            },
+            "publisher-1": {
+              "cpu_percent": 0.93,
+              "memory": "66.72MiB"
+            },
+            "redis-1": {
+              "cpu_percent": 0.42,
+              "memory": "7.148MiB"
+            },
+            "worker-1": {
+              "cpu_percent": 4.51,
+              "memory": "75.93MiB"
+            },
+            "worker-2": {
+              "cpu_percent": 5.07,
+              "memory": "75.58MiB"
+            }
+          }
+        },
+        {
+          "utc": "2026-11-28T07:46:09.044498+00:00",
+          "containers": {
+            "api-1": {
+              "cpu_percent": 0.51,
+              "memory": "250.7MiB"
+            },
+            "dashboard-1": {
+              "cpu_percent": 2.35,
+              "memory": "14.79MiB"
+            },
+            "model-fixture-1": {
+              "cpu_percent": 0.37,
+              "memory": "20.92MiB"
+            },
+            "nats-1": {
+              "cpu_percent": 0.46,
+              "memory": "10.38MiB"
+            },
+            "postgres-1": {
+              "cpu_percent": 4.33,
+              "memory": "117.9MiB"
+            },
+            "publisher-1": {
+              "cpu_percent": 1.06,
+              "memory": "66.78MiB"
+            },
+            "redis-1": {
+              "cpu_percent": 3.06,
+              "memory": "7.906MiB"
+            },
+            "worker-1": {
+              "cpu_percent": 0.11,
+              "memory": "75.14MiB"
+            },
+            "worker-2": {
+              "cpu_percent": 0.55,
+              "memory": "75.9MiB"
+            }
+          }
+        }
+      ],
+      "sql_profile": [
+        {
+          "queryid": "-3356396138571972252",
+          "total_ms": 23.59,
+          "calls": 80,
+          "statement": "UPDATE runs SET status=$1,revision=$2,updated_at=$3, enqueued_at=CASE WHEN $1='QUEUED' THEN $3 ELSE enqueued_at END WHERE id=$4"
+        },
+        {
+          "queryid": "-4393085423925374951",
+          "total_ms": 15.55,
+          "calls": 80,
+          "statement": "INSERT INTO run_events (tenant_id,run_id,seq,kind,payload) VALUES ($1,$2,$3,'run.state',CAST($4 AS jsonb))"
+        },
+        {
+          "queryid": "-1019676104941685357",
+          "total_ms": 8.47,
+          "calls": 61,
+          "statement": "SELECT t.id FROM tenants t WHERE EXISTS (SELECT FROM execution_queue q WHERE q.tenant_id=t.id AND (q.provider IN ('builtin','mock') OR (q.pr"
+        },
+        {
+          "queryid": "-3508426635121808263",
+          "total_ms": 8.13,
+          "calls": 10,
+          "statement": "SELECT * FROM prepare_submission($1,$2,$3)"
+        },
+        {
+          "queryid": "5342664951163482682",
+          "total_ms": 7.57,
+          "calls": 80,
+          "statement": "WITH pending AS ( SELECT id FROM outbox_events WHERE published_at IS NULL AND available_at<=clock_timestamp() AND (claim_until IS NULL OR cl"
+        }
+      ],
+      "workers": {
+        "9003f4ef-475b-49cc-940e-b74eb1fc78c8": 6,
+        "4061f7ab-111a-48ff-822b-e1bd2124ba39": 4
+      },
+      "summary": {
+        "runs": 10,
+        "elapsed_seconds": 8.387,
+        "terminal_runs_per_second": 1.192,
+        "failed_runs": 10,
+        "slot_occupancy_percent": 92.17,
+        "submit_ms": {
+          "p50": 25.002,
+          "p95": 34.721
+        },
+        "first_dispatch_ms": {
+          "p50": 1077.57,
+          "p95": 2110.716
+        },
+        "completion_ms": {
+          "p50": 7330.668,
+          "p95": 8378.576
+        }
+      }
+    }
+  },
+  "redelivery": {
+    "stream_sequence": 244,
+    "deliveries": 2
+  }
+}
