@@ -26,6 +26,7 @@ class DatabaseSettings(BaseSettings):
 
 
 class Settings(DatabaseSettings):
+    api_processes: int = Field(default=3, ge=1, le=8)
     token_issuer: str = "urn:agentos:local"
     token_audience: str = "agentos-api"
     token_public_key_file: Path = Path("/keys/public/issuer.pem")

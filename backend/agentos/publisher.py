@@ -1,12 +1,16 @@
 import asyncio
 import json
-from time import monotonic
+import sys
+from pathlib import Path
+from time import monotonic, time
 from uuid import uuid4
 
 from nats.js.api import AckPolicy, ConsumerConfig, RetentionPolicy, StorageType, StreamConfig
 from sqlalchemy import text
 
 from .runtime import CONSUMER, STREAM, SUBJECT, log_error, pause, serve
+
+HEARTBEAT = Path("/tmp/agentos-publisher-ready")
 
 
 async def publish_one(engine, js) -> bool:
@@ -29,6 +33,7 @@ async def publish_one(engine, js) -> bool:
 
 
 async def publish_loop(cfg, engine, nc, stop):
+    HEARTBEAT.unlink(missing_ok=True)
     js = nc.jetstream(timeout=2)
     configured = False
     next_scan = 0
@@ -49,6 +54,8 @@ async def publish_loop(cfg, engine, nc, stop):
                 if needed:
                     await js.publish(SUBJECT, b'{"schema":1,"repair":true}', timeout=2)
                 next_scan = monotonic() + 2
+                if nc.is_connected:
+                    HEARTBEAT.touch()
             if not published:
                 await pause(stop, 0.2)
         except Exception as exc:
@@ -58,4 +65,6 @@ async def publish_loop(cfg, engine, nc, stop):
 
 
 if __name__ == "__main__":
+    if sys.argv[1:] == ["health"]:
+        raise SystemExit(0 if HEARTBEAT.exists() and time() - HEARTBEAT.stat().st_mtime < 15 else 1)
     asyncio.run(serve(publish_loop))

@@ -84,7 +84,7 @@ def main(browser: bool, observability: bool, benchmark_report: Path | None = Non
             subprocess.run([shutil.which("npm.cmd" if os.name == "nt" else "npm"), "run", "test:browser",
                             "--", "system-health.spec.ts"],
                            cwd=ROOT / "dashboard", env={**env, "AGENTOS_TEST_URL": base}, check=True)
-        assert sql("SELECT version_num FROM alembic_version") == "0007_observability"
+        assert sql("SELECT version_num FROM alembic_version") == "0008_operations"
         sql("CREATE TABLE persistence_probe AS SELECT 42 AS value")
         compose("run", "--rm", "--no-deps", "migrate")
         compose("run", "--rm", "--no-deps", "migrate", "alembic", "downgrade", "base")

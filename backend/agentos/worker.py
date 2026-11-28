@@ -59,7 +59,8 @@ async def execute_attempt(scheduler, claim, models, span):
         await asyncio.gather(work, return_exceptions=True)
 
 
-async def slot(js, scheduler, worker, stop, models):
+async def slot(nc, scheduler, worker, stop, models):
+    js = nc.jetstream()
     sub = await js.pull_subscribe_bind(stream=STREAM, consumer=CONSUMER)
     try:
         while not stop.is_set():
@@ -75,8 +76,13 @@ async def slot(js, scheduler, worker, stop, models):
                 claim = await scheduler.claim(worker)
                 # A failed database transaction leaves this delivery unacknowledged.
                 await msg.ack()
-                if claim:
+                # One hint can wake several competing slots. Keep draining eligible
+                # work after a win even if other slots consumed hints while locked.
+                while claim:
                     await execute(scheduler, claim, models)
+                    if stop.is_set() or not nc.is_connected:
+                        break
+                    claim = await scheduler.claim(worker)
             except LeaseLost as exc:
                 log_error("worker_fenced", exc)
             except Exception as exc:
@@ -111,7 +117,7 @@ async def run_slots(cfg, nc, stop, scheduler, models):
     worker = uuid4()
     await scheduler.register(worker, cfg.worker_capacity)
     SESSION_FILE.write_text(str(worker))
-    tasks = [asyncio.create_task(slot(nc.jetstream(), scheduler, worker, stop, models)) for _ in range(cfg.worker_capacity)]
+    tasks = [asyncio.create_task(slot(nc, scheduler, worker, stop, models)) for _ in range(cfg.worker_capacity)]
     try:
         while not stop.is_set():
             if nc.is_closed or any(task.done() for task in tasks):

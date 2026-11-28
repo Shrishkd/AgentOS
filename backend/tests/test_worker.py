@@ -1,6 +1,6 @@
 import asyncio
 import hashlib
-from unittest.mock import AsyncMock
+from unittest.mock import AsyncMock, Mock
 from uuid import uuid4
 
 import pytest
@@ -8,7 +8,7 @@ from pydantic import ValidationError
 
 from agentos.contracts import VersionInput
 from agentos.scheduler import Claim, LeaseLost
-from agentos.worker import execute, receipt
+from agentos.worker import execute, receipt, slot
 
 
 def test_receipt_identifies_attempt_and_hashes_canonical_utf8():
@@ -25,6 +25,34 @@ def test_builtin_version_requires_receipt_and_empty_grants():
     for change in ({"model": "other"}, {"tool_version_ids": [uuid4()]}):
         with pytest.raises(ValidationError):
             VersionInput(**{**base, **change})
+
+
+def test_one_wakeup_drains_backlog_and_stop_prevents_another_claim():
+    async def check():
+        stop = asyncio.Event()
+        worker, tenant = uuid4(), uuid4()
+        claims = [Claim(tenant, uuid4(), worker, 1, {}) for _ in range(2)]
+        scheduler = AsyncMock()
+        scheduler.seconds = 5
+        scheduler.claim.side_effect = claims
+
+        async def finish(claim, output):
+            assert output["worker_id"] == str(worker)
+            if claim == claims[-1]:
+                stop.set()
+
+        scheduler.finish.side_effect = finish
+        nc, js, subscription, wakeup = Mock(is_connected=True), AsyncMock(), AsyncMock(), AsyncMock()
+        nc.jetstream.return_value = js
+        js.pull_subscribe_bind.return_value = subscription
+        subscription.fetch.side_effect = [[wakeup]]
+        await asyncio.wait_for(slot(nc, scheduler, worker, stop, None), timeout=2)
+        subscription.fetch.assert_awaited_once()
+        wakeup.ack.assert_awaited_once()
+        assert scheduler.claim.await_count == scheduler.finish.await_count == 2
+        subscription.unsubscribe.assert_awaited_once()
+
+    asyncio.run(check())
 
 
 @pytest.mark.parametrize("lost", [True, False])

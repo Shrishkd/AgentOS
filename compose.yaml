@@ -115,6 +115,7 @@ services:
     environment:
       <<: *db
       AGENTOS_DB_USER: agentos_api
+      AGENTOS_API_PROCESSES: ${AGENTOS_API_PROCESSES:-3}
       AGENTOS_DB_PASSWORD_FILE: /secrets/api/password
       AGENTOS_REDIS_URL: redis://redis:6379/0
       AGENTOS_TOKEN_ISSUER: ${AGENTOS_TOKEN_ISSUER:-urn:agentos:local}

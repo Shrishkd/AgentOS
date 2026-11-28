@@ -155,6 +155,7 @@ def run_benchmark(base, compose, sql, recovery, output_path, tracing):
     env.update(host=platform.platform(), cpu_model=cpu_model, postgres=sql("SHOW server_version"),
                python=platform.python_version(), k6="1.3.0",
                workers=2, slots=int(slots.split("|")[1]), observability=tracing)
+    env["api_processes"] = int(compose("exec", "-T", "api", "printenv", "AGENTOS_API_PROCESSES", capture=True))
     report = {"started_utc": datetime.now(UTC).isoformat(), "environment": env, "recovery": recovery, "workloads": {}}
     for name in CASES:
         remote = name in {"long", "timeout"}

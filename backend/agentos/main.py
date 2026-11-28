@@ -1,3 +1,4 @@
+import asyncio
 import logging
 from contextlib import asynccontextmanager
 from time import perf_counter
@@ -9,6 +10,7 @@ from fastapi.responses import JSONResponse
 from fastapi.exceptions import RequestValidationError
 from sqlalchemy.exc import InterfaceError, OperationalError, TimeoutError as PoolTimeout
 from redis.asyncio import Redis
+from sqlalchemy import text
 from sqlalchemy.ext.asyncio import create_async_engine
 
 from .config import Settings
@@ -26,13 +28,31 @@ from .tools_api import router as tools
 
 logger = logging.getLogger(__name__)
 
+API_POOL_SIZE = 4
+
+
+async def warm_connections(engine, timeout):
+    async def connect():
+        async with engine.connect() as db:
+            await db.execute(text("SELECT 1"))
+
+    # A cold burst would otherwise pay for simultaneous PostgreSQL logins. Keep
+    # liveness available if storage is down at startup; readiness reports outages.
+    try:
+        async with asyncio.timeout(timeout), asyncio.TaskGroup() as group:
+            for _ in range(API_POOL_SIZE):
+                group.create_task(connect())
+    except (ExceptionGroup, TimeoutError):
+        logger.warning("database_warmup_unavailable")
+
 
 def create_app(settings: Settings) -> FastAPI:
     @asynccontextmanager
     async def lifespan(app: FastAPI):
-        engine = create_async_engine(settings.database_url(), pool_pre_ping=True)
+        engine = create_async_engine(settings.database_url(), pool_pre_ping=True, pool_size=API_POOL_SIZE, max_overflow=0)
         redis = Redis.from_url(settings.redis_url.get_secret_value(), socket_connect_timeout=2, socket_timeout=2)
         try:
+            await warm_connections(engine, settings.health_timeout_seconds)
             app.state.probes = dependency_checks(engine, redis)
             app.state.engine = engine
             app.state.redis = redis
@@ -104,7 +124,11 @@ def create_app(settings: Settings) -> FastAPI:
     return app
 
 
+def configured_app():
+    return create_app(Settings())
+
+
 if __name__ == "__main__":
     settings = Settings()
-    uvicorn.run(create_app(settings), host="0.0.0.0", port=8000,
-                log_config=logging_config(settings.log_level), access_log=False)
+    uvicorn.run("agentos.main:configured_app", factory=True, workers=settings.api_processes, host="0.0.0.0", port=8000,
+                log_config=logging_config(settings.log_level), access_log=False, timeout_graceful_shutdown=15)
