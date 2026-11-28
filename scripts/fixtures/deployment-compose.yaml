@@ -1,0 +1,22 @@
+services:
+  prometheus:
+    volumes:
+      - ./scripts/fixtures/alerts-test.yaml:/drill/alerts-test.yaml:ro
+  worker:
+    environment:
+      AGENTOS_MODEL_BASE_URL: http://model-fixture:9000/v1
+      AGENTOS_REMOTE_MODEL: fixture-model
+    volumes:
+      - ./scripts/fixtures/crash_process.py:/drill/crash_process.py:ro
+  model-fixture:
+    networks: [state]
+    image: ${AGENTOS_BACKEND_IMAGE:?}
+    command: ["python", "/drill/model_server.py"]
+    volumes:
+      - ./scripts/fixtures/model_server.py:/drill/model_server.py:ro
+  receiver:
+    networks: [state]
+    image: ${AGENTOS_BACKEND_IMAGE:?}
+    command: ["python", "/drill/receiver.py"]
+    volumes:
+      - ./scripts/fixtures/alert_receiver.py:/drill/receiver.py:ro

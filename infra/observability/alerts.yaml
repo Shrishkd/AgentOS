@@ -1,0 +1,33 @@
+groups:
+  - name: agentos
+    rules:
+      - alert: AgentOSApiUnavailable
+        expr: up{job="agentos"} == 0
+        for: 30s
+        labels: {severity: critical}
+        annotations: {summary: "The API metrics scrape has failed for 30 seconds."}
+      - alert: AgentOSNoWorkers
+        expr: agentos_workers{state="healthy"} == 0
+        for: 30s
+        labels: {severity: critical}
+        annotations: {summary: "No worker session can accept work."}
+      - alert: AgentOSQueueStalled
+        expr: agentos_oldest_queued_seconds > 60
+        for: 1m
+        labels: {severity: warning}
+        annotations: {summary: "Inspect worker capacity, compatible models and tenant quotas."}
+      - alert: AgentOSOutboxStalled
+        expr: agentos_oldest_unpublished_seconds > 30
+        for: 30s
+        labels: {severity: critical}
+        annotations: {summary: "Inspect the publisher and JetStream availability."}
+      - alert: AgentOSLeaseRecoveryStalled
+        expr: agentos_oldest_expired_lease_seconds > 30
+        for: 30s
+        labels: {severity: critical}
+        annotations: {summary: "A worker lease has expired and still has an owner."}
+      - alert: AgentOSWalArchiveFailed
+        expr: agentos_wal_archive_failed == 1
+        for: 1m
+        labels: {severity: critical}
+        annotations: {summary: "The most recent WAL archive attempt failed. Check archive storage immediately."}

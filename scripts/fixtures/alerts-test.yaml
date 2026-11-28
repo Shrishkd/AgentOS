@@ -1,0 +1,30 @@
+rule_files: [/etc/prometheus/alerts.yaml]
+evaluation_interval: 5s
+tests:
+  - interval: 5s
+    input_series:
+      - series: up{job="agentos"}
+        values: "0+0x15 1"
+      - series: agentos_workers{state="healthy"}
+        values: "0+0x15 2"
+      - series: agentos_oldest_queued_seconds
+        values: "61+0x15 0"
+      - series: agentos_oldest_unpublished_seconds
+        values: "31+0x15 0"
+      - series: agentos_oldest_expired_lease_seconds
+        values: "31+0x15 0"
+      - series: agentos_wal_archive_failed
+        values: "1+0x15 0"
+    promql_expr_test:
+      - expr: count(ALERTS{alertstate="firing"})
+        eval_time: 25s
+        exp_samples: []
+      - expr: count(ALERTS{alertstate="firing"})
+        eval_time: 30s
+        exp_samples: [{labels: "{}", value: 4}]
+      - expr: count(ALERTS{alertstate="firing"})
+        eval_time: 1m
+        exp_samples: [{labels: "{}", value: 6}]
+      - expr: count(ALERTS{alertstate="firing"})
+        eval_time: 80s
+        exp_samples: []

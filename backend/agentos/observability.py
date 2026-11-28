@@ -20,13 +20,18 @@ METRICS = {
     "tokens": ("Tokens reported by providers.", "direction"),
     "estimated_cost_usd": ("Estimated USD cost of priced, reported usage.", None),
     "unpriced_invocations": ("Reported invocations without a configured price.", None),
+    "oldest_queued_seconds": ("Age of the oldest queued run.", None),
+    "oldest_unpublished_seconds": ("Age of the oldest unpublished outbox event.", None),
+    "oldest_expired_lease_seconds": ("Age of the oldest expired lease awaiting recovery.", None),
+    "wal_archive_failed": ("Whether the latest WAL archive attempt failed.", None),
 }
 
 
 @router.get("/metrics", include_in_schema=False)
 async def metrics(request: Request):
     async with request.app.state.engine.connect() as db:
-        rows = (await db.execute(text("SELECT metric,category,value FROM execution_metrics"))).all()
+        rows = (await db.execute(text("""SELECT metric,category,value FROM execution_metrics
+            UNION ALL SELECT metric,'',value FROM operational_metrics"""))).all()
     registry = CollectorRegistry()
     families = {key: Gauge("agentos_" + key, description, [label] if label else [], registry=registry)
                 for key, (description, label) in METRICS.items()}
