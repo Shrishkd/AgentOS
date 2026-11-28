@@ -1,0 +1,10 @@
+route:
+  receiver: on-call
+  group_by: [alertname]
+  group_wait: 15s
+  repeat_interval: 4h
+receivers:
+  - name: on-call
+    webhook_configs:
+      - url_file: /etc/alertmanager/webhook-url
+        send_resolved: true
